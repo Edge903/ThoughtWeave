@@ -1,3 +1,36 @@
 <resources>
-    <string name="app_name">ThoughtWeave</string>
+    <string name="app_name" translatable="false">ThoughtWeave</string>
+
+    <!-- Bottom navigation (S01 / S03 / S04) -->
+    <string name="nav_memos">Memos</string>
+    <string name="nav_ai_merge">AI Merge</string>
+    <string name="nav_schedules">Schedules</string>
+
+    <!-- Screen titles -->
+    <string name="title_memo_list">Memos</string>
+    <string name="title_ai_merge">AI Memo Merge</string>
+    <string name="title_schedules">Schedules</string>
+    <string name="title_new_memo">New memo</string>
+    <string name="title_new_schedule">New schedule</string>
+    <string name="title_schedule">Schedule</string>
+
+    <!-- Context FAB actions -->
+    <string name="fab_new_memo">New memo</string>
+    <string name="fab_ai_synthesize">Summarize with AI</string>
+    <string name="fab_add_schedule">Add schedule</string>
+
+    <!-- Common -->
+    <string name="action_back">Back</string>
+
+    <!-- Empty states -->
+    <string name="empty_memos_title">No memos yet</string>
+    <string name="empty_memos_message">Tap New memo to write your first one.</string>
+    <string name="empty_ai_merge_title">Nothing to merge yet</string>
+    <string name="empty_ai_merge_message">Select two or more memos to summarize them into a new memo.</string>
+    <string name="empty_schedules_title">No schedules yet</string>
+    <string name="empty_schedules_message">Tap Add schedule to create one.</string>
+
+    <!-- Phase 0 scaffolding: destinations exist for navigation but have no content yet. -->
+    <string name="not_implemented_title">Not available yet</string>
+    <string name="not_implemented_message">This screen is part of a later development phase.</string>
 </resources>

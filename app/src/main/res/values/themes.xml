@@ -1,9 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ThoughtWeave" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <!--
+        Window theme only. All UI colors come from the Compose Material 3 theme
+        (core/ui/theme). A platform parent avoids depending on AppCompat/MDC.
+    -->
+    <style name="Theme.ThoughtWeave" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
-
-    <style name="Theme.ThoughtWeave" parent="Base.Theme.ThoughtWeave" />
 </resources>
