@@ -30,6 +30,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - `espresso-core 3.7.0` must stay in androidTest: Compose ui-test otherwise pulls an older Espresso
   that calls `InputManager.getInstance`, which was removed on API 36.
 - Use `androidx.compose.ui.test.junit4.v2.createAndroidComposeRule` (v1 is deprecated).
+- Room 2.8.5 (`minCompileSdk=34`, verified from the AAR 2026-11-08) with the Room Gradle plugin; schemas
+  are committed under `app/schemas`. `room-ktx` is not used: its 2.8.5 jar is empty and its APIs are in
+  `room-runtime`. kotlinx-coroutines-android 1.11.0 is declared directly because repositories expose `Flow`.
 - Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation and core-ktx are
   expected (pinned on purpose, see above).
 
@@ -70,6 +73,7 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Schedule: title and deadline (`end_at`) required; `start_at` optional and ≤ deadline when set;
   all-day supported. Saving only on an explicit 저장 press. AI never invents timestamps; it fails instead.
 - Memo title optional; empty title is stored as "" and displayed as "무제" / "Untitled".
+- Pinning does not change `updated_at`, so it never reorders memos within their group.
 
 ## On-device AI (Phase 5)
 - Model `gemma3-1b-it-int4.litertlm`, 584,417,280 bytes,
