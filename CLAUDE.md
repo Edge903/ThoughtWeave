@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 7, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
+(revision 8, 2026-11-09). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -92,8 +92,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 ## Legal texts (S05)
 - `assets/legal` holds verbatim copies: Gemma Terms and Prohibited Use Policy from ai.google.dev (2026-11-08),
   Apache-2.0, and GPLv2 + Classpath Exception (`desugar_jdk_libs` ships under it, per its POM).
-- `other_open_source.txt` lists only what the app ships today. Add Gson, Play Core SDK terms and LiteRT-LM
-  third-party notices when those dependencies arrive (Phase 5b/5c). Agreement and consent withdrawal: Phase 5a.
+- `other_open_source.txt` lists only what the app ships today. Add Gson and LiteRT-LM
+  third-party notices when those dependencies arrive (Phase 5c). Play Core SDK terms come from the
+  `ai-delivery` AAR's LICENSE file.
 
 ## On-device AI (Phase 5)
 - Model `gemma3-1b-it-int4.litertlm`, 584,417,280 bytes,
@@ -101,6 +102,12 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Delivery: Play AI pack **fast-follow** (`com.google.android.play:ai-delivery:0.2.0-beta01`).
   No external hosting, no INTERNET permission. Wi-Fi by default; mobile data only after the user taps
   to allow it (`showConfirmationDialog`). Load only `STORAGE_FILES` packs with asset offset 0.
+- `ai-delivery` 0.2.0-beta01 API and status codes verified with `javap` (2026-11-09). Failed Play tasks are
+  read as `ApiException.statusCode`. `:gemma_pack` uses AGP's `com.android.ai-pack` plugin.
+- `asset-delivery` (required by `ai-delivery`) brings WorkManager and its `WAKE_LOCK`, `ACCESS_NETWORK_STATE`
+  and `RECEIVE_BOOT_COMPLETED` permissions. The release manifest still has no `INTERNET` permission.
+- The model is gitignored and copied to `gemma_pack/src/main/assets` by hand. `bundleRelease` fails if it is
+  missing. The download may start before consent; consent gates AI use only.
 - Debug builds: model import via the system file picker (`src/debug` only).
 - Integrity: full SHA-256 on first install or import; size + marker on later launches; full hash only
   after an engine init failure.
@@ -114,5 +121,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 ## Testing
 - Emulator: AVD `Medium_Phone_API_36.1` (x86_64, CPU inference only).
 - Real device: the user's Galaxy S23 (SM8550) for GPU, performance and memory measurements.
-- Local AI-pack testing: AGP's cached bundletool 1.18.3 with `--local-testing` (approved).
+  Its data partition is 8G, because the real model does not fit in the default 6G.
+- Local AI-pack testing: AGP's cached bundletool 1.18.3 with `--local-testing` (approved). The cached jar is not
+  runnable: use main class `com.android.tools.build.bundletool.BundleToolMain` on JDK 11+, with AGP's resolved
+  classpath from `buildEnvironment`, `--aapt2` from the SDK, and the debug keystore. Build with
+  `bundleRelease -PallowDraftLegal=true`.
 - Play fast-follow and Wi-Fi consent flows: Play internal testing track (deferred until Console access).

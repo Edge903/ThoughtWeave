@@ -90,6 +90,25 @@
     <string name="dialog_delete_schedule_title">이 일정을 삭제할까요?</string>
     <string name="dialog_delete_schedule_message">삭제하면 되돌릴 수 없습니다.</string>
 
+    <string name="ai_model_not_downloaded">AI 모델이 아직 이 기기에 없습니다.</string>
+    <string name="ai_model_queued">AI 모델 다운로드를 기다리는 중입니다.</string>
+    <string name="ai_model_downloading">AI 모델 다운로드 중: %1$d%%</string>
+    <string name="ai_model_waiting_for_wifi">Wi-Fi에 연결되면 AI 모델을 다운로드합니다.</string>
+    <string name="ai_model_allow_mobile_data">모바일 데이터 사용 (%1$s)</string>
+    <string name="ai_model_needs_confirmation">AI 모델을 다운로드하려면 Google Play에서 확인이 필요합니다.</string>
+    <string name="ai_model_installing">AI 모델을 설치하는 중입니다.</string>
+    <string name="ai_model_verifying">AI 모델을 확인하는 중입니다.</string>
+    <string name="ai_model_corrupted">AI 모델 파일이 손상되어 사용할 수 없습니다.</string>
+    <string name="ai_model_failed">AI 모델을 다운로드하지 못했습니다.</string>
+    <string name="ai_model_insufficient_storage">AI 모델을 저장할 공간이 부족합니다. 필요: %1$s, 여유: %2$s</string>
+    <string name="ai_model_not_from_play">AI 모델은 Google Play에서 앱을 설치한 경우에만 사용할 수 있습니다.</string>
+    <string name="ai_model_play_unavailable">AI 모델을 사용하려면 Google Play 스토어가 필요합니다.</string>
+    <string name="ai_model_device_unsupported">이 기기에서는 AI 기능을 지원하지 않습니다. 메모와 일정은 계속 사용할 수 있습니다.</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_redownload">다시 다운로드</string>
+    <string name="action_storage_settings">저장공간 설정</string>
+    <string name="action_open_play">Google Play 열기</string>
+
     <string name="agreement_asset">legal/agreement_ko.txt</string>
     <string name="title_ai_consent">AI 기능 이용 동의</string>
     <string name="consent_checkbox">동의서를 읽었으며 이에 동의합니다.</string>

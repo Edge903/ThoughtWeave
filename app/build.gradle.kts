@@ -44,6 +44,7 @@ android {
         // java.time on minSdk 24
         isCoreLibraryDesugaringEnabled = true
     }
+    assetPacks.add(":gemma_pack")
     buildFeatures {
         compose = true
     }
@@ -71,7 +72,20 @@ val verifyAgreementNotDraft = tasks.register("verifyAgreementNotDraft") {
         }
     }
 }
-tasks.matching { it.name == "bundleRelease" }.configureEach { dependsOn(verifyAgreementNotDraft) }
+
+// The model is gitignored, so a bundle built without it would silently ship no AI model.
+val packedModel = rootDir.resolve("gemma_pack/src/main/assets/gemma3-1b-it-int4.litertlm")
+val verifyModelInPack = tasks.register("verifyModelInPack") {
+    description = "Fails if the AI pack does not contain the expected model file."
+    doLast {
+        if (packedModel.length() != 584_417_280L) {
+            throw GradleException("Expected the 584,417,280-byte model at $packedModel")
+        }
+    }
+}
+tasks.matching { it.name == "bundleRelease" }.configureEach {
+    dependsOn(verifyAgreementNotDraft, verifyModelInPack)
+}
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
@@ -95,6 +109,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.play.ai.delivery)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

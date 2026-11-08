@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
-import io.wit117.thoughtweave.domain.model.AiAvailability
 import io.wit117.thoughtweave.feature.aimodel.AiGateViewModel
 import io.wit117.thoughtweave.feature.legal.AiConsentDialog
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
@@ -93,10 +92,10 @@ fun MemoEditorScreen(
                 ContextFab(
                     text = stringResource(R.string.fab_extract_schedule),
                     iconRes = R.drawable.ic_calendar_add_on,
-                    enabled = aiAvailability != AiAvailability.NOT_AVAILABLE &&
+                    enabled = aiAvailability.isModelUsable &&
                         !state.isBusy && (!state.isDirty || state.canSave),
                     onClick = {
-                        if (aiAvailability == AiAvailability.CONSENT_REQUIRED) {
+                        if (!aiAvailability.consentGiven) {
                             showConsentDialog = true
                         } else {
                             proceedToExtraction(memoId)

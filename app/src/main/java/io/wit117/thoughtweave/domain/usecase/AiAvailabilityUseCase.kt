@@ -2,25 +2,29 @@ package io.wit117.thoughtweave.domain.usecase
 
 import io.wit117.thoughtweave.domain.model.AgreementStatus
 import io.wit117.thoughtweave.domain.model.AiAvailability
+import io.wit117.thoughtweave.domain.model.AiModelStatus
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
+import io.wit117.thoughtweave.domain.repository.AiModelRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 
-/** Combines model availability and consent; no AI action may run unless this is READY. */
+/** Combines model state and consent; no AI action may run unless the result is ready. */
 class AiAvailabilityUseCase @Inject constructor(
     private val agreementRepository: AgreementRepository,
     private val synthesisRepository: MemoSynthesisRepository,
+    private val aiModelRepository: AiModelRepository,
 ) {
-    fun current(): AiAvailability = availability(agreementRepository.currentStatus())
+    fun current(): AiAvailability =
+        availability(aiModelRepository.status.value, agreementRepository.currentStatus())
 
     operator fun invoke(): Flow<AiAvailability> =
-        agreementRepository.observeStatus().map(::availability)
+        combine(aiModelRepository.status, agreementRepository.observeStatus(), ::availability)
 
-    private fun availability(status: AgreementStatus): AiAvailability = when {
-        !synthesisRepository.isAvailable -> AiAvailability.NOT_AVAILABLE
-        status == AgreementStatus.NOT_ACCEPTED -> AiAvailability.CONSENT_REQUIRED
-        else -> AiAvailability.READY
-    }
+    private fun availability(model: AiModelStatus, agreement: AgreementStatus) = AiAvailability(
+        model = model,
+        consentGiven = agreement == AgreementStatus.ACCEPTED,
+        inferenceAvailable = synthesisRepository.isAvailable,
+    )
 }

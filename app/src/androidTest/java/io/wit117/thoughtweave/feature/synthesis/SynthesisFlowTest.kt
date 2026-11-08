@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.wit117.thoughtweave.MainActivity
 import io.wit117.thoughtweave.R
 import java.util.UUID
+import io.wit117.thoughtweave.feature.aimodel.ModelStateRule
 import io.wit117.thoughtweave.feature.aimodel.setAgreementAccepted
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -31,7 +32,10 @@ import org.junit.runner.RunWith
 /** S03, POP01 and S02-C through the real app, using the debug fake summary. */
 @RunWith(AndroidJUnit4::class)
 class SynthesisFlowTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val modelRule = ModelStateRule()
+
+    @get:Rule(order = 1)
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before

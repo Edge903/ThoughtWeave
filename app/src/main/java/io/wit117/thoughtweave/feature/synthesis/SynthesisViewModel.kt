@@ -30,8 +30,7 @@ sealed interface SynthesisUiState {
         val aiAvailability: AiAvailability,
     ) : SynthesisUiState {
         val canSynthesize: Boolean
-            get() = aiAvailability == AiAvailability.READY &&
-                selectedIds.size >= MIN_MEMOS_FOR_SYNTHESIS
+            get() = aiAvailability.isReady && selectedIds.size >= MIN_MEMOS_FOR_SYNTHESIS
     }
 }
 

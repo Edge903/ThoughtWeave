@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ThoughtWeave"
 include(":app")
+include(":gemma_pack")
  

@@ -5,5 +5,15 @@ const val CURRENT_AGREEMENT_VERSION = 1
 
 enum class AgreementStatus { NOT_ACCEPTED, ACCEPTED }
 
-/** The only AI state the UI sees. Phase 5b adds the model delivery states. */
-enum class AiAvailability { NOT_AVAILABLE, CONSENT_REQUIRED, READY }
+/**
+ * The only AI state the UI sees. Delivery and consent are independent: the model can download
+ * before the user has consented, but no AI action runs until [isReady].
+ */
+data class AiAvailability(
+    val model: AiModelStatus,
+    val consentGiven: Boolean,
+    val inferenceAvailable: Boolean,
+) {
+    val isModelUsable: Boolean get() = model == AiModelStatus.Ready && inferenceAvailable
+    val isReady: Boolean get() = isModelUsable && consentGiven
+}

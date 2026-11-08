@@ -23,7 +23,10 @@ import org.junit.runner.RunWith
 /** POP04, the S03 consent banner, S02-B gating and withdrawal in S05. */
 @RunWith(AndroidJUnit4::class)
 class AgreementFlowTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val modelRule = ModelStateRule()
+
+    @get:Rule(order = 1)
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before

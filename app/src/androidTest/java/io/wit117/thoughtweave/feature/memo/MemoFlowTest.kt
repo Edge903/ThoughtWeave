@@ -14,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.wit117.thoughtweave.MainActivity
 import io.wit117.thoughtweave.R
 import java.util.UUID
+import io.wit117.thoughtweave.feature.aimodel.ModelStateRule
 import io.wit117.thoughtweave.feature.aimodel.setAgreementAccepted
 import org.junit.Before
 import org.junit.Rule
@@ -26,7 +27,10 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class MemoFlowTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val modelRule = ModelStateRule()
+
+    @get:Rule(order = 1)
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before

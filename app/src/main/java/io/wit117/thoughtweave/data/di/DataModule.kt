@@ -8,22 +8,43 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.wit117.thoughtweave.data.ai.model.GEMMA_MODEL_SPEC
+import io.wit117.thoughtweave.data.ai.model.InstallMarkerStore
+import io.wit117.thoughtweave.data.ai.model.ModelSpec
 import io.wit117.thoughtweave.data.local.dao.MemoDao
 import io.wit117.thoughtweave.data.local.dao.ScheduleDao
 import io.wit117.thoughtweave.data.local.database.ThoughtWeaveDatabase
 import io.wit117.thoughtweave.data.repository.AgreementRepositoryImpl
+import io.wit117.thoughtweave.data.repository.AiModelRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
+import io.wit117.thoughtweave.domain.repository.AiModelRepository
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
+import java.io.File
 import java.time.Clock
 import java.time.ZoneId
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+
+/** Lives as long as the app, for work that must outlast a screen. */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ApplicationScope
+
+/** Under `noBackupFilesDir`, because a marker is only valid for files on this device. */
+fun modelMarkerFile(context: Context): File = File(context.noBackupFilesDir, "model_install_marker")
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
+    @Binds
+    abstract fun bindAiModelRepository(impl: AiModelRepositoryImpl): AiModelRepository
+
     @Binds
     abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository
 
@@ -48,6 +69,19 @@ abstract class DataModule {
 
         @Provides
         fun provideClock(): Clock = Clock.systemUTC()
+
+        @Provides
+        @Singleton
+        @ApplicationScope
+        fun provideApplicationScope(): CoroutineScope =
+            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+        @Provides
+        fun provideModelSpec(): ModelSpec = GEMMA_MODEL_SPEC
+
+        @Provides
+        fun provideInstallMarkerStore(@ApplicationContext context: Context): InstallMarkerStore =
+            InstallMarkerStore(modelMarkerFile(context))
 
         /** Not a singleton: the device time zone can change while the app is running. */
         @Provides

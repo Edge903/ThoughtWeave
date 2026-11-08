@@ -101,6 +101,26 @@
     <string name="dialog_delete_schedule_title">Delete this schedule?</string>
     <string name="dialog_delete_schedule_message">This cannot be undone.</string>
 
+    <!-- AI model delivery -->
+    <string name="ai_model_not_downloaded">The AI model is not on this device yet.</string>
+    <string name="ai_model_queued">The AI model download is waiting to start.</string>
+    <string name="ai_model_downloading">Downloading the AI model: %1$d%%</string>
+    <string name="ai_model_waiting_for_wifi">The AI model will download when you are on Wi-Fi.</string>
+    <string name="ai_model_allow_mobile_data">Use mobile data (%1$s)</string>
+    <string name="ai_model_needs_confirmation">Google Play needs your confirmation to download the AI model.</string>
+    <string name="ai_model_installing">Installing the AI model.</string>
+    <string name="ai_model_verifying">Checking the AI model.</string>
+    <string name="ai_model_corrupted">The AI model file is damaged and cannot be used.</string>
+    <string name="ai_model_failed">The AI model could not be downloaded.</string>
+    <string name="ai_model_insufficient_storage">Not enough storage for the AI model. Required: %1$s. Free: %2$s.</string>
+    <string name="ai_model_not_from_play">The AI model is only available when the app is installed from Google Play.</string>
+    <string name="ai_model_play_unavailable">The AI model requires the Google Play Store.</string>
+    <string name="ai_model_device_unsupported">AI features are not supported on this device. Memos and schedules still work.</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_redownload">Download again</string>
+    <string name="action_storage_settings">Storage settings</string>
+    <string name="action_open_play">Open Google Play</string>
+
     <!-- POP04 consent -->
     <string name="agreement_asset" translatable="true">legal/agreement_en.txt</string>
     <string name="title_ai_consent">AI features consent</string>

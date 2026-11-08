@@ -14,4 +14,6 @@ This app includes the following open source software.
 
 - desugar_jdk_libs: GNU General Public License, version 2, with the Classpath Exception. https://github.com/google/desugar_jdk_libs
 
+- Play AI Delivery Library: Play Core Software Development Kit Terms of Service. https://developer.android.com/guide/playcore
+
 The full text of each license follows.

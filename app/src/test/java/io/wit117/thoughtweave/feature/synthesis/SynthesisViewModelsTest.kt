@@ -1,10 +1,13 @@
 package io.wit117.thoughtweave.feature.synthesis
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import io.wit117.thoughtweave.domain.model.AgreementStatus
-import io.wit117.thoughtweave.domain.model.AiAvailability
+import io.wit117.thoughtweave.domain.model.AiModelStatus
 import io.wit117.thoughtweave.domain.model.Memo
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
+import io.wit117.thoughtweave.domain.repository.AiModelRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisException
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
 import io.wit117.thoughtweave.domain.usecase.AiAvailabilityUseCase
@@ -56,6 +59,14 @@ private class FakeAgreement : AgreementRepository {
     }
 }
 
+private class FakeAiModel : AiModelRepository {
+    override val status = MutableStateFlow<AiModelStatus>(AiModelStatus.Ready)
+    override fun refresh() = Unit
+    override fun retry() = Unit
+    override fun redownload() = Unit
+    override fun showConfirmation(launcher: ActivityResultLauncher<IntentSenderRequest>) = false
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class SynthesisViewModelsTest {
     private val dispatcher = UnconfinedTestDispatcher()
@@ -71,7 +82,12 @@ class SynthesisViewModelsTest {
     private val agreement = FakeAgreement()
 
     private fun selection(ai: Boolean = true) =
-        SynthesisViewModel(memos, AiAvailabilityUseCase(agreement, FakeSynthesis(ai)), agreement, handle)
+        SynthesisViewModel(memos, availability(FakeSynthesis(ai)), agreement, handle)
+
+    private val model = FakeAiModel()
+
+    private fun availability(synthesis: MemoSynthesisRepository) =
+        AiAvailabilityUseCase(agreement, synthesis, model)
 
     private fun SynthesisViewModel.loaded() = uiState.value as SynthesisUiState.Loaded
 
@@ -104,22 +120,39 @@ class SynthesisViewModelsTest {
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         viewModel.toggleSelection(a.id)
         viewModel.toggleSelection(b.id)
-        assertEquals(AiAvailability.CONSENT_REQUIRED, viewModel.loaded().aiAvailability)
+        assertFalse(viewModel.loaded().aiAvailability.consentGiven)
         assertFalse(viewModel.loaded().canSynthesize)
 
         viewModel.acceptAgreement()
 
-        assertEquals(AiAvailability.READY, viewModel.loaded().aiAvailability)
+        assertTrue(viewModel.loaded().aiAvailability.isReady)
         assertTrue(viewModel.loaded().canSynthesize)
     }
 
     @Test
-    fun availabilityPrefersModelStateOverConsent() {
+    fun modelDownloadAndConsentAreIndependent() {
         agreement.withdraw()
-        assertEquals(
-            AiAvailability.NOT_AVAILABLE,
-            AiAvailabilityUseCase(agreement, FakeSynthesis(isAvailable = false)).current(),
-        )
+        model.status.value = AiModelStatus.Downloading(40)
+
+        val availability = availability(FakeSynthesis()).current()
+
+        assertEquals(AiModelStatus.Downloading(40), availability.model)
+        assertFalse(availability.consentGiven)
+        assertFalse(availability.isModelUsable)
+        assertFalse(availability.isReady)
+    }
+
+    @Test
+    fun modelNotReadyDisablesActionEvenWithConsent() = runTest(dispatcher) {
+        val a = memos.add("a")
+        val b = memos.add("b")
+        model.status.value = AiModelStatus.NotDownloaded
+        val viewModel = selection()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        viewModel.toggleSelection(a.id)
+        viewModel.toggleSelection(b.id)
+
+        assertFalse(viewModel.loaded().canSynthesize)
     }
 
     @Test

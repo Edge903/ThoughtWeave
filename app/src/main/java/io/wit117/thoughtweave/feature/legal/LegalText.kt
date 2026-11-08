@@ -20,6 +20,7 @@ enum class LegalDocument(
             "legal/other_open_source.txt",
             "legal/apache-2.0.txt",
             "legal/gpl-2.0-classpath-exception.txt",
+            "legal/play_core_sdk_terms.txt",
         ),
     ),
     AGREEMENT(R.string.license_agreement, emptyList(), R.string.agreement_asset),

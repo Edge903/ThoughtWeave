@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.wit117.thoughtweave.data.ai.FakeMemoSynthesisRepository
+import io.wit117.thoughtweave.data.ai.delivery.ImportedModelDelivery
+import io.wit117.thoughtweave.data.ai.delivery.ModelDelivery
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
 
 @Module
@@ -12,4 +14,7 @@ import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
 abstract class MemoSynthesisModule {
     @Binds
     abstract fun bindMemoSynthesisRepository(impl: FakeMemoSynthesisRepository): MemoSynthesisRepository
+
+    @Binds
+    abstract fun bindModelDelivery(impl: ImportedModelDelivery): ModelDelivery
 }

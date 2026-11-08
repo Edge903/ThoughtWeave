@@ -25,9 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,12 +45,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
+import io.wit117.thoughtweave.core.ui.component.BannerAction
 import io.wit117.thoughtweave.core.ui.component.ContextFab
+import io.wit117.thoughtweave.core.ui.component.InfoBanner
 import io.wit117.thoughtweave.core.ui.component.EmptyState
 import io.wit117.thoughtweave.core.ui.component.ScrollToTopOnNewFirstItem
-import io.wit117.thoughtweave.core.ui.component.WordAwareLineBreak
 import io.wit117.thoughtweave.domain.model.AiAvailability
+import io.wit117.thoughtweave.domain.model.AiModelStatus
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.feature.aimodel.AiModelBanner
 import io.wit117.thoughtweave.feature.legal.AiConsentDialog
 
 /** S03 – AI 메모 통합, including the POP01 preview sheet. */
@@ -68,6 +69,7 @@ fun SynthesisScreen(
         onToggleSelection = viewModel::toggleSelection,
         onSynthesize = onSynthesize,
         onAcceptAgreement = viewModel::acceptAgreement,
+        modelBanner = { AiModelBanner(it) },
         modifier = modifier,
     )
 }
@@ -79,6 +81,7 @@ fun SynthesisContent(
     onToggleSelection: (Long) -> Unit,
     onSynthesize: (List<Long>) -> Unit,
     onAcceptAgreement: () -> Unit,
+    modelBanner: @Composable (AiAvailability) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var previewMemoId by rememberSaveable { mutableStateOf<Long?>(null) }
@@ -124,14 +127,18 @@ fun SynthesisContent(
             )
 
             is SynthesisUiState.Loaded -> Column(bodyModifier) {
-                when (uiState.aiAvailability) {
-                    AiAvailability.NOT_AVAILABLE -> AiBanner(stringResource(R.string.ai_unavailable_message))
-                    AiAvailability.CONSENT_REQUIRED -> AiBanner(
+                modelBanner(uiState.aiAvailability)
+                if (!uiState.aiAvailability.consentGiven &&
+                    uiState.aiAvailability.model != AiModelStatus.DeviceUnsupported
+                ) {
+                    InfoBanner(
                         message = stringResource(R.string.ai_consent_banner_message),
-                        actionText = stringResource(R.string.action_review_agreement),
-                        onAction = { showConsentDialog = true },
+                        actions = listOf(
+                            BannerAction(stringResource(R.string.action_review_agreement)) {
+                                showConsentDialog = true
+                            },
+                        ),
                     )
-                    AiAvailability.READY -> Unit
                 }
                 if (uiState.memos.isEmpty()) {
                     EmptyState(
@@ -181,30 +188,6 @@ fun SynthesisContent(
             },
             onDismiss = { showConsentDialog = false },
         )
-    }
-}
-
-@Composable
-private fun AiBanner(
-    message: String,
-    actionText: String? = null,
-    onAction: () -> Unit = {},
-) {
-    Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)) {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium.copy(lineBreak = WordAwareLineBreak),
-            )
-            if (actionText != null) {
-                TextButton(onClick = onAction, modifier = Modifier.align(Alignment.End)) {
-                    Text(actionText)
-                }
-            }
-        }
     }
 }
 

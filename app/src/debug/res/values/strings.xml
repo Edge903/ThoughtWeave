@@ -1,0 +1,3 @@
+<resources>
+    <string name="debug_import_model" translatable="false">Import model (debug)</string>
+</resources>
