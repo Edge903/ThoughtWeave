@@ -16,6 +16,7 @@ import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
 import java.time.Clock
+import java.time.ZoneId
 import javax.inject.Singleton
 
 @Module
@@ -42,5 +43,9 @@ abstract class DataModule {
 
         @Provides
         fun provideClock(): Clock = Clock.systemUTC()
+
+        /** Not a singleton: the device time zone can change while the app is running. */
+        @Provides
+        fun provideZoneId(): ZoneId = ZoneId.systemDefault()
     }
 }

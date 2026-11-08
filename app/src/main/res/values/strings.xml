@@ -78,6 +78,29 @@
     <string name="dialog_synthesis_failed_title">The summary could not be created</string>
     <string name="dialog_synthesis_failed_message">Your memos were not changed and your selection is kept.</string>
 
+    <!-- S04 / POP02 / POP03 schedules -->
+    <string name="action_ok">OK</string>
+    <string name="schedule_title_label">Title</string>
+    <string name="schedule_description_label">Description</string>
+    <string name="schedule_all_day">All day</string>
+    <string name="schedule_start_label">Start (optional)</string>
+    <string name="schedule_deadline_label">Deadline</string>
+    <string name="schedule_pick_date">Choose date</string>
+    <string name="schedule_clear_date">Clear %1$s</string>
+    <string name="schedule_all_day_from">All day, from %1$s</string>
+    <string name="schedule_due_at">Due %1$s</string>
+    <string name="schedule_time_range">%1$s to %2$s</string>
+    <string name="schedule_error_title_required">Enter a title.</string>
+    <string name="schedule_error_deadline_required">Choose a deadline.</string>
+    <string name="schedule_error_start_after_deadline">The start cannot be later than the deadline.</string>
+    <string name="schedule_list_error_title">Schedules could not be loaded</string>
+    <string name="schedule_save_failed">The schedule could not be saved.</string>
+    <string name="schedule_delete_failed">The schedule could not be deleted.</string>
+    <string name="schedule_unavailable_title">This schedule is not available</string>
+    <string name="schedule_unavailable_message">It may have been deleted.</string>
+    <string name="dialog_delete_schedule_title">Delete this schedule?</string>
+    <string name="dialog_delete_schedule_message">This cannot be undone.</string>
+
     <!-- S05 licenses -->
     <string name="title_licenses">Licenses and notices</string>
     <string name="license_gemma_terms">Gemma Terms of Use</string>

@@ -16,6 +16,9 @@ import io.wit117.thoughtweave.feature.memo.editor.MemoEditorScreen
 import io.wit117.thoughtweave.feature.memo.editor.MemoEditorViewModel
 import io.wit117.thoughtweave.feature.memo.editor.MemoUnavailableScreen
 import io.wit117.thoughtweave.feature.memo.list.MemoListScreen
+import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorInit
+import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorScreen
+import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorViewModel
 import io.wit117.thoughtweave.feature.schedule.list.ScheduleListScreen
 import io.wit117.thoughtweave.feature.synthesis.SynthesisResultScreen
 import io.wit117.thoughtweave.feature.synthesis.SynthesisResultViewModel
@@ -67,6 +70,11 @@ fun ThoughtWeaveNavHost(
                 onAddSchedule = {
                     navController.navigate(ScheduleEditorRoute(mode = ScheduleEditorMode.MANUAL))
                 },
+                onOpenSchedule = {
+                    navController.navigate(
+                        ScheduleEditorRoute(mode = ScheduleEditorMode.EXISTING, scheduleId = it),
+                    )
+                },
             )
         }
 
@@ -92,18 +100,27 @@ fun ThoughtWeaveNavHost(
             LicensesScreen(onBack = { navController.popBackStack() })
         }
 
-        // Phase 0 scaffolding: replaced by POP02/POP03 (Phase 4) and AI extraction (Phase 5c).
         composable<ScheduleEditorRoute> { entry ->
             val route = entry.toRoute<ScheduleEditorRoute>()
-            val titleRes = if (route.mode == ScheduleEditorMode.EXISTING) {
-                R.string.title_schedule
-            } else {
-                R.string.title_new_schedule
+            val init = when (route.mode) {
+                ScheduleEditorMode.MANUAL -> ScheduleEditorInit.Manual
+                ScheduleEditorMode.EXISTING -> ScheduleEditorInit.Existing(checkNotNull(route.scheduleId))
+                // Phase 0 scaffolding: replaced by AI extraction in Phase 5c.
+                ScheduleEditorMode.AI_EXTRACTED -> null
             }
-            NotImplementedScreen(
-                title = stringResource(titleRes),
-                onBack = { navController.popBackStack() },
-            )
+            if (init == null) {
+                NotImplementedScreen(
+                    title = stringResource(R.string.title_new_schedule),
+                    onBack = { navController.popBackStack() },
+                )
+            } else {
+                ScheduleEditorScreen(
+                    viewModel = hiltViewModel<ScheduleEditorViewModel, ScheduleEditorViewModel.Factory>(
+                        creationCallback = { it.create(init) },
+                    ),
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
     }
 }
