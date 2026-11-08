@@ -19,6 +19,10 @@ data object ScheduleListRoute
 @Serializable
 data class MemoEditorRoute(val memoId: Long? = null)
 
+/** S02-C – AI 합성 결과 편집. */
+@Serializable
+data class SynthesisResultRoute(val sourceIds: List<Long>)
+
 /** S05 – 라이선스 및 고지. */
 @Serializable
 data object LicensesRoute

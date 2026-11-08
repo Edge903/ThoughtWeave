@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -60,6 +61,8 @@ fun MemoEditorContent(
     actions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     reserveFabSpace: Boolean = false,
+    isReadOnly: Boolean = false,
+    showProgress: Boolean = false,
 ) {
     var showDiscardDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -101,10 +104,12 @@ fun MemoEditorContent(
                     .imePadding()
                     .fillMaxSize(),
             ) {
+                if (showProgress) LinearProgressIndicator(Modifier.fillMaxWidth())
                 TextField(
                     value = draft.title,
                     onValueChange = onTitleChange,
                     modifier = Modifier.fillMaxWidth(),
+                    readOnly = isReadOnly,
                     textStyle = MaterialTheme.typography.titleLarge,
                     placeholder = { Text(stringResource(R.string.memo_title_hint)) },
                     singleLine = true,
@@ -118,6 +123,7 @@ fun MemoEditorContent(
                         .fillMaxWidth()
                         .weight(1f)
                         .padding(bottom = if (reserveFabSpace) 88.dp else 0.dp),
+                    readOnly = isReadOnly,
                     placeholder = { Text(stringResource(R.string.memo_content_hint)) },
                     colors = borderlessFieldColors(),
                 )

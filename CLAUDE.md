@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 4, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
+(revision 5, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -76,6 +76,10 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   all-day supported. Saving only on an explicit 저장 press. AI never invents timestamps; it fails instead.
 - Memo title optional; empty title is stored as "" and displayed as "무제" / "Untitled".
 - Pinning does not change `updated_at`, so it never reorders memos within their group.
+
+## AI scaffolding until Phase 5c
+- `MemoSynthesisRepository` is bound per build type: `src/debug` has a fake whose output is labelled
+  `[DEBUG FAKE: not AI-generated]`; `src/release` reports AI as unavailable. Replace both in Phase 5c.
 
 ## Legal texts (S05)
 - `assets/legal` holds verbatim copies: Gemma Terms and Prohibited Use Policy from ai.google.dev (2026-11-08),

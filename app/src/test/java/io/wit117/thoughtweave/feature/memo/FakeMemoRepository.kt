@@ -13,6 +13,7 @@ internal class FakeMemoRepository : MemoRepository {
     val memos = MutableStateFlow<List<Memo>>(emptyList())
     var failWrites = false
     var failObserve = false
+    var lastSynthesisSources: List<Long>? = null
     private var nextId = 1L
 
     fun add(title: String, content: String = ""): Memo {
@@ -70,5 +71,9 @@ internal class FakeMemoRepository : MemoRepository {
         title: String,
         content: String,
         sourceMemoIds: List<Long>,
-    ): Long = error("Not used by these tests")
+    ): Long {
+        checkWrite()
+        lastSynthesisSources = sourceMemoIds
+        return add(title, content).id
+    }
 }

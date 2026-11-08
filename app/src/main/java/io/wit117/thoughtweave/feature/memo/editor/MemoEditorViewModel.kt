@@ -44,8 +44,10 @@ sealed interface MemoEditorEffect {
 class MemoEditorViewModel @AssistedInject constructor(
     @Assisted private val memoId: Long?,
     private val memoRepository: MemoRepository,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val draftStore = MemoDraftStore(savedStateHandle)
 
     @AssistedFactory
     interface Factory {
@@ -54,7 +56,7 @@ class MemoEditorViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(
         MemoEditorUiState(
-            draft = restoredDraft() ?: MemoDraft(),
+            draft = draftStore.restore() ?: MemoDraft(),
             isExisting = memoId != null,
             isLoading = memoId != null,
         ),
@@ -81,7 +83,7 @@ class MemoEditorViewModel @AssistedInject constructor(
             }
             val stored = MemoDraft(memo.title, memo.content)
             _uiState.update {
-                it.copy(draft = restoredDraft() ?: stored, original = stored, isLoading = false)
+                it.copy(draft = draftStore.restore() ?: stored, original = stored, isLoading = false)
             }
         }
     }
@@ -92,7 +94,7 @@ class MemoEditorViewModel @AssistedInject constructor(
 
     private fun updateDraft(transform: (MemoDraft) -> MemoDraft) {
         _uiState.update { it.copy(draft = transform(it.draft)) }
-        persistDraft(_uiState.value.draft)
+        draftStore.persist(_uiState.value.draft)
     }
 
     fun save() = save(openExtractionAfterwards = false)
@@ -149,7 +151,7 @@ class MemoEditorViewModel @AssistedInject constructor(
             )
         }
         val current = _uiState.value
-        if (current.isDirty) persistDraft(current.draft) else clearPersistedDraft()
+        if (current.isDirty) draftStore.persist(current.draft) else draftStore.clear()
     }
 
     fun delete() {
@@ -167,30 +169,4 @@ class MemoEditorViewModel @AssistedInject constructor(
         }
     }
 
-    private fun restoredDraft(): MemoDraft? {
-        val title = savedStateHandle.get<String>(KEY_TITLE) ?: return null
-        val content = savedStateHandle.get<String>(KEY_CONTENT) ?: return null
-        return MemoDraft(title, content)
-    }
-
-    /** Saved state crosses Binder, so very long drafts are left out instead of risking a crash. */
-    private fun persistDraft(draft: MemoDraft) {
-        if (draft.title.length + draft.content.length > MAX_PERSISTED_DRAFT_CHARS) {
-            clearPersistedDraft()
-        } else {
-            savedStateHandle[KEY_TITLE] = draft.title
-            savedStateHandle[KEY_CONTENT] = draft.content
-        }
-    }
-
-    private fun clearPersistedDraft() {
-        savedStateHandle.remove<String>(KEY_TITLE)
-        savedStateHandle.remove<String>(KEY_CONTENT)
-    }
-
-    private companion object {
-        const val KEY_TITLE = "draft_title"
-        const val KEY_CONTENT = "draft_content"
-        const val MAX_PERSISTED_DRAFT_CHARS = 50_000
-    }
 }

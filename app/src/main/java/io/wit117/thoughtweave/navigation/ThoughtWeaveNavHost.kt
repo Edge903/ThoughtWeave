@@ -1,6 +1,7 @@
 package io.wit117.thoughtweave.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -16,7 +17,10 @@ import io.wit117.thoughtweave.feature.memo.editor.MemoEditorViewModel
 import io.wit117.thoughtweave.feature.memo.editor.MemoUnavailableScreen
 import io.wit117.thoughtweave.feature.memo.list.MemoListScreen
 import io.wit117.thoughtweave.feature.schedule.list.ScheduleListScreen
+import io.wit117.thoughtweave.feature.synthesis.SynthesisResultScreen
+import io.wit117.thoughtweave.feature.synthesis.SynthesisResultViewModel
 import io.wit117.thoughtweave.feature.synthesis.SynthesisScreen
+import io.wit117.thoughtweave.feature.synthesis.SynthesisViewModel
 
 @Composable
 fun ThoughtWeaveNavHost(
@@ -36,8 +40,27 @@ fun ThoughtWeaveNavHost(
             )
         }
         composable<SynthesisRoute> {
-            // Selection state arrives in Phase 3; with nothing selected the FAB stays disabled.
-            SynthesisScreen(selectedCount = 0, onSynthesize = {})
+            SynthesisScreen(
+                onSynthesize = { navController.navigate(SynthesisResultRoute(sourceIds = it)) },
+            )
+        }
+        composable<SynthesisResultRoute> { entry ->
+            val sourceIds = entry.toRoute<SynthesisResultRoute>().sourceIds
+            // S02-C is only reachable from S03, so S03's entry is always below it on the stack.
+            val synthesisEntry = remember(entry) { navController.getBackStackEntry<SynthesisRoute>() }
+            val synthesisViewModel = hiltViewModel<SynthesisViewModel>(synthesisEntry)
+            SynthesisResultScreen(
+                viewModel = hiltViewModel<SynthesisResultViewModel, SynthesisResultViewModel.Factory>(
+                    creationCallback = { it.create(sourceIds) },
+                ),
+                onBack = { navController.popBackStack() },
+                onSaved = {
+                    synthesisViewModel.clearSelection()
+                    // Pop first so S02-C is not saved into the S03 tab's restored back stack.
+                    navController.popBackStack()
+                    navController.navigateToTopLevel(TopLevelDestination.MEMOS)
+                },
+            )
         }
         composable<ScheduleListRoute> {
             ScheduleListScreen(

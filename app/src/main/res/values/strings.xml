@@ -26,7 +26,7 @@
     <string name="empty_memos_title">No memos yet</string>
     <string name="empty_memos_message">Tap New memo to write your first one.</string>
     <string name="empty_ai_merge_title">Nothing to merge yet</string>
-    <string name="empty_ai_merge_message">Select two or more memos to summarize them into a new memo.</string>
+    <string name="empty_ai_merge_message">Write at least two memos, then select them here to summarize them into a new memo.</string>
     <string name="empty_schedules_title">No schedules yet</string>
     <string name="empty_schedules_message">Tap Add schedule to create one.</string>
 
@@ -64,6 +64,19 @@
     <string name="dialog_delete_memo_message">This cannot be undone. Schedules created from this memo are kept.</string>
     <string name="dialog_save_first_title">Save this memo first?</string>
     <string name="dialog_save_first_message">Schedules are extracted from the saved memo.</string>
+
+    <!-- S03 / POP01 / S02-C AI merge -->
+    <string name="title_ai_result">AI summary</string>
+    <plurals name="ai_merge_selected_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="ai_unavailable_message">AI summaries are not available in this version yet.</string>
+    <string name="action_preview">Preview memo</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_close">Close</string>
+    <string name="dialog_synthesis_failed_title">The summary could not be created</string>
+    <string name="dialog_synthesis_failed_message">Your memos were not changed and your selection is kept.</string>
 
     <!-- S05 licenses -->
     <string name="title_licenses">Licenses and notices</string>

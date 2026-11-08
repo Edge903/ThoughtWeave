@@ -19,7 +19,7 @@
     <string name="empty_memos_title">메모가 없습니다</string>
     <string name="empty_memos_message">새 메모 작성을 눌러 첫 메모를 작성하세요.</string>
     <string name="empty_ai_merge_title">통합할 메모가 없습니다</string>
-    <string name="empty_ai_merge_message">메모를 두 개 이상 선택하면 하나의 새 메모로 요약할 수 있습니다.</string>
+    <string name="empty_ai_merge_message">메모를 두 개 이상 작성한 후 여기에서 선택하면 하나의 새 메모로 요약할 수 있습니다.</string>
     <string name="empty_schedules_title">일정이 없습니다</string>
     <string name="empty_schedules_message">일정 추가를 눌러 일정을 만드세요.</string>
 
@@ -56,6 +56,17 @@
     <string name="dialog_delete_memo_message">삭제하면 되돌릴 수 없습니다. 이 메모로 만든 일정은 유지됩니다.</string>
     <string name="dialog_save_first_title">메모를 먼저 저장할까요?</string>
     <string name="dialog_save_first_message">일정은 저장된 메모에서 추출합니다.</string>
+
+    <string name="title_ai_result">AI 요약</string>
+    <plurals name="ai_merge_selected_count">
+        <item quantity="other">%d개 선택됨</item>
+    </plurals>
+    <string name="ai_unavailable_message">이 버전에서는 아직 AI 요약을 사용할 수 없습니다.</string>
+    <string name="action_preview">메모 미리보기</string>
+    <string name="action_retry">다시 시도</string>
+    <string name="action_close">닫기</string>
+    <string name="dialog_synthesis_failed_title">요약을 만들지 못했습니다</string>
+    <string name="dialog_synthesis_failed_message">메모는 변경되지 않았으며 선택 항목은 유지됩니다.</string>
 
     <string name="title_licenses">라이선스 및 고지</string>
     <string name="license_gemma_terms">Gemma 이용 약관</string>
