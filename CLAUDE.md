@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 3, 2026-11-04). This file is the in-repo source of truth for conventions and decisions.
+(revision 4, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -33,7 +33,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Room 2.8.5 (`minCompileSdk=34`, verified from the AAR 2026-11-08) with the Room Gradle plugin; schemas
   are committed under `app/schemas`. `room-ktx` is not used: its 2.8.5 jar is empty and its APIs are in
   `room-runtime`. kotlinx-coroutines-android 1.11.0 is declared directly because repositories expose `Flow`.
-- Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation and core-ktx are
+- Lifecycle 2.10.0 and `hilt-lifecycle-viewmodel-compose` 1.3.0 (both `minCompileSdk=35`; 2.11.0 and 1.4.0
+  need 37, verified from the AARs 2026-11-08). kotlinx-coroutines-test 1.11.0 is for ViewModel unit tests.
+- Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation, Lifecycle, Hilt ViewModel Compose and core-ktx are
   expected (pinned on purpose, see above).
 
 ## Architecture
@@ -74,6 +76,12 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   all-day supported. Saving only on an explicit 저장 press. AI never invents timestamps; it fails instead.
 - Memo title optional; empty title is stored as "" and displayed as "무제" / "Untitled".
 - Pinning does not change `updated_at`, so it never reorders memos within their group.
+
+## Legal texts (S05)
+- `assets/legal` holds verbatim copies: Gemma Terms and Prohibited Use Policy from ai.google.dev (2026-11-08),
+  Apache-2.0, and GPLv2 + Classpath Exception (`desugar_jdk_libs` ships under it, per its POM).
+- `other_open_source.txt` lists only what the app ships today. Add Gson, Play Core SDK terms and LiteRT-LM
+  third-party notices when those dependencies arrive (Phase 5b/5c). Agreement and consent withdrawal: Phase 5a.
 
 ## On-device AI (Phase 5)
 - Model `gemma3-1b-it-int4.litertlm`, 584,417,280 bytes,

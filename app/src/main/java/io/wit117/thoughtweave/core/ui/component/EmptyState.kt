@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
  * Phrase-based line breaking keeps Korean words intact when wrapping (API 33+; ignored below).
  * Without it, Korean text may break in the middle of a word.
  */
-private val WordAwareLineBreak = LineBreak.Paragraph.copy(wordBreak = LineBreak.WordBreak.Phrase)
+internal val WordAwareLineBreak = LineBreak.Paragraph.copy(wordBreak = LineBreak.WordBreak.Phrase)
 
 /** Centered icon + title + message, used for empty lists and not-yet-available screens. */
 @Composable

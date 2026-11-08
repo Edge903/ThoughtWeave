@@ -30,6 +30,51 @@
     <string name="empty_schedules_title">No schedules yet</string>
     <string name="empty_schedules_message">Tap Add schedule to create one.</string>
 
+    <!-- S01 / S02 memos -->
+    <string name="title_memo">Memo</string>
+    <string name="memo_untitled">Untitled</string>
+    <string name="memo_title_hint">Title</string>
+    <string name="memo_content_hint">Write your memo</string>
+    <string name="memo_search_hint">Search memos</string>
+    <string name="action_search">Search</string>
+    <string name="action_close_search">Close search</string>
+    <string name="action_more">More options</string>
+    <string name="action_pin">Pin memo</string>
+    <string name="action_unpin">Unpin memo</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_discard">Discard</string>
+    <string name="action_keep_editing">Keep editing</string>
+    <string name="action_save_and_continue">Save and continue</string>
+    <string name="fab_extract_schedule">Extract schedule</string>
+    <string name="empty_search_title">No matching memos</string>
+    <string name="empty_search_message">Try a different word.</string>
+    <string name="memo_list_error_title">Memos could not be loaded</string>
+    <string name="memo_list_error_message">Close the app and open it again.</string>
+    <string name="memo_pin_failed">The pin could not be changed.</string>
+    <string name="memo_saved">Saved</string>
+    <string name="memo_save_failed">The memo could not be saved.</string>
+    <string name="memo_delete_failed">The memo could not be deleted.</string>
+    <string name="memo_unavailable_title">This memo is not available</string>
+    <string name="memo_unavailable_message">It may have been deleted.</string>
+    <string name="dialog_discard_title">Discard changes?</string>
+    <string name="dialog_discard_message">Your unsaved changes will be lost.</string>
+    <string name="dialog_delete_memo_title">Delete this memo?</string>
+    <string name="dialog_delete_memo_message">This cannot be undone. Schedules created from this memo are kept.</string>
+    <string name="dialog_save_first_title">Save this memo first?</string>
+    <string name="dialog_save_first_message">Schedules are extracted from the saved memo.</string>
+
+    <!-- S05 licenses -->
+    <string name="title_licenses">Licenses and notices</string>
+    <string name="license_gemma_terms">Gemma Terms of Use</string>
+    <string name="license_gemma_policy">Gemma Prohibited Use Policy</string>
+    <string name="license_gemma_notice">Gemma notice</string>
+    <string name="license_litert_lm">LiteRT-LM license</string>
+    <string name="license_other_open_source">Other open source</string>
+    <string name="license_load_failed_title">This document could not be opened</string>
+    <string name="license_load_failed_message">Close the app and open it again.</string>
+
     <!-- Phase 0 scaffolding: destinations exist for navigation but have no content yet. -->
     <string name="not_implemented_title">Not available yet</string>
     <string name="not_implemented_message">This screen is part of a later development phase.</string>

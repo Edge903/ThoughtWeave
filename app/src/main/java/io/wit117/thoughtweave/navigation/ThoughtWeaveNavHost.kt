@@ -3,12 +3,17 @@ package io.wit117.thoughtweave.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.NotImplementedScreen
+import io.wit117.thoughtweave.feature.legal.LicensesScreen
+import io.wit117.thoughtweave.feature.memo.editor.MemoEditorScreen
+import io.wit117.thoughtweave.feature.memo.editor.MemoEditorViewModel
+import io.wit117.thoughtweave.feature.memo.editor.MemoUnavailableScreen
 import io.wit117.thoughtweave.feature.memo.list.MemoListScreen
 import io.wit117.thoughtweave.feature.schedule.list.ScheduleListScreen
 import io.wit117.thoughtweave.feature.synthesis.SynthesisScreen
@@ -26,6 +31,8 @@ fun ThoughtWeaveNavHost(
         composable<MemoListRoute> {
             MemoListScreen(
                 onCreateMemo = { navController.navigate(MemoEditorRoute(memoId = null)) },
+                onOpenMemo = { navController.navigate(MemoEditorRoute(memoId = it)) },
+                onOpenLicenses = { navController.navigate(LicensesRoute) },
             )
         }
         composable<SynthesisRoute> {
@@ -40,13 +47,29 @@ fun ThoughtWeaveNavHost(
             )
         }
 
-        // Phase 0 scaffolding: replaced by S02-A/B (Phase 2) and POP02/POP03 (Phase 4).
-        composable<MemoEditorRoute> {
-            NotImplementedScreen(
-                title = stringResource(R.string.title_new_memo),
+        composable<MemoEditorRoute> { entry ->
+            val memoId = entry.toRoute<MemoEditorRoute>().memoId
+            MemoEditorScreen(
+                viewModel = hiltViewModel<MemoEditorViewModel, MemoEditorViewModel.Factory>(
+                    creationCallback = { it.create(memoId) },
+                ),
+                memoId = memoId,
                 onBack = { navController.popBackStack() },
+                onOpenExtraction = { id ->
+                    navController.navigate(
+                        ScheduleEditorRoute(mode = ScheduleEditorMode.AI_EXTRACTED, memoId = id),
+                    )
+                },
+                onUnavailable = {
+                    MemoUnavailableScreen(onBack = { navController.popBackStack() })
+                },
             )
         }
+        composable<LicensesRoute> {
+            LicensesScreen(onBack = { navController.popBackStack() })
+        }
+
+        // Phase 0 scaffolding: replaced by POP02/POP03 (Phase 4) and AI extraction (Phase 5c).
         composable<ScheduleEditorRoute> { entry ->
             val route = entry.toRoute<ScheduleEditorRoute>()
             val titleRes = if (route.mode == ScheduleEditorMode.EXISTING) {

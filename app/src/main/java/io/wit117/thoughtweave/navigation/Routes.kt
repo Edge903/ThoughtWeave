@@ -19,6 +19,10 @@ data object ScheduleListRoute
 @Serializable
 data class MemoEditorRoute(val memoId: Long? = null)
 
+/** S05 – 라이선스 및 고지. */
+@Serializable
+data object LicensesRoute
+
 /** How the shared schedule editor is initialized. Kept so its serializer survives minification. */
 @Keep
 @Serializable

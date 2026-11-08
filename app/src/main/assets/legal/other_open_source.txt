@@ -1,0 +1,17 @@
+This app includes the following open source software.
+
+- AndroidX (Activity, Compose, Core, Hilt, Lifecycle, Navigation, Room): Apache License 2.0. https://developer.android.com/jetpack/androidx
+
+- Kotlin standard library: Apache License 2.0. https://github.com/JetBrains/kotlin
+
+- kotlinx.coroutines: Apache License 2.0. https://github.com/Kotlin/kotlinx.coroutines
+
+- kotlinx.serialization: Apache License 2.0. https://github.com/Kotlin/kotlinx.serialization
+
+- Dagger and Hilt: Apache License 2.0. https://github.com/google/dagger
+
+- Material Symbols icons: Apache License 2.0. https://github.com/google/material-design-icons
+
+- desugar_jdk_libs: GNU General Public License, version 2, with the Classpath Exception. https://github.com/google/desugar_jdk_libs
+
+The full text of each license follows.
