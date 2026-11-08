@@ -2,7 +2,6 @@ package io.wit117.thoughtweave.feature.schedule.editor
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -12,7 +11,9 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +42,7 @@ import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
 import io.wit117.thoughtweave.core.ui.component.DateTimeField
 import io.wit117.thoughtweave.core.ui.component.UnavailableScreen
+import io.wit117.thoughtweave.core.ui.component.WordAwareLineBreak
 import io.wit117.thoughtweave.domain.usecase.ScheduleValidationError
 import kotlinx.coroutines.launch
 
@@ -50,12 +52,14 @@ import kotlinx.coroutines.launch
 fun ScheduleEditorScreen(
     viewModel: ScheduleEditorViewModel,
     onBack: () -> Unit,
+    onFinished: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showDiscardDialog by rememberSaveable { mutableStateOf(false) }
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    var showExtractionFailed by rememberSaveable { mutableStateOf(false) }
 
     val saveFailedMessage = stringResource(R.string.schedule_save_failed)
     val deleteFailedMessage = stringResource(R.string.schedule_delete_failed)
@@ -63,9 +67,10 @@ fun ScheduleEditorScreen(
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                ScheduleEditorEffect.Close -> onBack()
+                ScheduleEditorEffect.Close -> onFinished()
                 ScheduleEditorEffect.SaveFailed -> launch { snackbarHostState.showSnackbar(saveFailedMessage) }
                 ScheduleEditorEffect.DeleteFailed -> launch { snackbarHostState.showSnackbar(deleteFailedMessage) }
+                ScheduleEditorEffect.ExtractionFailed -> showExtractionFailed = true
             }
         }
     }
@@ -115,8 +120,13 @@ fun ScheduleEditorScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(Modifier.padding(innerPadding).fillMaxSize(), Alignment.Center) {
+            Column(
+                modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 CircularProgressIndicator()
+                if (state.isExtracting) Text(stringResource(R.string.schedule_extracting))
             }
         } else {
             ScheduleForm(
@@ -128,6 +138,22 @@ fun ScheduleEditorScreen(
                     .imePadding(),
             )
         }
+    }
+
+    if (showExtractionFailed) {
+        AlertDialog(
+            onDismissRequest = onBack,
+            title = { Text(stringResource(R.string.dialog_extraction_failed_title)) },
+            text = {
+                Text(
+                    text = stringResource(R.string.dialog_extraction_failed_message),
+                    style = MaterialTheme.typography.bodyMedium.copy(lineBreak = WordAwareLineBreak),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = onBack) { Text(stringResource(R.string.action_ok)) }
+            },
+        )
     }
 
     if (showDiscardDialog) {

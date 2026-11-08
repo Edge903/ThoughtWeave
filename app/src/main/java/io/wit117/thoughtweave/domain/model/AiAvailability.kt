@@ -12,8 +12,7 @@ enum class AgreementStatus { NOT_ACCEPTED, ACCEPTED }
 data class AiAvailability(
     val model: AiModelStatus,
     val consentGiven: Boolean,
-    val inferenceAvailable: Boolean,
 ) {
-    val isModelUsable: Boolean get() = model == AiModelStatus.Ready && inferenceAvailable
+    val isModelUsable: Boolean get() = model == AiModelStatus.Ready
     val isReady: Boolean get() = isModelUsable && consentGiven
 }

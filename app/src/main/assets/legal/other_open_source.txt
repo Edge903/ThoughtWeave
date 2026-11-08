@@ -10,6 +10,8 @@ This app includes the following open source software.
 
 - Dagger and Hilt: Apache License 2.0. https://github.com/google/dagger
 
+- Gson: Apache License 2.0. https://github.com/google/gson
+
 - Material Symbols icons: Apache License 2.0. https://github.com/google/material-design-icons
 
 - desugar_jdk_libs: GNU General Public License, version 2, with the Classpath Exception. https://github.com/google/desugar_jdk_libs

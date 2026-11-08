@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 8, 2026-11-09). This file is the in-repo source of truth for conventions and decisions.
+(revision 9, 2026-11-09). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -35,7 +35,7 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   `room-runtime`. kotlinx-coroutines-android 1.11.0 is declared directly because repositories expose `Flow`.
 - Lifecycle 2.10.0 and `hilt-lifecycle-viewmodel-compose` 1.3.0 (both `minCompileSdk=35`; 2.11.0 and 1.4.0
   need 37, verified from the AARs 2026-11-08). kotlinx-coroutines-test 1.11.0 is for ViewModel unit tests.
-- Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation, Lifecycle, Hilt ViewModel Compose and core-ktx are
+- Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation, Lifecycle, Hilt ViewModel Compose, LiteRT-LM and core-ktx are
   expected (pinned on purpose, see above).
 
 ## Architecture
@@ -77,9 +77,15 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Memo title optional; empty title is stored as "" and displayed as "무제" / "Untitled".
 - Pinning does not change `updated_at`, so it never reorders memos within their group.
 
-## AI scaffolding until Phase 5c
-- `MemoSynthesisRepository` is bound per build type: `src/debug` has a fake whose output is labelled
-  `[DEBUG FAKE: not AI-generated]`; `src/release` reports AI as unavailable. Replace both in Phase 5c.
+## Inference
+- `GemmaInferenceEngine` loads on first use (GPU, then CPU; CPU only on x86 emulators), runs one request at a
+  time and frees the engine after 60 s idle. Instrumented tests script replies through the debug-only
+  `InferenceEngineTestOverride`; it is never set in the running app.
+- Schedule extraction: `readScheduleDates` reads dates and times from the memo in code; the model only writes
+  the title. Tested on the real model (2026-11-09): Gemma 3 1B returned null or garbage dates from JSON prompts.
+  A memo with no readable date never reaches the model.
+- Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
+  prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 
 ## Consent (POP04)
 - `AiAvailability` (`AiAvailabilityUseCase`) gates AI actions. S03: FAB stays disabled until READY; its banner
@@ -92,9 +98,8 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 ## Legal texts (S05)
 - `assets/legal` holds verbatim copies: Gemma Terms and Prohibited Use Policy from ai.google.dev (2026-11-08),
   Apache-2.0, and GPLv2 + Classpath Exception (`desugar_jdk_libs` ships under it, per its POM).
-- `other_open_source.txt` lists only what the app ships today. Add Gson and LiteRT-LM
-  third-party notices when those dependencies arrive (Phase 5c). Play Core SDK terms come from the
-  `ai-delivery` AAR's LICENSE file.
+- `other_open_source.txt` lists only what the app ships today. Play Core SDK terms come from the `ai-delivery`
+  AAR's LICENSE file; LiteRT-LM's license and third-party notices come from its AAR. Refresh them on upgrades.
 
 ## On-device AI (Phase 5)
 - Model `gemma3-1b-it-int4.litertlm`, 584,417,280 bytes,

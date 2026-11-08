@@ -3,14 +3,11 @@ package io.wit117.thoughtweave.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.wit117.thoughtweave.R
-import io.wit117.thoughtweave.core.ui.component.NotImplementedScreen
 import io.wit117.thoughtweave.feature.legal.LicensesScreen
 import io.wit117.thoughtweave.feature.memo.editor.MemoEditorScreen
 import io.wit117.thoughtweave.feature.memo.editor.MemoEditorViewModel
@@ -105,22 +102,23 @@ fun ThoughtWeaveNavHost(
             val init = when (route.mode) {
                 ScheduleEditorMode.MANUAL -> ScheduleEditorInit.Manual
                 ScheduleEditorMode.EXISTING -> ScheduleEditorInit.Existing(checkNotNull(route.scheduleId))
-                // Phase 0 scaffolding: replaced by AI extraction in Phase 5c.
-                ScheduleEditorMode.AI_EXTRACTED -> null
+                ScheduleEditorMode.AI_EXTRACTED -> ScheduleEditorInit.AiExtracted(checkNotNull(route.memoId))
             }
-            if (init == null) {
-                NotImplementedScreen(
-                    title = stringResource(R.string.title_new_schedule),
-                    onBack = { navController.popBackStack() },
-                )
-            } else {
-                ScheduleEditorScreen(
-                    viewModel = hiltViewModel<ScheduleEditorViewModel, ScheduleEditorViewModel.Factory>(
-                        creationCallback = { it.create(init) },
-                    ),
-                    onBack = { navController.popBackStack() },
-                )
-            }
+            ScheduleEditorScreen(
+                viewModel = hiltViewModel<ScheduleEditorViewModel, ScheduleEditorViewModel.Factory>(
+                    creationCallback = { it.create(init) },
+                ),
+                onBack = { navController.popBackStack() },
+                onFinished = {
+                    if (route.mode == ScheduleEditorMode.AI_EXTRACTED) {
+                        // Clear S02-B first so it is not saved into the memo tab's restored stack.
+                        navController.popBackStack<MemoListRoute>(inclusive = false)
+                        navController.navigateToTopLevel(TopLevelDestination.SCHEDULES)
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
+            )
         }
     }
 }

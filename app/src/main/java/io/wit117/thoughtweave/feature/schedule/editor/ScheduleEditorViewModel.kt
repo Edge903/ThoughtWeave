@@ -8,7 +8,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.wit117.thoughtweave.domain.model.ExtractedSchedule
+import io.wit117.thoughtweave.domain.repository.ScheduleExtractionException
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
+import io.wit117.thoughtweave.domain.usecase.ExtractScheduleUseCase
 import io.wit117.thoughtweave.domain.usecase.SaveScheduleResult
 import io.wit117.thoughtweave.domain.usecase.SaveScheduleUseCase
 import io.wit117.thoughtweave.domain.usecase.ScheduleValidation
@@ -26,10 +29,23 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** How the shared editor starts. Phase 5c adds the AI-extracted case. */
+/** How the shared editor starts. */
 sealed interface ScheduleEditorInit {
     data object Manual : ScheduleEditorInit
+    data class AiExtracted(val memoId: Long) : ScheduleEditorInit
     data class Existing(val scheduleId: Long) : ScheduleEditorInit
+}
+
+private fun ExtractedSchedule.toFields(): ScheduleFields {
+    val defaults = ScheduleFields()
+    return ScheduleFields(
+        title = title,
+        isAllDay = deadlineTime == null,
+        startDate = startDate,
+        startTime = startTime ?: defaults.startTime,
+        endDate = deadlineDate,
+        endTime = deadlineTime ?: defaults.endTime,
+    )
 }
 
 data class ScheduleEditorUiState(
@@ -37,6 +53,7 @@ data class ScheduleEditorUiState(
     val original: ScheduleFields = ScheduleFields(),
     val isExisting: Boolean = false,
     val isLoading: Boolean = false,
+    val isExtracting: Boolean = false,
     val isBusy: Boolean = false,
     val isUnavailable: Boolean = false,
     /** Stays empty until the first save attempt, then follows each edit. */
@@ -50,15 +67,17 @@ sealed interface ScheduleEditorEffect {
     data object Close : ScheduleEditorEffect
     data object SaveFailed : ScheduleEditorEffect
     data object DeleteFailed : ScheduleEditorEffect
+    data object ExtractionFailed : ScheduleEditorEffect
 }
 
-/** POP02 (`Existing`) and POP03 manual mode (`Manual`). */
+/** POP02 (`Existing`) and POP03 (`Manual`, `AiExtracted`). */
 @HiltViewModel(assistedFactory = ScheduleEditorViewModel.Factory::class)
 class ScheduleEditorViewModel @AssistedInject constructor(
     @Assisted init: ScheduleEditorInit,
     private val repository: ScheduleRepository,
     private val saveSchedule: SaveScheduleUseCase,
     private val validate: ValidateScheduleDraftUseCase,
+    private val extractSchedule: ExtractScheduleUseCase,
     private val zone: ZoneId,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -70,14 +89,19 @@ class ScheduleEditorViewModel @AssistedInject constructor(
 
     private val store = ScheduleFieldsStore(savedStateHandle)
     private val scheduleId = (init as? ScheduleEditorInit.Existing)?.scheduleId
-    private var memoId: Long? = null
+    private val extractionMemoId = (init as? ScheduleEditorInit.AiExtracted)?.memoId
+    private var memoId: Long? = extractionMemoId
     private var hasAttemptedSave = false
+
+    /** Restored fields mean extraction already ran before the process died. */
+    private val needsExtraction = extractionMemoId != null && store.restore() == null
 
     private val _uiState = MutableStateFlow(
         ScheduleEditorUiState(
             fields = store.restore() ?: ScheduleFields(),
             isExisting = scheduleId != null,
-            isLoading = scheduleId != null,
+            isLoading = scheduleId != null || needsExtraction,
+            isExtracting = needsExtraction,
         ),
     )
     val uiState: StateFlow<ScheduleEditorUiState> = _uiState.asStateFlow()
@@ -87,6 +111,21 @@ class ScheduleEditorViewModel @AssistedInject constructor(
 
     init {
         scheduleId?.let(::load)
+        if (needsExtraction) extractionMemoId?.let(::extract)
+    }
+
+    private fun extract(id: Long) {
+        viewModelScope.launch {
+            try {
+                val fields = extractSchedule(id).toFields()
+                _uiState.update { it.copy(fields = fields, isLoading = false, isExtracting = false) }
+                store.persist(fields)
+            } catch (_: ScheduleExtractionException) {
+                effectChannel.send(ScheduleEditorEffect.ExtractionFailed)
+            } catch (_: SQLiteException) {
+                effectChannel.send(ScheduleEditorEffect.ExtractionFailed)
+            }
+        }
     }
 
     private fun load(id: Long) {

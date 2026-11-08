@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.wit117.thoughtweave.data.ai.model.GEMMA_MODEL_SPEC
 import io.wit117.thoughtweave.data.ai.model.InstallMarkerStore
+import io.wit117.thoughtweave.data.ai.model.ModelFileProvider
 import io.wit117.thoughtweave.data.ai.model.ModelSpec
 import io.wit117.thoughtweave.data.local.dao.MemoDao
 import io.wit117.thoughtweave.data.local.dao.ScheduleDao
@@ -17,10 +18,14 @@ import io.wit117.thoughtweave.data.local.database.ThoughtWeaveDatabase
 import io.wit117.thoughtweave.data.repository.AgreementRepositoryImpl
 import io.wit117.thoughtweave.data.repository.AiModelRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoRepositoryImpl
+import io.wit117.thoughtweave.data.repository.MemoSynthesisRepositoryImpl
+import io.wit117.thoughtweave.data.repository.ScheduleExtractionRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.AiModelRepository
 import io.wit117.thoughtweave.domain.repository.MemoRepository
+import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
+import io.wit117.thoughtweave.domain.repository.ScheduleExtractionRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
 import java.io.File
 import java.time.Clock
@@ -44,6 +49,17 @@ fun modelMarkerFile(context: Context): File = File(context.noBackupFilesDir, "mo
 abstract class DataModule {
     @Binds
     abstract fun bindAiModelRepository(impl: AiModelRepositoryImpl): AiModelRepository
+
+    @Binds
+    abstract fun bindModelFileProvider(impl: AiModelRepositoryImpl): ModelFileProvider
+
+    @Binds
+    abstract fun bindMemoSynthesisRepository(impl: MemoSynthesisRepositoryImpl): MemoSynthesisRepository
+
+    @Binds
+    abstract fun bindScheduleExtractionRepository(
+        impl: ScheduleExtractionRepositoryImpl,
+    ): ScheduleExtractionRepository
 
     @Binds
     abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository

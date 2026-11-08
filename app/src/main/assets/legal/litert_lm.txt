@@ -1,4 +1,4 @@
 LiteRT-LM
 https://github.com/google-ai-edge/LiteRT-LM
 
-Licensed under the Apache License, Version 2.0:
+License and third-party notices, as shipped with LiteRT-LM 0.19.0:

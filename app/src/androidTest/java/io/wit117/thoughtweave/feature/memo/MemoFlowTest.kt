@@ -57,7 +57,7 @@ class MemoFlowTest {
         clickText(R.string.fab_new_memo)
         waitFor(hasSetTextAction())
         titleField().performTextInput(title)
-        contentField().performTextInput("body")
+        contentField().performTextInput("Due 12/3")
         clickText(R.string.action_save)
         // The editor's title field also holds this text, so exclude it to wait for the list.
         waitFor(hasText(title) and !hasSetTextAction())
@@ -95,13 +95,17 @@ class MemoFlowTest {
         val title = createMemo()
         openMemo(title)
 
-        contentField().performTextReplacement("edited")
+        contentField().performTextReplacement("Edited, due 12/3")
         clickText(R.string.fab_extract_schedule)
         waitFor(hasText(str(R.string.dialog_save_first_title)))
         clickText(R.string.action_save_and_continue)
 
-        // The extraction screen arrives in a later phase and says so explicitly.
-        waitFor(hasText(str(R.string.not_implemented_title)))
+        waitFor(hasText("Extracted schedule") and hasSetTextAction())
+
+        // POP03 returns to S04 after saving, not to the memo.
+        clickText(R.string.action_save)
+        waitFor(hasText(str(R.string.fab_add_schedule)) and hasClickAction())
+        waitFor(hasText("Extracted schedule") and !hasSetTextAction())
     }
 
     @Test

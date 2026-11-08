@@ -2,10 +2,16 @@ package io.wit117.thoughtweave.feature.schedule
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.SavedStateHandle
+import io.wit117.thoughtweave.domain.model.ExtractedSchedule
 import io.wit117.thoughtweave.domain.model.Schedule
 import io.wit117.thoughtweave.domain.model.ScheduleDraft
 import io.wit117.thoughtweave.domain.model.toAllDayInstant
+import io.wit117.thoughtweave.domain.repository.ScheduleExtractionException
+import io.wit117.thoughtweave.domain.repository.ScheduleExtractionRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
+import io.wit117.thoughtweave.domain.usecase.ExtractScheduleUseCase
+import io.wit117.thoughtweave.feature.memo.FakeMemoRepository
+import java.time.Clock
 import io.wit117.thoughtweave.domain.usecase.SaveScheduleResult
 import io.wit117.thoughtweave.domain.usecase.SaveScheduleUseCase
 import io.wit117.thoughtweave.domain.usecase.ScheduleInput
@@ -102,9 +108,70 @@ class ScheduleLogicTest {
     @After
     fun tearDown() = Dispatchers.resetMain()
 
+    private val memos = FakeMemoRepository()
+    private var extraction: () -> ExtractedSchedule = { error("Not used") }
+    private val extractionRepository = object : ScheduleExtractionRepository {
+        override suspend fun extract(title: String, content: String, today: LocalDate) = extraction()
+    }
+    private val extract = ExtractScheduleUseCase(memos, extractionRepository, Clock.systemUTC(), seoul)
+
     private fun viewModel(init: ScheduleEditorInit = ScheduleEditorInit.Manual) = ScheduleEditorViewModel(
-        init, repository, SaveScheduleUseCase(repository, validate), validate, seoul, handle,
+        init, repository, SaveScheduleUseCase(repository, validate), validate, extract, seoul, handle,
     )
+
+    @Test
+    fun extractionPrefillsLinkedScheduleAndWaitsForSave() = runTest(dispatcher) {
+        val memo = memos.add("memo", "12/1 15:00")
+        extraction = { ExtractedSchedule("회의", date, LocalTime.of(15, 0)) }
+
+        val viewModel = viewModel(ScheduleEditorInit.AiExtracted(memo.id))
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isExtracting)
+        assertEquals("회의", state.fields.title)
+        assertEquals(date, state.fields.endDate)
+        assertFalse(state.fields.isAllDay)
+        assertTrue(state.canSave)
+        assertTrue(repository.schedules.value.isEmpty())
+
+        viewModel.save()
+        assertEquals(memo.id, repository.schedules.value.single().memoId)
+    }
+
+    @Test
+    fun extractionWithoutTimeIsAllDay() {
+        val memo = memos.add("memo", "12/1")
+        extraction = { ExtractedSchedule("a", date) }
+
+        assertTrue(viewModel(ScheduleEditorInit.AiExtracted(memo.id)).uiState.value.fields.isAllDay)
+    }
+
+    @Test
+    fun extractionFailureIsReported() = runTest(dispatcher) {
+        val memo = memos.add("memo", "none")
+        extraction = { throw ScheduleExtractionException("no date") }
+
+        val viewModel = viewModel(ScheduleEditorInit.AiExtracted(memo.id))
+
+        assertEquals(ScheduleEditorEffect.ExtractionFailed, viewModel.effects.first())
+    }
+
+    @Test
+    fun missingMemoFailsExtraction() = runTest(dispatcher) {
+        val viewModel = viewModel(ScheduleEditorInit.AiExtracted(99))
+
+        assertEquals(ScheduleEditorEffect.ExtractionFailed, viewModel.effects.first())
+    }
+
+    @Test
+    fun restoredFieldsSkipExtraction() {
+        val memo = memos.add("memo", "12/1")
+        extraction = { ExtractedSchedule("first", date) }
+        viewModel(ScheduleEditorInit.AiExtracted(memo.id)).onTitleChange("edited")
+        extraction = { error("Must not run again") }
+
+        assertEquals("edited", viewModel(ScheduleEditorInit.AiExtracted(memo.id)).uiState.value.fields.title)
+    }
 
     @Test
     fun titleAndDeadlineAreRequired() {

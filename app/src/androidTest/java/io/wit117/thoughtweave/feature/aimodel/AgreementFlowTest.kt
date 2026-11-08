@@ -84,6 +84,7 @@ class AgreementFlowTest {
         clickable(R.string.fab_new_memo).performClick()
         waitFor(hasSetTextAction())
         rule.onAllNodes(hasSetTextAction())[0].performTextInput(title)
+        rule.onAllNodes(hasSetTextAction())[1].performTextInput("Due 12/3")
         clickable(R.string.action_save).performClick()
         waitFor(hasText(title) and !hasSetTextAction())
         rule.onNode(hasText(title) and hasClickAction()).performClick()
@@ -92,8 +93,7 @@ class AgreementFlowTest {
         clickable(R.string.fab_extract_schedule).performClick()
         acceptConsentDialog()
 
-        // The extraction screen arrives in Phase 5c and says so explicitly.
-        waitFor(hasText(str(R.string.not_implemented_title)))
+        waitFor(hasText("Extracted schedule") and hasSetTextAction())
     }
 
     @Test

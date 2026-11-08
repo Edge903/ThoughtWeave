@@ -35,7 +35,6 @@ import org.junit.Before
 import org.junit.Test
 
 private class FakeSynthesis(
-    override val isAvailable: Boolean = true,
     var result: () -> Flow<String> = { flowOf("sum", "mary") },
 ) : MemoSynthesisRepository {
     var received: List<Memo>? = null
@@ -81,13 +80,11 @@ class SynthesisViewModelsTest {
 
     private val agreement = FakeAgreement()
 
-    private fun selection(ai: Boolean = true) =
-        SynthesisViewModel(memos, availability(FakeSynthesis(ai)), agreement, handle)
-
     private val model = FakeAiModel()
 
-    private fun availability(synthesis: MemoSynthesisRepository) =
-        AiAvailabilityUseCase(agreement, synthesis, model)
+    private fun availability() = AiAvailabilityUseCase(agreement, model)
+
+    private fun selection() = SynthesisViewModel(memos, availability(), agreement, handle)
 
     private fun SynthesisViewModel.loaded() = uiState.value as SynthesisUiState.Loaded
 
@@ -134,7 +131,7 @@ class SynthesisViewModelsTest {
         agreement.withdraw()
         model.status.value = AiModelStatus.Downloading(40)
 
-        val availability = availability(FakeSynthesis()).current()
+        val availability = availability().current()
 
         assertEquals(AiModelStatus.Downloading(40), availability.model)
         assertFalse(availability.consentGiven)
@@ -149,19 +146,6 @@ class SynthesisViewModelsTest {
         model.status.value = AiModelStatus.NotDownloaded
         val viewModel = selection()
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
-        viewModel.toggleSelection(a.id)
-        viewModel.toggleSelection(b.id)
-
-        assertFalse(viewModel.loaded().canSynthesize)
-    }
-
-    @Test
-    fun unavailableAiKeepsActionDisabled() = runTest(dispatcher) {
-        val a = memos.add("a")
-        val b = memos.add("b")
-        val viewModel = selection(ai = false)
-        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
-
         viewModel.toggleSelection(a.id)
         viewModel.toggleSelection(b.id)
 

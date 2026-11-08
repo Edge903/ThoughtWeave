@@ -5,16 +5,34 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.wit117.thoughtweave.data.ai.delivery.importedModelFile
 import io.wit117.thoughtweave.data.ai.model.GEMMA_MODEL_SPEC
 import io.wit117.thoughtweave.data.ai.model.InstallMarkerStore
+import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
+import io.wit117.thoughtweave.data.di.InferenceEngineTestOverride
 import io.wit117.thoughtweave.data.di.modelMarkerFile
 import io.wit117.thoughtweave.data.repository.AGREEMENT_PREFS_NAME
 import io.wit117.thoughtweave.data.repository.KEY_ACCEPTED_VERSION
 import io.wit117.thoughtweave.domain.model.CURRENT_AGREEMENT_VERSION
 import java.io.RandomAccessFile
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.junit.rules.ExternalResource
 
 /** Installs a sparse file of the model's size plus a marker, or removes both. Runs before launch. */
-class ModelStateRule(private val installed: Boolean = true) : ExternalResource() {
+class ModelStateRule(
+    private val installed: Boolean = true,
+    private val extractionReply: String = "Extracted schedule",
+) : ExternalResource() {
+    /** Scripted replies: instrumented tests run without the real model. */
+    private val engine = object : InferenceEngine {
+        override fun generate(prompt: String, temperature: Double): Flow<String> =
+            if ("short name" in prompt) flowOf(extractionReply) else flowOf("DEBUG FAKE", " summary")
+    }
+
+    override fun after() {
+        InferenceEngineTestOverride.engine = null
+    }
+
     override fun before() {
+        InferenceEngineTestOverride.engine = engine
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val model = importedModelFile(context, GEMMA_MODEL_SPEC)
         val marker = InstallMarkerStore(modelMarkerFile(context))

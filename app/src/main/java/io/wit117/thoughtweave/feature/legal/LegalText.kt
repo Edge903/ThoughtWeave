@@ -13,7 +13,14 @@ enum class LegalDocument(
     GEMMA_TERMS(R.string.license_gemma_terms, listOf("legal/gemma_terms_of_use.txt")),
     GEMMA_POLICY(R.string.license_gemma_policy, listOf("legal/gemma_prohibited_use_policy.txt")),
     GEMMA_NOTICE(R.string.license_gemma_notice, listOf("legal/gemma_notice.txt")),
-    LITERT_LM(R.string.license_litert_lm, listOf("legal/litert_lm.txt", "legal/apache-2.0.txt")),
+    LITERT_LM(
+        R.string.license_litert_lm,
+        listOf(
+            "legal/litert_lm.txt",
+            "legal/litert_lm_license.txt",
+            "legal/litert_lm_third_party_notices.txt",
+        ),
+    ),
     OTHER_OPEN_SOURCE(
         R.string.license_other_open_source,
         listOf(

@@ -49,10 +49,7 @@ fun AiModelBanner(
     val retry = BannerAction(stringResource(R.string.action_retry), repository::retry)
 
     when (val model = availability.model) {
-        AiModelStatus.Checking -> Unit
-        AiModelStatus.Ready -> if (!availability.inferenceAvailable) {
-            InfoBanner(stringResource(R.string.ai_unavailable_message))
-        }
+        AiModelStatus.Checking, AiModelStatus.Ready -> Unit
         AiModelStatus.NotDownloaded -> InfoBanner(
             message = stringResource(R.string.ai_model_not_downloaded),
             extraAction = { ModelImportAction() },

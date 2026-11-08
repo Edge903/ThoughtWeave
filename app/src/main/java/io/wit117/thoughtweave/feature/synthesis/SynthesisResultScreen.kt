@@ -55,7 +55,13 @@ fun SynthesisResultScreen(
     if (state.phase == SynthesisPhase.FAILED) {
         ConfirmDialog(
             title = stringResource(R.string.dialog_synthesis_failed_title),
-            message = stringResource(R.string.dialog_synthesis_failed_message),
+            message = stringResource(
+                if (state.isInputTooLong) {
+                    R.string.dialog_synthesis_too_long_message
+                } else {
+                    R.string.dialog_synthesis_failed_message
+                },
+            ),
             confirmText = stringResource(R.string.action_retry),
             dismissText = stringResource(R.string.action_close),
             onConfirm = viewModel::retry,

@@ -71,15 +71,18 @@
         <item quantity="one">%d selected</item>
         <item quantity="other">%d selected</item>
     </plurals>
-    <string name="ai_unavailable_message">AI summaries are not available in this version yet.</string>
     <string name="action_preview">Preview memo</string>
     <string name="action_retry">Retry</string>
     <string name="action_close">Close</string>
     <string name="dialog_synthesis_failed_title">The summary could not be created</string>
+    <string name="dialog_synthesis_too_long_message">The selected memos are too long to summarize at once. Select fewer or shorter memos. Your memos were not changed.</string>
     <string name="dialog_synthesis_failed_message">Your memos were not changed and your selection is kept.</string>
 
     <!-- S04 / POP02 / POP03 schedules -->
     <string name="action_ok">OK</string>
+    <string name="schedule_extracting">Reading the schedule from your memo.</string>
+    <string name="dialog_extraction_failed_title">No schedule could be read</string>
+    <string name="dialog_extraction_failed_message">The memo may not contain a clear date. You can add the schedule yourself on the Schedules tab.</string>
     <string name="schedule_title_label">Title</string>
     <string name="schedule_description_label">Description</string>
     <string name="schedule_all_day">All day</string>
@@ -144,7 +147,4 @@
     <string name="license_load_failed_title">This document could not be opened</string>
     <string name="license_load_failed_message">Close the app and open it again.</string>
 
-    <!-- Phase 0 scaffolding: destinations exist for navigation but have no content yet. -->
-    <string name="not_implemented_title">Not available yet</string>
-    <string name="not_implemented_message">This screen is part of a later development phase.</string>
 </resources>

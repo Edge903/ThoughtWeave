@@ -29,6 +29,7 @@ data class SynthesisResultUiState(
     val phase: SynthesisPhase = SynthesisPhase.GENERATING,
     val draft: MemoDraft = MemoDraft(),
     val isBusy: Boolean = false,
+    val isInputTooLong: Boolean = false,
 ) {
     /** A finished summary exists only in memory until saved, so leaving must be confirmed. */
     val isDirty: Boolean get() = phase == SynthesisPhase.READY
@@ -78,10 +79,12 @@ class SynthesisResultViewModel @AssistedInject constructor(
     private fun generate() {
         _uiState.value = SynthesisResultUiState(SynthesisPhase.GENERATING)
         viewModelScope.launch {
+            var isTooLong = false
             val succeeded = try {
                 streamSummary(loadSources())
                 _uiState.value.draft.content.isNotBlank()
-            } catch (_: MemoSynthesisException) {
+            } catch (e: MemoSynthesisException) {
+                isTooLong = e.isInputTooLong
                 false
             } catch (_: SQLiteException) {
                 false
@@ -90,7 +93,7 @@ class SynthesisResultViewModel @AssistedInject constructor(
                 _uiState.update { it.copy(phase = SynthesisPhase.READY) }
                 draftStore.persist(_uiState.value.draft)
             } else {
-                _uiState.value = SynthesisResultUiState(SynthesisPhase.FAILED)
+                _uiState.value = SynthesisResultUiState(SynthesisPhase.FAILED, isInputTooLong = isTooLong)
             }
         }
     }
