@@ -53,6 +53,26 @@ android {
     }
 }
 
+// Release guard: a store bundle must not ship the unreviewed agreement.
+val agreementDraftMarker = "STATUS: DRAFT"
+val agreementFiles = listOf("agreement_en.txt", "agreement_ko.txt")
+    .map { layout.projectDirectory.file("src/main/assets/legal/$it").asFile }
+val allowDraftLegal = providers.gradleProperty("allowDraftLegal").orNull == "true"
+val verifyAgreementNotDraft = tasks.register("verifyAgreementNotDraft") {
+    description = "Fails while the user agreement is still marked as a draft."
+    doLast {
+        val drafts = agreementFiles.filter { it.readText().contains(agreementDraftMarker) }
+        if (drafts.isNotEmpty() && !allowDraftLegal) {
+            throw GradleException(
+                "The user agreement is a DRAFT that requires legal review: " +
+                    drafts.joinToString { it.name } +
+                    ". Use -PallowDraftLegal=true for internal testing only.",
+            )
+        }
+    }
+}
+tasks.matching { it.name == "bundleRelease" }.configureEach { dependsOn(verifyAgreementNotDraft) }
+
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 

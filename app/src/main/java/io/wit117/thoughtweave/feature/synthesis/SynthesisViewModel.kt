@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.wit117.thoughtweave.domain.model.AiAvailability
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.MemoRepository
-import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
+import io.wit117.thoughtweave.domain.usecase.AiAvailabilityUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +27,11 @@ sealed interface SynthesisUiState {
     data class Loaded(
         val memos: List<Memo>,
         val selectedIds: List<Long>,
-        val isAiAvailable: Boolean,
+        val aiAvailability: AiAvailability,
     ) : SynthesisUiState {
         val canSynthesize: Boolean
-            get() = isAiAvailable && selectedIds.size >= MIN_MEMOS_FOR_SYNTHESIS
+            get() = aiAvailability == AiAvailability.READY &&
+                selectedIds.size >= MIN_MEMOS_FOR_SYNTHESIS
     }
 }
 
@@ -36,19 +39,20 @@ sealed interface SynthesisUiState {
 @HiltViewModel
 class SynthesisViewModel @Inject constructor(
     memoRepository: MemoRepository,
-    synthesisRepository: MemoSynthesisRepository,
+    aiAvailability: AiAvailabilityUseCase,
+    private val agreementRepository: AgreementRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val selection = savedStateHandle.getStateFlow(KEY_SELECTION, LongArray(0))
 
     val uiState: StateFlow<SynthesisUiState> =
-        combine(memoRepository.observeMemos(), selection) { memos, selected ->
+        combine(memoRepository.observeMemos(), selection, aiAvailability()) { memos, selected, availability ->
             val existing = memos.mapTo(HashSet()) { it.id }
             SynthesisUiState.Loaded(
                 memos = memos,
                 selectedIds = selected.filter { it in existing },
-                isAiAvailable = synthesisRepository.isAvailable,
+                aiAvailability = availability,
             ) as SynthesisUiState
         }
             .catch { emit(SynthesisUiState.Failed) }
@@ -57,6 +61,8 @@ class SynthesisViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
                 initialValue = SynthesisUiState.Loading,
             )
+
+    fun acceptAgreement() = agreementRepository.accept()
 
     fun toggleSelection(memoId: Long) {
         val current = selection.value.toList()

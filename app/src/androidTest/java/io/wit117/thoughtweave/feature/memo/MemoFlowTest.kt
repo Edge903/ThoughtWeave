@@ -14,6 +14,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.wit117.thoughtweave.MainActivity
 import io.wit117.thoughtweave.R
 import java.util.UUID
+import io.wit117.thoughtweave.feature.aimodel.setAgreementAccepted
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +28,9 @@ import org.junit.runner.RunWith
 class MemoFlowTest {
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
+
+    @Before
+    fun setUp() = setAgreementAccepted(true)
 
     private fun str(@StringRes id: Int) = rule.activity.getString(id)
 
@@ -50,7 +55,8 @@ class MemoFlowTest {
         titleField().performTextInput(title)
         contentField().performTextInput("body")
         clickText(R.string.action_save)
-        waitFor(hasText(title))
+        // The editor's title field also holds this text, so exclude it to wait for the list.
+        waitFor(hasText(title) and !hasSetTextAction())
         return title
     }
 

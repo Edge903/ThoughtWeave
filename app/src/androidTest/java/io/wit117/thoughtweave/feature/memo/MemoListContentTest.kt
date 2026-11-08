@@ -2,6 +2,7 @@ package io.wit117.thoughtweave.feature.memo
 
 import androidx.annotation.StringRes
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -42,13 +43,14 @@ class MemoListContentTest {
 
     private fun show(
         state: MemoListUiState,
+        current: () -> MemoListUiState = { state },
         query: String? = null,
         onOpen: (Long) -> Unit = {},
         onPin: (Memo) -> Unit = {},
     ) = rule.setContent {
         ThoughtWeaveTheme {
             MemoListContent(
-                uiState = state,
+                uiState = current(),
                 searchQuery = query,
                 snackbarHostState = SnackbarHostState(),
                 onCreateMemo = {},
@@ -82,6 +84,18 @@ class MemoListContentTest {
 
         assertEquals(memo, pinned)
         assertEquals(false, opened)
+    }
+
+    @Test
+    fun memoAddedAboveTheFirstItemIsVisible() {
+        val initial = MemoListUiState.Loaded(listOf(memo))
+        val holder = mutableStateOf<MemoListUiState>(initial)
+        show(initial, current = { holder.value })
+        rule.waitForIdle()
+
+        holder.value = MemoListUiState.Loaded(listOf(memo.copy(id = 8, title = "newest"), memo))
+
+        rule.onNodeWithText("newest").assertIsDisplayed()
     }
 
     @Test

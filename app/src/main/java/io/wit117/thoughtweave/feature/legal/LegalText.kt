@@ -4,7 +4,12 @@ import androidx.annotation.StringRes
 import io.wit117.thoughtweave.R
 
 /** Documents listed on S05. Texts are verbatim copies in `assets/legal`. */
-enum class LegalDocument(@param:StringRes val titleRes: Int, val assets: List<String>) {
+enum class LegalDocument(
+    @param:StringRes val titleRes: Int,
+    val assets: List<String>,
+    /** String resource naming a per-language asset: Korean devices get Korean, others English. */
+    @param:StringRes val localizedAssetRes: Int? = null,
+) {
     GEMMA_TERMS(R.string.license_gemma_terms, listOf("legal/gemma_terms_of_use.txt")),
     GEMMA_POLICY(R.string.license_gemma_policy, listOf("legal/gemma_prohibited_use_policy.txt")),
     GEMMA_NOTICE(R.string.license_gemma_notice, listOf("legal/gemma_notice.txt")),
@@ -17,6 +22,7 @@ enum class LegalDocument(@param:StringRes val titleRes: Int, val assets: List<St
             "legal/gpl-2.0-classpath-exception.txt",
         ),
     ),
+    AGREEMENT(R.string.license_agreement, emptyList(), R.string.agreement_asset),
 }
 
 /** [indentLevel] is the nesting depth of a list item; 0 for plain paragraphs and top-level items. */

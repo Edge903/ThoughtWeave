@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ContextFab
 import io.wit117.thoughtweave.core.ui.component.EmptyState
+import io.wit117.thoughtweave.core.ui.component.ScrollToTopOnNewFirstItem
 import io.wit117.thoughtweave.core.ui.component.formatLocalDate
 import io.wit117.thoughtweave.domain.model.Schedule
 import io.wit117.thoughtweave.domain.model.toAllDayDate
@@ -101,7 +103,14 @@ private fun ScheduleGroups(
     modifier: Modifier,
 ) {
     val context = LocalContext.current
+    val listState = rememberLazyListState()
+    ScrollToTopOnNewFirstItem(
+        firstKey = groups.first().let { "${it.date}-${it.schedules.first().id}" },
+        isNearTop = { listState.firstVisibleItemIndex <= 2 },
+        scrollToTop = { listState.scrollToItem(0) },
+    )
     LazyColumn(
+        state = listState,
         modifier = modifier.fillMaxSize(),
         // The bottom inset keeps the last card clear of the FAB.
         contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 88.dp),

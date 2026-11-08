@@ -11,8 +11,10 @@ import dagger.hilt.components.SingletonComponent
 import io.wit117.thoughtweave.data.local.dao.MemoDao
 import io.wit117.thoughtweave.data.local.dao.ScheduleDao
 import io.wit117.thoughtweave.data.local.database.ThoughtWeaveDatabase
+import io.wit117.thoughtweave.data.repository.AgreementRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
+import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
 import java.time.Clock
@@ -22,6 +24,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
+    @Binds
+    abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository
+
     @Binds
     abstract fun bindMemoRepository(impl: MemoRepositoryImpl): MemoRepository
 

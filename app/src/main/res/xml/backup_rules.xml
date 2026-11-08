@@ -10,4 +10,6 @@
    <include domain="sharedpref" path="."/>
    <exclude domain="sharedpref" path="device.xml"/>
 -->
+    <!-- AI consent is per install and must not be restored onto another device. -->
+    <exclude domain="sharedpref" path="agreement.xml" />
 </full-backup-content>

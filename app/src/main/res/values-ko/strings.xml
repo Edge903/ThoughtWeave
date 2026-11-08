@@ -90,6 +90,18 @@
     <string name="dialog_delete_schedule_title">이 일정을 삭제할까요?</string>
     <string name="dialog_delete_schedule_message">삭제하면 되돌릴 수 없습니다.</string>
 
+    <string name="agreement_asset">legal/agreement_ko.txt</string>
+    <string name="title_ai_consent">AI 기능 이용 동의</string>
+    <string name="consent_checkbox">동의서를 읽었으며 이에 동의합니다.</string>
+    <string name="ai_consent_banner_message">AI 요약을 사용하려면 동의서를 확인하고 동의해 주세요.</string>
+    <string name="action_review_agreement">동의서 확인</string>
+    <string name="action_agree">동의</string>
+    <string name="action_withdraw_consent">AI 이용 동의 철회</string>
+    <string name="action_withdraw">철회</string>
+    <string name="dialog_withdraw_title">AI 이용 동의를 철회할까요?</string>
+    <string name="dialog_withdraw_message">다시 동의할 때까지 AI 기능이 작동하지 않습니다. 메모와 일정은 영향을 받지 않습니다.</string>
+    <string name="license_agreement">ThoughtWeave AI 이용 동의서 (초안)</string>
+
     <string name="title_licenses">라이선스 및 고지</string>
     <string name="license_gemma_terms">Gemma 이용 약관</string>
     <string name="license_gemma_policy">Gemma 금지된 사용 정책</string>

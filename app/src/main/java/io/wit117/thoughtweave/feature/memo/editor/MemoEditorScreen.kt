@@ -13,8 +13,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
+import io.wit117.thoughtweave.domain.model.AiAvailability
+import io.wit117.thoughtweave.feature.aimodel.AiGateViewModel
+import io.wit117.thoughtweave.feature.legal.AiConsentDialog
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
 import io.wit117.thoughtweave.core.ui.component.ContextFab
 import kotlinx.coroutines.launch
@@ -28,11 +32,18 @@ fun MemoEditorScreen(
     onOpenExtraction: (Long) -> Unit,
     onUnavailable: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    aiGate: AiGateViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val aiAvailability by aiGate.availability.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
     var showSaveFirstDialog by rememberSaveable { mutableStateOf(false) }
+    var showConsentDialog by rememberSaveable { mutableStateOf(false) }
+
+    fun proceedToExtraction(id: Long) {
+        if (state.isDirty) showSaveFirstDialog = true else onOpenExtraction(id)
+    }
 
     val savedMessage = stringResource(R.string.memo_saved)
     val saveFailedMessage = stringResource(R.string.memo_save_failed)
@@ -82,15 +93,31 @@ fun MemoEditorScreen(
                 ContextFab(
                     text = stringResource(R.string.fab_extract_schedule),
                     iconRes = R.drawable.ic_calendar_add_on,
-                    enabled = !state.isBusy && (!state.isDirty || state.canSave),
+                    enabled = aiAvailability != AiAvailability.NOT_AVAILABLE &&
+                        !state.isBusy && (!state.isDirty || state.canSave),
                     onClick = {
-                        if (state.isDirty) showSaveFirstDialog = true else onOpenExtraction(memoId)
+                        if (aiAvailability == AiAvailability.CONSENT_REQUIRED) {
+                            showConsentDialog = true
+                        } else {
+                            proceedToExtraction(memoId)
+                        }
                     },
                 )
             }
         },
         reserveFabSpace = memoId != null,
     )
+
+    if (showConsentDialog && memoId != null) {
+        AiConsentDialog(
+            onAccept = {
+                showConsentDialog = false
+                aiGate.acceptAgreement()
+                proceedToExtraction(memoId)
+            },
+            onDismiss = { showConsentDialog = false },
+        )
+    }
 
     if (showDeleteDialog) {
         ConfirmDialog(

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -26,6 +27,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,8 +49,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ContextFab
 import io.wit117.thoughtweave.core.ui.component.EmptyState
+import io.wit117.thoughtweave.core.ui.component.ScrollToTopOnNewFirstItem
 import io.wit117.thoughtweave.core.ui.component.WordAwareLineBreak
+import io.wit117.thoughtweave.domain.model.AiAvailability
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.feature.legal.AiConsentDialog
 
 /** S03 – AI 메모 통합, including the POP01 preview sheet. */
 @Composable
@@ -62,6 +67,7 @@ fun SynthesisScreen(
         uiState = uiState,
         onToggleSelection = viewModel::toggleSelection,
         onSynthesize = onSynthesize,
+        onAcceptAgreement = viewModel::acceptAgreement,
         modifier = modifier,
     )
 }
@@ -72,9 +78,11 @@ fun SynthesisContent(
     uiState: SynthesisUiState,
     onToggleSelection: (Long) -> Unit,
     onSynthesize: (List<Long>) -> Unit,
+    onAcceptAgreement: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var previewMemoId by rememberSaveable { mutableStateOf<Long?>(null) }
+    var showConsentDialog by rememberSaveable { mutableStateOf(false) }
     val loaded = uiState as? SynthesisUiState.Loaded
 
     Scaffold(
@@ -116,7 +124,15 @@ fun SynthesisContent(
             )
 
             is SynthesisUiState.Loaded -> Column(bodyModifier) {
-                if (!uiState.isAiAvailable) AiUnavailableBanner()
+                when (uiState.aiAvailability) {
+                    AiAvailability.NOT_AVAILABLE -> AiBanner(stringResource(R.string.ai_unavailable_message))
+                    AiAvailability.CONSENT_REQUIRED -> AiBanner(
+                        message = stringResource(R.string.ai_consent_banner_message),
+                        actionText = stringResource(R.string.action_review_agreement),
+                        onAction = { showConsentDialog = true },
+                    )
+                    AiAvailability.READY -> Unit
+                }
                 if (uiState.memos.isEmpty()) {
                     EmptyState(
                         title = stringResource(R.string.empty_ai_merge_title),
@@ -124,7 +140,14 @@ fun SynthesisContent(
                         iconRes = R.drawable.ic_auto_awesome,
                     )
                 } else {
+                    val gridState = rememberLazyGridState()
+                    ScrollToTopOnNewFirstItem(
+                        firstKey = uiState.memos.first().id.toString(),
+                        isNearTop = { gridState.firstVisibleItemIndex <= 2 },
+                        scrollToTop = { gridState.scrollToItem(0) },
+                    )
                     LazyVerticalGrid(
+                        state = gridState,
                         columns = GridCells.Fixed(2),
                         // The bottom inset keeps the last row clear of the FAB.
                         contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 88.dp),
@@ -149,19 +172,39 @@ fun SynthesisContent(
     if (previewMemo != null) {
         MemoPreviewSheet(memo = previewMemo, onDismiss = { previewMemoId = null })
     }
+
+    if (showConsentDialog) {
+        AiConsentDialog(
+            onAccept = {
+                showConsentDialog = false
+                onAcceptAgreement()
+            },
+            onDismiss = { showConsentDialog = false },
+        )
+    }
 }
 
 @Composable
-private fun AiUnavailableBanner() {
+private fun AiBanner(
+    message: String,
+    actionText: String? = null,
+    onAction: () -> Unit = {},
+) {
     Surface(
         color = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Text(
-            text = stringResource(R.string.ai_unavailable_message),
-            style = MaterialTheme.typography.bodyMedium.copy(lineBreak = WordAwareLineBreak),
-            modifier = Modifier.padding(16.dp),
-        )
+        Column(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)) {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium.copy(lineBreak = WordAwareLineBreak),
+            )
+            if (actionText != null) {
+                TextButton(onClick = onAction, modifier = Modifier.align(Alignment.End)) {
+                    Text(actionText)
+                }
+            }
+        }
     }
 }
 

@@ -11,7 +11,8 @@ class LegalAssetsTest {
     @Test
     fun everyDocumentAssetExistsAndHasText() {
         val assets = InstrumentationRegistry.getInstrumentation().targetContext.assets
-        LegalDocument.entries.flatMap { it.assets }.distinct().forEach { path ->
+        val agreements = listOf("legal/agreement_en.txt", "legal/agreement_ko.txt")
+        (LegalDocument.entries.flatMap { it.assets } + agreements).distinct().forEach { path ->
             val text = assets.open(path).bufferedReader().use { it.readText() }
             assertTrue(path, parseLegalParagraphs(text).isNotEmpty())
         }

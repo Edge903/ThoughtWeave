@@ -1,15 +1,20 @@
 package io.wit117.thoughtweave.feature.synthesis
 
 import androidx.lifecycle.SavedStateHandle
+import io.wit117.thoughtweave.domain.model.AgreementStatus
+import io.wit117.thoughtweave.domain.model.AiAvailability
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisException
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
+import io.wit117.thoughtweave.domain.usecase.AiAvailabilityUseCase
 import io.wit117.thoughtweave.feature.memo.FakeMemoRepository
 import io.wit117.thoughtweave.feature.memo.editor.MemoDraft
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -38,6 +43,19 @@ private class FakeSynthesis(
     }
 }
 
+private class FakeAgreement : AgreementRepository {
+    val status = MutableStateFlow(AgreementStatus.ACCEPTED)
+    override fun currentStatus() = status.value
+    override fun observeStatus(): Flow<AgreementStatus> = status
+    override fun accept() {
+        status.value = AgreementStatus.ACCEPTED
+    }
+
+    override fun withdraw() {
+        status.value = AgreementStatus.NOT_ACCEPTED
+    }
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class SynthesisViewModelsTest {
     private val dispatcher = UnconfinedTestDispatcher()
@@ -50,7 +68,10 @@ class SynthesisViewModelsTest {
     @After
     fun tearDown() = Dispatchers.resetMain()
 
-    private fun selection(ai: Boolean = true) = SynthesisViewModel(memos, FakeSynthesis(ai), handle)
+    private val agreement = FakeAgreement()
+
+    private fun selection(ai: Boolean = true) =
+        SynthesisViewModel(memos, AiAvailabilityUseCase(agreement, FakeSynthesis(ai)), agreement, handle)
 
     private fun SynthesisViewModel.loaded() = uiState.value as SynthesisUiState.Loaded
 
@@ -72,6 +93,33 @@ class SynthesisViewModelsTest {
 
         viewModel.toggleSelection(a.id)
         assertEquals(listOf(b.id), viewModel.loaded().selectedIds)
+    }
+
+    @Test
+    fun consentGatesActionAndAcceptingEnablesIt() = runTest(dispatcher) {
+        val a = memos.add("a")
+        val b = memos.add("b")
+        agreement.withdraw()
+        val viewModel = selection()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        viewModel.toggleSelection(a.id)
+        viewModel.toggleSelection(b.id)
+        assertEquals(AiAvailability.CONSENT_REQUIRED, viewModel.loaded().aiAvailability)
+        assertFalse(viewModel.loaded().canSynthesize)
+
+        viewModel.acceptAgreement()
+
+        assertEquals(AiAvailability.READY, viewModel.loaded().aiAvailability)
+        assertTrue(viewModel.loaded().canSynthesize)
+    }
+
+    @Test
+    fun availabilityPrefersModelStateOverConsent() {
+        agreement.withdraw()
+        assertEquals(
+            AiAvailability.NOT_AVAILABLE,
+            AiAvailabilityUseCase(agreement, FakeSynthesis(isAvailable = false)).current(),
+        )
     }
 
     @Test

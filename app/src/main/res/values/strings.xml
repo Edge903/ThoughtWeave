@@ -101,6 +101,19 @@
     <string name="dialog_delete_schedule_title">Delete this schedule?</string>
     <string name="dialog_delete_schedule_message">This cannot be undone.</string>
 
+    <!-- POP04 consent -->
+    <string name="agreement_asset" translatable="true">legal/agreement_en.txt</string>
+    <string name="title_ai_consent">AI features consent</string>
+    <string name="consent_checkbox">I have read and agree to this agreement.</string>
+    <string name="ai_consent_banner_message">Review and accept the agreement to use AI summaries.</string>
+    <string name="action_review_agreement">Review agreement</string>
+    <string name="action_agree">Agree</string>
+    <string name="action_withdraw_consent">Withdraw AI consent</string>
+    <string name="action_withdraw">Withdraw</string>
+    <string name="dialog_withdraw_title">Withdraw AI consent?</string>
+    <string name="dialog_withdraw_message">AI features stop until you accept again. Your memos and schedules are not affected.</string>
+    <string name="license_agreement">ThoughtWeave AI agreement (draft)</string>
+
     <!-- S05 licenses -->
     <string name="title_licenses">Licenses and notices</string>
     <string name="license_gemma_terms">Gemma Terms of Use</string>

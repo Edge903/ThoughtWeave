@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -43,6 +44,7 @@ import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ContextFab
 import io.wit117.thoughtweave.core.ui.component.EmptyState
 import io.wit117.thoughtweave.core.ui.component.MemoCard
+import io.wit117.thoughtweave.core.ui.component.ScrollToTopOnNewFirstItem
 import io.wit117.thoughtweave.domain.model.Memo
 
 /** S01 – 메모 목록. */
@@ -161,8 +163,15 @@ fun MemoListContent(
                     modifier = bodyModifier,
                 )
             } else {
+                val listState = rememberLazyListState()
+                ScrollToTopOnNewFirstItem(
+                    firstKey = uiState.memos.first().id.toString(),
+                    isNearTop = { listState.firstVisibleItemIndex <= 1 },
+                    scrollToTop = { listState.scrollToItem(0) },
+                )
                 LazyColumn(
                     modifier = bodyModifier.fillMaxSize(),
+                    state = listState,
                     // The bottom inset keeps the last card clear of the FAB.
                     contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 88.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),

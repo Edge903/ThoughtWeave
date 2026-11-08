@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 6, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
+(revision 7, 2026-11-08). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -80,6 +80,14 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 ## AI scaffolding until Phase 5c
 - `MemoSynthesisRepository` is bound per build type: `src/debug` has a fake whose output is labelled
   `[DEBUG FAKE: not AI-generated]`; `src/release` reports AI as unavailable. Replace both in Phase 5c.
+
+## Consent (POP04)
+- `AiAvailability` (`AiAvailabilityUseCase`) gates AI actions. S03: FAB stays disabled until READY; its banner
+  opens POP04. S02-B: extraction opens POP04 first, then continues.
+- Acceptance is stored per `CURRENT_AGREEMENT_VERSION` in SharedPreferences, excluded from backup and device
+  transfer so consent is per install. Bump the version whenever the agreement text changes.
+- Removing `STATUS: DRAFT` from both agreement assets is what releases the `bundleRelease` guard. Do this only
+  after legal review, and fill in the provider, contact and governing-law placeholders.
 
 ## Legal texts (S05)
 - `assets/legal` holds verbatim copies: Gemma Terms and Prohibited Use Policy from ai.google.dev (2026-11-08),
