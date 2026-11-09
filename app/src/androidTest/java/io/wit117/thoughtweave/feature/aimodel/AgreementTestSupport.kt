@@ -6,6 +6,7 @@ import io.wit117.thoughtweave.data.ai.delivery.importedModelFile
 import io.wit117.thoughtweave.data.ai.model.GEMMA_MODEL_SPEC
 import io.wit117.thoughtweave.data.ai.model.InstallMarkerStore
 import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
+import io.wit117.thoughtweave.data.ai.engine.InferencePrompt
 import io.wit117.thoughtweave.data.di.InferenceEngineTestOverride
 import io.wit117.thoughtweave.data.di.modelMarkerFile
 import io.wit117.thoughtweave.data.repository.AGREEMENT_PREFS_NAME
@@ -23,8 +24,8 @@ class ModelStateRule(
 ) : ExternalResource() {
     /** Scripted replies: instrumented tests run without the real model. */
     private val engine = object : InferenceEngine {
-        override fun generate(prompt: String, temperature: Double): Flow<String> =
-            if ("short name" in prompt) flowOf(extractionReply) else flowOf("DEBUG FAKE", " summary")
+        override fun generate(prompt: InferencePrompt): Flow<String> =
+            if ("short name" in prompt.text) flowOf(extractionReply) else flowOf("DEBUG FAKE", " summary")
     }
 
     override fun after() {

@@ -4,9 +4,11 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.google.ai.edge.litertlm.Backend
+import com.google.ai.edge.litertlm.Contents
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.Message
 import com.google.ai.edge.litertlm.ModelInfo
 import com.google.ai.edge.litertlm.ModelType
 import com.google.ai.edge.litertlm.SamplerConfig
@@ -48,17 +50,21 @@ class GemmaInferenceEngine @Inject constructor(
     private var engine: Engine? = null
     private var idleRelease: Job? = null
 
-    override fun generate(prompt: String, temperature: Double): Flow<String> = flow {
+    override fun generate(prompt: InferencePrompt): Flow<String> = flow {
         mutex.withLock {
             idleRelease?.cancel()
             try {
                 val current = engine ?: load().also { engine = it }
                 val config = ConversationConfig(
-                    samplerConfig = SamplerConfig(topK = TOP_K, topP = TOP_P, temperature = temperature),
+                    systemInstruction = prompt.systemInstruction?.let { Contents.of(it) },
+                    initialMessages = prompt.examples.flatMap {
+                        listOf(Message.user(it.input), Message.model(it.output))
+                    },
+                    samplerConfig = SamplerConfig(topK = TOP_K, topP = TOP_P, temperature = prompt.temperature),
                     maxOutputToken = MAX_OUTPUT_TOKENS,
                 )
                 current.createConversation(config).use { conversation ->
-                    conversation.sendMessageAsync(prompt).collect { emit(it.toString()) }
+                    conversation.sendMessageAsync(prompt.text).collect { emit(it.toString()) }
                 }
             } catch (e: CancellationException) {
                 throw e

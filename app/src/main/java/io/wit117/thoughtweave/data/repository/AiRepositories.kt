@@ -2,9 +2,10 @@ package io.wit117.thoughtweave.data.repository
 
 import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
 import io.wit117.thoughtweave.data.ai.engine.InferenceException
+import io.wit117.thoughtweave.data.ai.engine.InferencePrompt
 import io.wit117.thoughtweave.data.ai.parse.cleanTitle
 import io.wit117.thoughtweave.data.ai.parse.readScheduleDates
-import io.wit117.thoughtweave.data.ai.prompt.SUMMARY_TEMPERATURE
+import io.wit117.thoughtweave.data.ai.parse.withoutInventedYears
 import io.wit117.thoughtweave.data.ai.prompt.TITLE_TEMPERATURE
 import io.wit117.thoughtweave.data.ai.prompt.scheduleTitlePrompt
 import io.wit117.thoughtweave.data.ai.prompt.summaryPrompt
@@ -24,7 +25,9 @@ class MemoSynthesisRepositoryImpl @Inject constructor(
     private val engine: InferenceEngine,
 ) : MemoSynthesisRepository {
     override fun summarize(memos: List<Memo>): Flow<String> =
-        engine.generate(summaryPrompt(memos), SUMMARY_TEMPERATURE).catch { e ->
+        engine.generate(summaryPrompt(memos)).withoutInventedYears(
+            memos.joinToString("\n") { it.title + "\n" + it.content },
+        ).catch { e ->
             throw if (e is InferenceException) {
                 MemoSynthesisException("The summary failed", isInputTooLong = e.isInputTooLong)
             } else {
@@ -41,7 +44,7 @@ class ScheduleExtractionRepositoryImpl @Inject constructor(
         val dates = readScheduleDates("$title\n$content", today)
             ?: throw ScheduleExtractionException("The memo gives no date")
         val reply = try {
-            engine.generate(scheduleTitlePrompt(title, content), TITLE_TEMPERATURE)
+            engine.generate(InferencePrompt(scheduleTitlePrompt(title, content), TITLE_TEMPERATURE))
                 .fold("") { text, chunk -> text + chunk }
         } catch (_: InferenceException) {
             throw ScheduleExtractionException("The schedule could not be named")

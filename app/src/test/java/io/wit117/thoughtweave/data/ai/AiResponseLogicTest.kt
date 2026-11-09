@@ -2,9 +2,11 @@ package io.wit117.thoughtweave.data.ai
 
 import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
 import io.wit117.thoughtweave.data.ai.engine.InferenceException
+import io.wit117.thoughtweave.data.ai.engine.InferencePrompt
 import io.wit117.thoughtweave.data.ai.parse.ScheduleDates
 import io.wit117.thoughtweave.data.ai.parse.cleanTitle
 import io.wit117.thoughtweave.data.ai.parse.readScheduleDates
+import io.wit117.thoughtweave.data.ai.parse.withoutInventedYears
 import io.wit117.thoughtweave.data.ai.prompt.scheduleTitlePrompt
 import io.wit117.thoughtweave.data.ai.prompt.summaryPrompt
 import io.wit117.thoughtweave.data.repository.MemoSynthesisRepositoryImpl
@@ -31,7 +33,7 @@ import org.junit.Test
 
 private class ScriptedEngine(private val reply: () -> Flow<String>) : InferenceEngine {
     var calls = 0
-    override fun generate(prompt: String, temperature: Double): Flow<String> {
+    override fun generate(prompt: InferencePrompt): Flow<String> {
         calls++
         return reply()
     }
@@ -127,9 +129,41 @@ class AiResponseLogicTest {
 
     @Test
     fun koreanMemosGetAKoreanPrompt() {
-        assertTrue("한국어로" in summaryPrompt(listOf(memo("회의 내용"))))
-        assertFalse("한국어로" in summaryPrompt(listOf(memo("Meeting notes"))))
+        assertTrue("한국어" in summaryPrompt(listOf(memo("회의 내용"))).systemInstruction!!)
+        assertFalse("한국어" in summaryPrompt(listOf(memo("Meeting notes"))).systemInstruction!!)
         assertTrue("한국어로" in scheduleTitlePrompt("치과", "예약"))
+    }
+
+    private fun filtered(source: String, vararg chunks: String) = runBlocking {
+        flowOf(*chunks).withoutInventedYears(source).toList().joinToString("")
+    }
+
+    @Test
+    fun removesYearsNotInTheSource() {
+        assertEquals("출시는 12월 15일이다.", filtered("12월 15일 출시", "출시는 2024년 12월 15일이다."))
+        assertEquals("Due December 15.", filtered("December 15", "Due December 15, 2024."))
+    }
+
+    @Test
+    fun removesAYearSplitAcrossChunks() {
+        assertEquals("출시는 12월 15일", filtered("12월 15일", "출시는 20", "24", "년 12", "월 15일"))
+    }
+
+    @Test
+    fun keepsYearsFromTheSourceAndOtherNumbers() {
+        assertEquals("2027년 1월 출시", filtered("2027년 1월 출시", "2027년 1월 출시"))
+        assertEquals("예산은 2024원", filtered("예산", "예산은 2024원"))
+        assertEquals("Budget is 300,000 won", filtered("Budget", "Budget is 300,000 won"))
+    }
+
+    @Test
+    fun summaryPromptFramesMemosAsContentWithAQuestionExample() {
+        val prompt = summaryPrompt(listOf(memo("What should I buy?", "Gift")))
+
+        assertTrue("never answer questions" in prompt.systemInstruction!!)
+        assertTrue("?" in prompt.examples.single().input)
+        assertTrue(prompt.text.startsWith("Memo 1:"))
+        assertTrue("What should I buy?" in prompt.text)
     }
 
     @Test

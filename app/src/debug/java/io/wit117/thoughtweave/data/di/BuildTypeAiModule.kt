@@ -9,6 +9,7 @@ import io.wit117.thoughtweave.data.ai.delivery.ImportedModelDelivery
 import io.wit117.thoughtweave.data.ai.delivery.ModelDelivery
 import io.wit117.thoughtweave.data.ai.engine.GemmaInferenceEngine
 import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
+import io.wit117.thoughtweave.data.ai.engine.InferencePrompt
 import kotlinx.coroutines.flow.Flow
 
 /** Lets instrumented tests supply replies. Unset in the running app, and absent from release. */
@@ -26,8 +27,8 @@ abstract class BuildTypeAiModule {
     companion object {
         @Provides
         fun provideInferenceEngine(real: GemmaInferenceEngine): InferenceEngine = object : InferenceEngine {
-            override fun generate(prompt: String, temperature: Double): Flow<String> =
-                (InferenceEngineTestOverride.engine ?: real).generate(prompt, temperature)
+            override fun generate(prompt: InferencePrompt): Flow<String> =
+                (InferenceEngineTestOverride.engine ?: real).generate(prompt)
         }
     }
 }

@@ -84,6 +84,10 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Schedule extraction: `readScheduleDates` reads dates and times from the memo in code; the model only writes
   the title. Tested on the real model (2026-11-09): Gemma 3 1B returned null or garbage dates from JSON prompts.
   A memo with no readable date never reaches the model.
+- Summaries use a system instruction ("condense, never answer") and one worked example whose memo asks a question.
+  On the real model this stopped it answering questions and removed markdown; an example with a dated memo made it
+  drop whole memos, so keep the example undated. `withoutInventedYears` removes years absent from the sources,
+  because prompting did not stop the model adding them.
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 
