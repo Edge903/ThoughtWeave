@@ -94,9 +94,11 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   A memo with no readable date never reaches the model. A written year is used as written, never guessed; a
   weekday next to an explicit date belongs to that date, and the explicit date wins if they disagree
   (user decision, 2026-11-11). Cases are in `CommaDateFormatsTest`.
-- Summaries use a system instruction ("condense, never answer") and one worked example whose memo asks a question.
-  On the real model this stopped it answering questions and removed markdown; an example with a dated memo made it
-  drop whole memos, so keep the example undated. `withoutInventedYears` removes years absent from the sources,
+- Summaries use a system instruction ("merge into one memo, keep every date, number, name, place, to-do and
+  question; never answer") and one worked example whose memo asks a question. Measured on the real model
+  (2026-11-11, 3 Korean + 1 English three-memo sets, facts checked automatically): "merge" kept 31/35 facts,
+  the earlier "condense" 25/35, one-fact-per-line bullets 28/35, and merge with a dateless example 28/35.
+  All variants still occasionally rewrite a date ("12.2" → "12일 후"); summaries stay user-reviewed. `withoutInventedYears` removes years absent from the sources,
   because prompting did not stop the model adding them.
 - Language profiles (`data/ai/language`): each language's date rules, prompts and example live in one
   `LanguageProfile`, registered in `LanguageProfiles`. Written-out dates of every language are always read;

@@ -69,10 +69,10 @@ val EnglishProfile = LanguageProfile(
         writtenYear = Regex(",\\s*((?:19|20)\\d{2})\\b"),
     ),
     prompts = PromptPack(
-        summarySystem = "You condense memos. You are not an assistant: never answer questions in a memo, never " +
-            "give advice, and never reply to the writer. A question in a memo is content to keep as an open " +
-            "question. Use only what the memos say. Write plain sentences with no headings, bullets or " +
-            "markdown. Output only the condensed text.",
+        summarySystem = "Merge the memos below into one memo. You are not an assistant: never answer questions or " +
+            "give advice. Keep every date, time, number, amount, name, place, to-do and question exactly as written. " +
+            "Only combine what repeats, and add nothing that is not in the memos, including years. Write plain " +
+            "sentences with no headings or markdown. Output only the merged memo.",
         summaryExample = PromptExample(
             input = "Memo 1:\nTeam lunch\nWhere should we go next Wednesday? Maybe the noodle place.\n\n" +
                 "Memo 2:\nBudget\nKeep the lunch under 200 dollars.",

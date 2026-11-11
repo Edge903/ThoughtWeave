@@ -5,12 +5,30 @@ import io.wit117.thoughtweave.data.ai.parse.YEAR
 import io.wit117.thoughtweave.data.ai.parse.dateOf
 import io.wit117.thoughtweave.data.ai.parse.number
 import io.wit117.thoughtweave.data.ai.parse.timeOf
+import io.wit117.thoughtweave.data.ai.parse.upcoming
 import io.wit117.thoughtweave.data.ai.parse.weekdayDate
 import io.wit117.thoughtweave.domain.model.AppLanguages
 import java.time.DayOfWeek
 
 private const val WEEKDAYS = "월화수목금토일"
 private val RELATIVE_OFFSETS = mapOf("오늘" to 0L, "내일" to 1L, "모레" to 2L, "글피" to 3L)
+
+private const val LATIN_UNITS = "(?:kg|km|cm|mm|ml|g|m|l)(?![a-zA-Z])"
+
+/**
+ * "11.25", "12.2": month.day, common in Korean writing. Not read when it looks like a decimal: part of a
+ * longer number or version ("1.2.3", "v1.2"), or followed by a unit. Single-syllable Korean units count
+ * only when attached ("3.5배", "4.5점"), because after a space they start ordinary words ("12.2 회의",
+ * "3.1 개강"). A bare decimal with no unit (a score such as "4.5") can still be read as a date; the user
+ * reviews it in the editor.
+ */
+private val MONTH_FIRST_DOT = DatePattern(
+    Regex(
+        "(?<![\\d.vV])(\\d{1,2})\\.(\\d{1,2})(?!\\d)(?!\\.\\d)" +
+            "(?!(?:%|퍼센트|배|시간|분|초|원|만|억|천|점|개|명|번|회|도|°|℃|$LATIN_UNITS))" +
+            "(?!\\s+(?:%|퍼센트|시간|$LATIN_UNITS))",
+    ),
+) { m, today -> upcoming(today, m.number(1), m.number(2)) }
 
 private fun isPm(period: String): Boolean? = when (period) {
     "오후" -> true
@@ -31,7 +49,7 @@ val KoreanProfile = LanguageProfile(
                 today.plusDays(RELATIVE_OFFSETS.getValue(m.value))
             },
         ),
-        numericDates = listOf(MONTH_FIRST_SLASH),
+        numericDates = listOf(MONTH_FIRST_SLASH, MONTH_FIRST_DOT),
         weekdays = listOf(
             DatePattern(Regex("(다음\\s*주|이번\\s*주)?\\s*([월화수목금토일])요일")) { m, today ->
                 val day = DayOfWeek.of(WEEKDAYS.indexOf(m.groupValues[2]) + 1)
@@ -51,9 +69,9 @@ val KoreanProfile = LanguageProfile(
         writtenYear = Regex("((?:19|20)\\d{2})년\\s*"),
     ),
     prompts = PromptPack(
-        summarySystem = "당신은 메모를 압축하는 도구입니다. 비서가 아닙니다. 메모 속 질문에 답하거나 조언하거나 작성자에게 말을 " +
-            "걸지 마세요. 메모 속 질문은 아직 정해지지 않은 내용으로 그대로 남기세요. 메모에 있는 내용만 사용하고 연도나 사실을 " +
-            "추가하지 마세요. 제목, 목록, 마크다운 없이 평범한 한국어 문장으로 압축한 내용만 출력하세요.",
+        summarySystem = "아래 메모들을 하나의 메모로 합치세요. 비서가 아니므로 질문에 답하거나 조언하지 마세요. " +
+            "모든 날짜, 시간, 숫자, 금액, 이름, 장소, 할 일, 질문을 빠짐없이 그대로 유지하세요. 겹치는 내용만 합치고, " +
+            "메모에 없는 내용이나 연도는 추가하지 마세요. 제목이나 마크다운 없이 평범한 한국어 문장으로 결과만 출력하세요.",
         summaryExample = PromptExample(
             input = "메모 1:\n팀 점심\n다음 주 수요일에 어디로 갈까? 국수집도 괜찮을 듯.\n\n" +
                 "메모 2:\n예산\n점심 비용은 20만원 이내로.",

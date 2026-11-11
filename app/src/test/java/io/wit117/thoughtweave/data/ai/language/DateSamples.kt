@@ -25,6 +25,7 @@ val DATE_SAMPLES: Map<String, List<Pair<String, ScheduleDates>>> = mapOf(
         "내일 치과" to ScheduleDates(LocalDate.of(2026, 11, 10)),
         "다음주 금요일 회식" to ScheduleDates(LocalDate.of(2026, 11, 20)),
         "12/3 14:05 리뷰" to ScheduleDates(LocalDate.of(2026, 12, 3), LocalTime.of(14, 5)),
+        "11.25 보고서 마감" to ScheduleDates(LocalDate.of(2026, 11, 25)),
         "12월 1일부터 12월 3일까지 출장" to ScheduleDates(LocalDate.of(2026, 12, 3), null, LocalDate.of(2026, 12, 1)),
     ),
 )
