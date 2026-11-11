@@ -22,11 +22,29 @@ private const val MONTH_NAMES =
 private const val WEEKDAY_NAMES = "monday|tuesday|wednesday|thursday|friday|saturday|sunday"
 private val IGNORE_CASE = setOf(RegexOption.IGNORE_CASE)
 
-private val FULL_DATE = Regex("(\\d{4})\\s*[년./-]\\s*(\\d{1,2})\\s*[월./-]\\s*(\\d{1,2})\\s*일?")
-private val KOREAN_DATE = Regex("(\\d{1,2})\\s*월\\s*(\\d{1,2})\\s*일")
+/** A 19xx or 20xx year that is not part of a longer number or an amount ("2,027명", "2027원"). */
+private const val YEAR = "((?:19|20)\\d{2})(?!\\d)(?!,\\d{3})(?!\\s*(?:원|개|명|%))"
+
+/** ", 2027", ",2027" or " 2027" after an English month and day. */
+private const val YEAR_SUFFIX = "(?:\\s*,\\s*|\\s+)$YEAR"
+
+/** Separators allowed between year, month and day; commas only because the year has four digits. */
+private val FULL_DATE = Regex(
+    "(?<!\\d)((?:19|20)\\d{2})\\s*(?:년\\s*,?|[./,-])\\s*(\\d{1,2})\\s*(?:월|[./,-])\\s*(\\d{1,2})(?!\\d)\\s*일?",
+)
+private val KOREAN_DATE = Regex("(?:$YEAR\\s*년\\s*,?\\s*)?(\\d{1,2})\\s*월\\s*(\\d{1,2})\\s*일")
 private val SLASH_DATE = Regex("(?<![\\d/.])(\\d{1,2})/(\\d{1,2})(?![\\d/])")
-private val MONTH_DAY = Regex("\\b($MONTH_NAMES)\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b", IGNORE_CASE)
-private val DAY_MONTH = Regex("\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+($MONTH_NAMES)\\b", IGNORE_CASE)
+private val MONTH_DAY = Regex(
+    "\\b($MONTH_NAMES)\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b(?:$YEAR_SUFFIX)?",
+    IGNORE_CASE,
+)
+private val DAY_MONTH = Regex(
+    "\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+($MONTH_NAMES)\\b(?:$YEAR_SUFFIX)?",
+    IGNORE_CASE,
+)
+
+/** Only commas, spaces or brackets between a weekday and its date, as in "목요일, 12월 3일". */
+private val ATTACHED = Regex("[\\s,()]*")
 private val RELATIVE_DAY = Regex("오늘|내일|모레|글피|\\b(?:today|tonight|tomorrow)\\b", IGNORE_CASE)
 private val KOREAN_WEEKDAY = Regex("(다음\\s*주|이번\\s*주)?\\s*([월화수목금토일])요일")
 private val ENGLISH_WEEKDAY = Regex("\\b(next|this)?\\s*\\b($WEEKDAY_NAMES)\\b", IGNORE_CASE)
@@ -57,6 +75,10 @@ private fun upcoming(today: LocalDate, month: Int, day: Int): LocalDate? {
     return if (date.isBefore(today)) safeDate(today.year + 1, month, day) else date
 }
 
+/** A written year is used as it is; only a missing year is inferred. */
+private fun dateOf(today: LocalDate, year: String, month: Int, day: Int): LocalDate? =
+    if (year.isEmpty()) upcoming(today, month, day) else safeDate(year.toInt(), month, day)
+
 private fun weekdayDate(today: LocalDate, day: DayOfWeek, isNextWeek: Boolean): LocalDate =
     if (isNextWeek) {
         today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).plusWeeks(1)
@@ -73,20 +95,29 @@ private fun dateMentions(text: String, today: LocalDate): List<Mention<LocalDate
     fun MatchResult.number(group: Int) = groupValues[group].toInt()
 
     // Most specific first, so "2026/12/3" is not also read as 12/3.
-    val ordered = find(FULL_DATE) { safeDate(it.number(1), it.number(2), it.number(3)) } +
-        find(KOREAN_DATE) { upcoming(today, it.number(1), it.number(2)) } +
-        find(SLASH_DATE) { upcoming(today, it.number(1), it.number(2)) } +
-        find(MONTH_DAY) { upcoming(today, monthNumber(it.groupValues[1]), it.number(2)) } +
-        find(DAY_MONTH) { upcoming(today, monthNumber(it.groupValues[2]), it.number(1)) } +
-        find(RELATIVE_DAY) { today.plusDays(RELATIVE_OFFSETS.getValue(it.value.lowercase())) } +
-        find(KOREAN_WEEKDAY) {
-            val day = DayOfWeek.of(KOREAN_WEEKDAYS.indexOf(it.groupValues[2]) + 1)
-            weekdayDate(today, day, it.groupValues[1].startsWith("다음"))
-        } +
-        find(ENGLISH_WEEKDAY) {
-            weekdayDate(today, DayOfWeek.valueOf(it.groupValues[2].uppercase()), it.groupValues[1].equals("next", true))
-        }
-    return withoutOverlaps(ordered)
+    val explicit = withoutOverlaps(
+        find(FULL_DATE) { safeDate(it.number(1), it.number(2), it.number(3)) } +
+            find(KOREAN_DATE) { dateOf(today, it.groupValues[1], it.number(2), it.number(3)) } +
+            find(SLASH_DATE) { upcoming(today, it.number(1), it.number(2)) } +
+            find(MONTH_DAY) { dateOf(today, it.groupValues[3], monthNumber(it.groupValues[1]), it.number(2)) } +
+            find(DAY_MONTH) { dateOf(today, it.groupValues[3], monthNumber(it.groupValues[2]), it.number(1)) } +
+            find(RELATIVE_DAY) { today.plusDays(RELATIVE_OFFSETS.getValue(it.value.lowercase())) },
+    )
+    val weekdays = find(KOREAN_WEEKDAY) {
+        val day = DayOfWeek.of(KOREAN_WEEKDAYS.indexOf(it.groupValues[2]) + 1)
+        weekdayDate(today, day, it.groupValues[1].startsWith("다음"))
+    } + find(ENGLISH_WEEKDAY) {
+        weekdayDate(today, DayOfWeek.valueOf(it.groupValues[2].uppercase()), it.groupValues[1].equals("next", true))
+    }
+    // A weekday written next to a date describes that date, and the explicit date wins even if they disagree.
+    val standaloneWeekdays = weekdays.filter { weekday -> explicit.none { isAttached(text, weekday, it) } }
+    return withoutOverlaps(explicit + standaloneWeekdays)
+}
+
+private fun <T> isAttached(text: String, a: Mention<T>, b: Mention<T>): Boolean {
+    val (first, second) = if (a.range.first < b.range.first) a to b else b to a
+    if (first.range.last >= second.range.first) return true
+    return ATTACHED.matches(text.substring(first.range.last + 1, second.range.first))
 }
 
 private fun timeOf(period: String, hour: Int, minute: Int): LocalTime? {

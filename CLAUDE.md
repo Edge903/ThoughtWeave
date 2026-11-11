@@ -83,7 +83,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   `InferenceEngineTestOverride`; it is never set in the running app.
 - Schedule extraction: `readScheduleDates` reads dates and times from the memo in code; the model only writes
   the title. Tested on the real model (2026-11-09): Gemma 3 1B returned null or garbage dates from JSON prompts.
-  A memo with no readable date never reaches the model.
+  A memo with no readable date never reaches the model. A written year is used as written, never guessed; a
+  weekday next to an explicit date belongs to that date, and the explicit date wins if they disagree
+  (user decision, 2026-11-11). Cases are in `CommaDateFormatsTest`.
 - Summaries use a system instruction ("condense, never answer") and one worked example whose memo asks a question.
   On the real model this stopped it answering questions and removed markdown; an example with a dated memo made it
   drop whole memos, so keep the example undated. `withoutInventedYears` removes years absent from the sources,
