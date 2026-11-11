@@ -17,6 +17,15 @@ Open tasks. Remove an item (or move it to CLAUDE.md as a decision) once it is do
       labels; retake S03 "before consent" (`images/S03_1.png`) from a release build (it shows "Import model (debug)").
 - [ ] **TOC.** Update the table of contents in Word (select it, F9, "Update entire table") after edits.
 
+## Screen design document (`docs/04_화면설계서.pptx`)
+Built from `docs/04_화면설계서+양식.pptx` with Korean emulator captures of sample data (2026-11-11).
+- [ ] **Form footer.** The cover layout still has the form's confidentiality text ("petdoc", "Your company
+      name") and "Copyrights 2025 © AISoftware". Kept as given; decide whether to change them.
+- [ ] **Planning schedule.** The 서비스 개요 gantt shows only commit dates (11/3–11/11). Add earlier planning work
+      (requirements, wireframes) if its dates are known.
+- [ ] **AI times.** 기대효과 says the PER-04/05 times come after the Galaxy S23 measurement; fill them in then.
+- [ ] **Keep in sync.** Retake the affected captures and update the slide when a screen changes.
+
 ## Language settings (planned 2026-11-11, before Phase 6)
 Decided: UI, input and output language settings on a new S06; English and Korean now, structured so a language
 is added in one place. `appcompat` returns for per-app UI language on Android 7–12. Output languages other than
