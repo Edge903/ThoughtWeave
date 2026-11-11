@@ -64,7 +64,7 @@ fun MemoEditorContent(
     reserveFabSpace: Boolean = false,
     isReadOnly: Boolean = false,
     showProgress: Boolean = false,
-    notice: String? = null,
+    notices: List<String> = emptyList(),
 ) {
     var showDiscardDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -107,7 +107,7 @@ fun MemoEditorContent(
                     .fillMaxSize(),
             ) {
                 if (showProgress) LinearProgressIndicator(Modifier.fillMaxWidth())
-                if (notice != null) InfoBanner(notice)
+                notices.forEach { InfoBanner(it) }
                 TextField(
                     value = draft.title,
                     onValueChange = onTitleChange,

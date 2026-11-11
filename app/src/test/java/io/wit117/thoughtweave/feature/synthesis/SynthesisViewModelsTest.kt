@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import io.wit117.thoughtweave.domain.model.AgreementStatus
 import io.wit117.thoughtweave.domain.model.AiLanguagePlan
+import io.wit117.thoughtweave.testDateCheck
 import io.wit117.thoughtweave.testLanguageResolver
 import io.wit117.thoughtweave.domain.model.AiModelStatus
 import io.wit117.thoughtweave.domain.model.Memo
@@ -91,7 +92,7 @@ class SynthesisViewModelsTest {
     private fun SynthesisViewModel.loaded() = uiState.value as SynthesisUiState.Loaded
 
     private fun result(ids: List<Long>, synthesis: MemoSynthesisRepository = FakeSynthesis()) =
-        SynthesisResultViewModel(ids, memos, synthesis, testLanguageResolver(), handle)
+        SynthesisResultViewModel(ids, memos, synthesis, testLanguageResolver(), testDateCheck(), handle)
 
     @Test
     fun needsTwoSelectedMemosAndAi() = runTest(dispatcher) {
@@ -264,5 +265,42 @@ class SynthesisViewModelsTest {
         assertEquals(SynthesisPhase.READY, restored.phase)
         assertEquals(MemoDraft("", "edited"), restored.draft)
         assertEquals(null, synthesis.received)
+    }
+
+    @Test
+    fun changedDateIsFlaggedAndClearsOnceFixed() {
+        // The reported case: "12.2" became "12일 후" in the summary. Today is 2026-11-09 (testDateCheck).
+        val a = memos.add("할 일", "12.2까지 기획서 제출")
+        val b = memos.add("예산", "총 예산 1200만원")
+        val viewModel = result(listOf(a.id, b.id), FakeSynthesis(result = { flowOf("기획서는 12일 후 제출, 예산 1200만원") }))
+
+        val check = viewModel.uiState.value.dateCheck
+        assertEquals(listOf(java.time.LocalDate.of(2026, 12, 2)), check?.missing)
+        assertTrue(check!!.added.isEmpty())
+
+        viewModel.onContentChange("기획서는 12월 2일까지 제출, 예산 1200만원")
+
+        assertEquals(null, viewModel.uiState.value.dateCheck)
+    }
+
+    @Test
+    fun dateTurnedIntoAWeekdayIsFlaggedBothWays() {
+        // "11.25" became "다음 주 수요일" (2026-11-18 from 2026-11-09), so one date is missing and one added.
+        val a = memos.add("회의", "11.25 오후 2시 회의")
+        val b = memos.add("메모", "장소는 3층")
+        val viewModel = result(listOf(a.id, b.id), FakeSynthesis(result = { flowOf("다음 주 수요일 오후 2시 3층 회의") }))
+
+        val check = viewModel.uiState.value.dateCheck!!
+        assertEquals(listOf(java.time.LocalDate.of(2026, 11, 25)), check.missing)
+        assertEquals(listOf(java.time.LocalDate.of(2026, 11, 18)), check.added)
+    }
+
+    @Test
+    fun sameDateInAnotherFormatIsNotFlagged() {
+        val a = memos.add("발표", "12.2 발표")
+        val b = memos.add("장소", "본관")
+        val viewModel = result(listOf(a.id, b.id), FakeSynthesis(result = { flowOf("12월 2일 본관에서 발표") }))
+
+        assertEquals(null, viewModel.uiState.value.dateCheck)
     }
 }

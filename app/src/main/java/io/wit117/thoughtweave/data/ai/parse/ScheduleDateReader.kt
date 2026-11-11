@@ -98,6 +98,10 @@ fun readScheduleDates(text: String, today: LocalDate, input: LanguageProfile = E
     )
 }
 
+/** Every date written in [text], including weekdays and relative days resolved against [today]. */
+fun readAllDates(text: String, today: LocalDate, input: LanguageProfile = EnglishProfile): Set<LocalDate> =
+    dateMentions(text, today, input).map { it.value }.toSet()
+
 /** Cleans the model's title reply; null if nothing usable remains. */
 fun cleanTitle(reply: String): String? = reply.lineSequence()
     .map { it.trim().trim('*', '#', '"', '\'', '`', ' ') }

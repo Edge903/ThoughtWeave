@@ -23,6 +23,8 @@ import io.wit117.thoughtweave.data.repository.ScheduleExtractionRepositoryImpl
 import io.wit117.thoughtweave.data.repository.UiLanguageRepositoryImpl
 import io.wit117.thoughtweave.data.repository.LanguageSettingsRepositoryImpl
 import io.wit117.thoughtweave.data.ai.language.AiLanguageCatalogImpl
+import io.wit117.thoughtweave.data.ai.parse.TextDateReaderImpl
+import io.wit117.thoughtweave.domain.usecase.TextDateReader
 import io.wit117.thoughtweave.domain.repository.AiLanguageCatalog
 import io.wit117.thoughtweave.domain.repository.LanguageSettingsRepository
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
@@ -75,6 +77,9 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindAiLanguageCatalog(impl: AiLanguageCatalogImpl): AiLanguageCatalog
+
+    @Binds
+    abstract fun bindTextDateReader(impl: TextDateReaderImpl): TextDateReader
 
     @Binds
     abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository

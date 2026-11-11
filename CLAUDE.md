@@ -98,7 +98,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   question; never answer") and one worked example whose memo asks a question. Measured on the real model
   (2026-11-11, 3 Korean + 1 English three-memo sets, facts checked automatically): "merge" kept 31/35 facts,
   the earlier "condense" 25/35, one-fact-per-line bullets 28/35, and merge with a dateless example 28/35.
-  All variants still occasionally rewrite a date ("12.2" → "12일 후"); summaries stay user-reviewed. `withoutInventedYears` removes years absent from the sources,
+  All variants still occasionally rewrite a date ("12.2" → "12일 후"), so `CheckSummaryDatesUseCase` compares the
+  dates in the sources and the summary (as calendar days, with the schedule date reader) and S02-C warns about
+  missing or added dates, re-checking as the user edits. `withoutInventedYears` removes years absent from the sources,
   because prompting did not stop the model adding them.
 - Language profiles (`data/ai/language`): each language's date rules, prompts and example live in one
   `LanguageProfile`, registered in `LanguageProfiles`. Written-out dates of every language are always read;

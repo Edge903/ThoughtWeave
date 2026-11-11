@@ -6,10 +6,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
+import io.wit117.thoughtweave.core.ui.component.formatLocalDate
 import io.wit117.thoughtweave.feature.memo.editor.MemoEditorContent
 import kotlinx.coroutines.launch
 
@@ -24,6 +26,7 @@ fun SynthesisResultScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val saveFailedMessage = stringResource(R.string.memo_save_failed)
+    val context = LocalContext.current
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
@@ -49,9 +52,17 @@ fun SynthesisResultScreen(
         onBack = onBack,
         modifier = modifier,
         isReadOnly = state.phase != SynthesisPhase.READY,
-        notice = state.untranslated?.let { (writtenIn, requested) ->
-            stringResource(R.string.ai_translation_unavailable, requested.nativeName, writtenIn.nativeName)
-        },
+        notices = listOfNotNull(
+            state.untranslated?.let { (writtenIn, requested) ->
+                stringResource(R.string.ai_translation_unavailable, requested.nativeName, writtenIn.nativeName)
+            },
+            state.dateCheck?.missing?.takeIf { it.isNotEmpty() }?.let { dates ->
+                stringResource(R.string.summary_dates_missing, dates.joinToString { formatLocalDate(context, it) })
+            },
+            state.dateCheck?.added?.takeIf { it.isNotEmpty() }?.let { dates ->
+                stringResource(R.string.summary_dates_added, dates.joinToString { formatLocalDate(context, it) })
+            },
+        ),
         showProgress = state.phase == SynthesisPhase.GENERATING,
     )
 

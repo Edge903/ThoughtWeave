@@ -8,6 +8,11 @@ import io.wit117.thoughtweave.domain.model.OutputLanguageSetting
 import io.wit117.thoughtweave.domain.repository.LanguageSettingsRepository
 import io.wit117.thoughtweave.domain.repository.UiLanguageRepository
 import io.wit117.thoughtweave.domain.usecase.ResolveAiLanguageUseCase
+import io.wit117.thoughtweave.data.ai.parse.TextDateReaderImpl
+import io.wit117.thoughtweave.domain.usecase.CheckSummaryDatesUseCase
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneOffset
 
 internal class FakeLanguageSettings(var settings: LanguageSettings = LanguageSettings()) : LanguageSettingsRepository {
     override fun current() = settings
@@ -26,6 +31,13 @@ internal class FakeUiLanguage(var language: AppLanguage? = null) : UiLanguageRep
         this.language = language
     }
 }
+
+/** The real date reader, with today fixed at Monday 2026-11-09. */
+internal fun testDateCheck() = CheckSummaryDatesUseCase(
+    TextDateReaderImpl(),
+    Clock.fixed(Instant.parse("2026-11-09T03:00:00Z"), ZoneOffset.UTC),
+    ZoneOffset.UTC,
+)
 
 /** The real catalog of registered profiles, with default settings. */
 internal fun testLanguageResolver(

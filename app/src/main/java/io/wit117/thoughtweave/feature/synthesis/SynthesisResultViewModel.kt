@@ -10,7 +10,9 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.wit117.thoughtweave.domain.model.AppLanguage
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.domain.usecase.CheckSummaryDatesUseCase
 import io.wit117.thoughtweave.domain.usecase.ResolveAiLanguageUseCase
+import io.wit117.thoughtweave.domain.usecase.SummaryDateCheck
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisException
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
@@ -34,6 +36,8 @@ data class SynthesisResultUiState(
     val isInputTooLong: Boolean = false,
     /** Set when the chosen output language could not be used: (written in, requested). */
     val untranslated: Pair<AppLanguage, AppLanguage>? = null,
+    /** Dates that differ between the sources and the summary; updated as the user edits. */
+    val dateCheck: SummaryDateCheck? = null,
 ) {
     /** A finished summary exists only in memory until saved, so leaving must be confirmed. */
     val isDirty: Boolean get() = phase == SynthesisPhase.READY
@@ -52,6 +56,7 @@ class SynthesisResultViewModel @AssistedInject constructor(
     private val memoRepository: MemoRepository,
     private val synthesisRepository: MemoSynthesisRepository,
     private val resolveLanguage: ResolveAiLanguageUseCase,
+    private val checkDates: CheckSummaryDatesUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -61,6 +66,10 @@ class SynthesisResultViewModel @AssistedInject constructor(
     }
 
     private val draftStore = MemoDraftStore(savedStateHandle)
+
+    /** Kept to re-check dates as the user edits. Absent after process death, which skips the check. */
+    private var sources: List<Memo> = emptyList()
+    private var summaryLanguage: AppLanguage? = null
 
     private val _uiState = MutableStateFlow(SynthesisResultUiState())
     val uiState: StateFlow<SynthesisResultUiState> = _uiState.asStateFlow()
@@ -95,7 +104,7 @@ class SynthesisResultViewModel @AssistedInject constructor(
                 false
             }
             if (succeeded) {
-                _uiState.update { it.copy(phase = SynthesisPhase.READY) }
+                _uiState.update { it.copy(phase = SynthesisPhase.READY, dateCheck = dateCheckFor(it.draft)) }
                 draftStore.persist(_uiState.value.draft)
             } else {
                 _uiState.value = SynthesisResultUiState(SynthesisPhase.FAILED, isInputTooLong = isTooLong)
@@ -107,8 +116,15 @@ class SynthesisResultViewModel @AssistedInject constructor(
         memoRepository.getMemo(id) ?: throw MemoSynthesisException("Source memo $id no longer exists")
     }
 
+    private fun dateCheckFor(draft: MemoDraft): SummaryDateCheck? {
+        val language = summaryLanguage ?: return null
+        return checkDates(sources, draft.title + "\n" + draft.content, language).takeIf { it.hasProblems }
+    }
+
     private suspend fun streamSummary(sources: List<Memo>) {
         val languages = resolveLanguage(sources.joinToString("\n") { it.title + "\n" + it.content })
+        this.sources = sources
+        summaryLanguage = languages.output
         _uiState.update { state ->
             state.copy(untranslated = languages.unavailableOutput?.let { languages.input to it })
         }
@@ -123,7 +139,10 @@ class SynthesisResultViewModel @AssistedInject constructor(
 
     private fun updateDraft(transform: (MemoDraft) -> MemoDraft) {
         if (_uiState.value.phase != SynthesisPhase.READY) return
-        _uiState.update { it.copy(draft = transform(it.draft)) }
+        _uiState.update {
+            val draft = transform(it.draft)
+            it.copy(draft = draft, dateCheck = dateCheckFor(draft))
+        }
         draftStore.persist(_uiState.value.draft)
     }
 
