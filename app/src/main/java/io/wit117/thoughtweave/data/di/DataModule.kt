@@ -21,6 +21,10 @@ import io.wit117.thoughtweave.data.repository.MemoRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoSynthesisRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleExtractionRepositoryImpl
 import io.wit117.thoughtweave.data.repository.UiLanguageRepositoryImpl
+import io.wit117.thoughtweave.data.repository.LanguageSettingsRepositoryImpl
+import io.wit117.thoughtweave.data.ai.language.AiLanguageCatalogImpl
+import io.wit117.thoughtweave.domain.repository.AiLanguageCatalog
+import io.wit117.thoughtweave.domain.repository.LanguageSettingsRepository
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.AiModelRepository
@@ -65,6 +69,12 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindUiLanguageRepository(impl: UiLanguageRepositoryImpl): UiLanguageRepository
+
+    @Binds
+    abstract fun bindLanguageSettingsRepository(impl: LanguageSettingsRepositoryImpl): LanguageSettingsRepository
+
+    @Binds
+    abstract fun bindAiLanguageCatalog(impl: AiLanguageCatalogImpl): AiLanguageCatalog
 
     @Binds
     abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository

@@ -35,6 +35,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.domain.model.AppLanguage
 import io.wit117.thoughtweave.domain.model.AppLanguages
+import io.wit117.thoughtweave.domain.model.InputLanguageSetting
+import io.wit117.thoughtweave.domain.model.LanguageSettings
+import io.wit117.thoughtweave.domain.model.OutputLanguageSetting
+import io.wit117.thoughtweave.domain.repository.AiLanguageCatalog
+import io.wit117.thoughtweave.domain.repository.LanguageSettingsRepository
 import io.wit117.thoughtweave.domain.repository.UiLanguageRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,21 +50,43 @@ import kotlinx.coroutines.flow.asStateFlow
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val uiLanguageRepository: UiLanguageRepository,
+    private val languageSettingsRepository: LanguageSettingsRepository,
+    catalog: AiLanguageCatalog,
 ) : ViewModel() {
+
+    val inputLanguages: List<AppLanguage> = catalog.inputLanguages
+
+    /** Only languages some verified translation can produce; empty hides the output setting. */
+    val outputLanguages: List<AppLanguage> = catalog.translationTargets
 
     private val _uiLanguage = MutableStateFlow(uiLanguageRepository.current())
 
     /** Null means the app follows the system language. */
     val uiLanguage: StateFlow<AppLanguage?> = _uiLanguage.asStateFlow()
 
+    private val _aiLanguages = MutableStateFlow(languageSettingsRepository.current())
+    val aiLanguages: StateFlow<LanguageSettings> = _aiLanguages.asStateFlow()
+
     fun setUiLanguage(language: AppLanguage?) {
         if (language == _uiLanguage.value) return
         _uiLanguage.value = language
         uiLanguageRepository.set(language)
     }
+
+    fun setInputLanguage(setting: InputLanguageSetting) {
+        languageSettingsRepository.setInput(setting)
+        _aiLanguages.value = languageSettingsRepository.current()
+    }
+
+    fun setOutputLanguage(setting: OutputLanguageSetting) {
+        languageSettingsRepository.setOutput(setting)
+        _aiLanguages.value = languageSettingsRepository.current()
+    }
 }
 
-/** S06 – 설정. Input and output language settings for AI arrive with language profiles (L2). */
+private enum class LanguageDialog { UI, INPUT, OUTPUT }
+
+/** S06 – 설정. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -68,7 +95,14 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiLanguage by viewModel.uiLanguage.collectAsStateWithLifecycle()
-    var showLanguageDialog by rememberSaveable { mutableStateOf(false) }
+    val aiLanguages by viewModel.aiLanguages.collectAsStateWithLifecycle()
+    var openDialog by rememberSaveable { mutableStateOf<LanguageDialog?>(null) }
+
+    val systemLabel = stringResource(R.string.language_system)
+    val autoLabel = stringResource(R.string.language_auto)
+    val sameAsInputLabel = stringResource(R.string.language_same_as_input)
+    val inputSetting = aiLanguages.input
+    val outputSetting = aiLanguages.output
 
     Scaffold(
         modifier = modifier,
@@ -87,60 +121,105 @@ fun SettingsScreen(
         },
     ) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_ui_language)) },
-                supportingContent = { Text(uiLanguage?.nativeName ?: stringResource(R.string.language_system)) },
-                modifier = Modifier.clickable { showLanguageDialog = true },
+            SettingRow(
+                title = stringResource(R.string.settings_ui_language),
+                value = uiLanguage?.nativeName ?: systemLabel,
+                onClick = { openDialog = LanguageDialog.UI },
             )
+            SettingRow(
+                title = stringResource(R.string.settings_ai_input_language),
+                value = (inputSetting as? InputLanguageSetting.Specific)?.language?.nativeName ?: autoLabel,
+                onClick = { openDialog = LanguageDialog.INPUT },
+            )
+            if (viewModel.outputLanguages.isNotEmpty()) {
+                SettingRow(
+                    title = stringResource(R.string.settings_ai_output_language),
+                    value = (outputSetting as? OutputLanguageSetting.Specific)?.language?.nativeName
+                        ?: sameAsInputLabel,
+                    onClick = { openDialog = LanguageDialog.OUTPUT },
+                )
+            }
         }
     }
 
-    if (showLanguageDialog) {
-        LanguageDialog(
+    when (openDialog) {
+        LanguageDialog.UI -> ChoiceDialog(
+            title = stringResource(R.string.settings_ui_language),
+            options = listOf<AppLanguage?>(null) + AppLanguages.all,
+            label = { it?.nativeName ?: systemLabel },
             selected = uiLanguage,
-            onSelect = {
-                showLanguageDialog = false
-                viewModel.setUiLanguage(it)
-            },
-            onDismiss = { showLanguageDialog = false },
+            onSelect = viewModel::setUiLanguage,
+            onClose = { openDialog = null },
         )
+        LanguageDialog.INPUT -> ChoiceDialog(
+            title = stringResource(R.string.settings_ai_input_language),
+            options = listOf(InputLanguageSetting.Auto) +
+                viewModel.inputLanguages.map { InputLanguageSetting.Specific(it) },
+            label = { (it as? InputLanguageSetting.Specific)?.language?.nativeName ?: autoLabel },
+            selected = inputSetting,
+            onSelect = viewModel::setInputLanguage,
+            onClose = { openDialog = null },
+        )
+        LanguageDialog.OUTPUT -> ChoiceDialog(
+            title = stringResource(R.string.settings_ai_output_language),
+            options = listOf(OutputLanguageSetting.SameAsInput) +
+                viewModel.outputLanguages.map { OutputLanguageSetting.Specific(it) },
+            label = { (it as? OutputLanguageSetting.Specific)?.language?.nativeName ?: sameAsInputLabel },
+            selected = outputSetting,
+            onSelect = viewModel::setOutputLanguage,
+            onClose = { openDialog = null },
+        )
+        null -> Unit
     }
 }
 
 @Composable
-private fun LanguageDialog(
-    selected: AppLanguage?,
-    onSelect: (AppLanguage?) -> Unit,
-    onDismiss: () -> Unit,
+private fun SettingRow(title: String, value: String, onClick: () -> Unit) {
+    ListItem(
+        headlineContent = { Text(title) },
+        supportingContent = { Text(value) },
+        modifier = Modifier.clickable(onClick = onClick),
+    )
+}
+
+@Composable
+private fun <T> ChoiceDialog(
+    title: String,
+    options: List<T>,
+    label: (T) -> String,
+    selected: T,
+    onSelect: (T) -> Unit,
+    onClose: () -> Unit,
 ) {
-    val options: List<Pair<AppLanguage?, String>> =
-        listOf(null to stringResource(R.string.language_system)) + AppLanguages.all.map { it to it.nativeName }
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_ui_language)) },
+        onDismissRequest = onClose,
+        title = { Text(title) },
         text = {
             Column(Modifier.selectableGroup()) {
-                options.forEach { (language, label) ->
+                options.forEach { option ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .selectable(
-                                selected = language == selected,
-                                onClick = { onSelect(language) },
+                                selected = option == selected,
+                                onClick = {
+                                    onClose()
+                                    onSelect(option)
+                                },
                                 role = Role.RadioButton,
                             )
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        RadioButton(selected = language == selected, onClick = null)
-                        Text(label, modifier = Modifier.padding(start = 16.dp))
+                        RadioButton(selected = option == selected, onClick = null)
+                        Text(label(option), modifier = Modifier.padding(start = 16.dp))
                     }
                 }
             }
         },
         confirmButton = {},
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onClose) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }

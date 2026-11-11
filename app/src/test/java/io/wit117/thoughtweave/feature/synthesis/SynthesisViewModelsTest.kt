@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import io.wit117.thoughtweave.domain.model.AgreementStatus
+import io.wit117.thoughtweave.domain.model.AiLanguagePlan
+import io.wit117.thoughtweave.testLanguageResolver
 import io.wit117.thoughtweave.domain.model.AiModelStatus
 import io.wit117.thoughtweave.domain.model.Memo
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
@@ -39,7 +41,7 @@ private class FakeSynthesis(
 ) : MemoSynthesisRepository {
     var received: List<Memo>? = null
 
-    override fun summarize(memos: List<Memo>): Flow<String> {
+    override fun summarize(memos: List<Memo>, languages: AiLanguagePlan): Flow<String> {
         received = memos
         return result()
     }
@@ -89,7 +91,7 @@ class SynthesisViewModelsTest {
     private fun SynthesisViewModel.loaded() = uiState.value as SynthesisUiState.Loaded
 
     private fun result(ids: List<Long>, synthesis: MemoSynthesisRepository = FakeSynthesis()) =
-        SynthesisResultViewModel(ids, memos, synthesis, handle)
+        SynthesisResultViewModel(ids, memos, synthesis, testLanguageResolver(), handle)
 
     @Test
     fun needsTwoSelectedMemosAndAi() = runTest(dispatcher) {

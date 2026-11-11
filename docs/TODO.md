@@ -21,8 +21,9 @@ Open tasks. Remove an item (or move it to CLAUDE.md as a decision) once it is do
 Decided: UI, input and output language settings on a new S06; English and Korean now, structured so a language
 is added in one place. `appcompat` returns for per-app UI language on Android 7–12. Output languages other than
 the input are offered only for pairs that pass a real-model test. One global input setting, default Auto.
-- [ ] **L2** Language profiles for AI (prompts, date rules, year filter), input/output resolution, en↔ko
-      measurement on the real model.
+- [ ] **Translation with a stronger model.** en↔ko failed on Gemma 3 1B (dates changed, facts dropped), so no
+      output language is offered. Re-run the translation measurement if the model changes, and add passing pairs
+      to `LanguageProfiles.verifiedTranslations`.
 - [ ] **L3** Write `docs/ADDING_A_LANGUAGE.md` and a contract test that checks every registered language.
 
 ## Phase 6 (on hold since 2026-11-11)

@@ -8,7 +8,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.wit117.thoughtweave.domain.model.AppLanguage
 import io.wit117.thoughtweave.domain.model.Memo
+import io.wit117.thoughtweave.domain.usecase.ResolveAiLanguageUseCase
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisException
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
@@ -30,6 +32,8 @@ data class SynthesisResultUiState(
     val draft: MemoDraft = MemoDraft(),
     val isBusy: Boolean = false,
     val isInputTooLong: Boolean = false,
+    /** Set when the chosen output language could not be used: (written in, requested). */
+    val untranslated: Pair<AppLanguage, AppLanguage>? = null,
 ) {
     /** A finished summary exists only in memory until saved, so leaving must be confirmed. */
     val isDirty: Boolean get() = phase == SynthesisPhase.READY
@@ -47,6 +51,7 @@ class SynthesisResultViewModel @AssistedInject constructor(
     @Assisted private val sourceMemoIds: List<Long>,
     private val memoRepository: MemoRepository,
     private val synthesisRepository: MemoSynthesisRepository,
+    private val resolveLanguage: ResolveAiLanguageUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -103,7 +108,11 @@ class SynthesisResultViewModel @AssistedInject constructor(
     }
 
     private suspend fun streamSummary(sources: List<Memo>) {
-        synthesisRepository.summarize(sources).collect { chunk ->
+        val languages = resolveLanguage(sources.joinToString("\n") { it.title + "\n" + it.content })
+        _uiState.update { state ->
+            state.copy(untranslated = languages.unavailableOutput?.let { languages.input to it })
+        }
+        synthesisRepository.summarize(sources, languages).collect { chunk ->
             _uiState.update { it.copy(draft = it.draft.copy(content = it.draft.content + chunk)) }
         }
     }

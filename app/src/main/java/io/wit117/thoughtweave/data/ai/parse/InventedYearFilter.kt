@@ -1,19 +1,21 @@
 package io.wit117.thoughtweave.data.ai.parse
 
+import io.wit117.thoughtweave.data.ai.language.LanguageProfiles
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-/** "2024년 " in Korean text, or ", 2024" after a date in English text. */
-private val YEAR = Regex("((?:19|20)\\d{2})년\\s*|,\\s*((?:19|20)\\d{2})\\b")
 private val YEAR_DIGITS = Regex("(?:19|20)\\d{2}")
 
 /** Enough text to hold back so a year split across chunks is still seen whole. */
 private const val HOLD_BACK_CHARS = 8
 
-private fun removeYears(text: String, allowed: Set<String>): String = YEAR.replace(text) { match ->
-    val year = match.groupValues[1].ifEmpty { match.groupValues[2] }
-    if (year in allowed) match.value else ""
-}
+/** How each language attaches a year to a date ("2024년 ", ", 2024"); group 1 is the year. */
+private fun yearPatterns(): List<Regex> = LanguageProfiles.all.mapNotNull { it.dateRules?.writtenYear }
+
+private fun removeYears(text: String, allowed: Set<String>): String =
+    yearPatterns().fold(text) { current, pattern ->
+        pattern.replace(current) { match -> if (match.groupValues[1] in allowed) match.value else "" }
+    }
 
 /**
  * Gemma 3 1B adds a year to dates written without one, and prompting does not stop it. Removes any

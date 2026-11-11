@@ -13,12 +13,18 @@ import javax.inject.Inject
 class ExtractScheduleUseCase @Inject constructor(
     private val memoRepository: MemoRepository,
     private val extractionRepository: ScheduleExtractionRepository,
+    private val resolveLanguage: ResolveAiLanguageUseCase,
     private val clock: Clock,
     private val zone: ZoneId,
 ) {
     suspend operator fun invoke(memoId: Long): ExtractedSchedule {
         val memo = memoRepository.getMemo(memoId)
             ?: throw ScheduleExtractionException("Memo $memoId no longer exists")
-        return extractionRepository.extract(memo.title, memo.content, LocalDate.now(clock.withZone(zone)))
+        return extractionRepository.extract(
+            title = memo.title,
+            content = memo.content,
+            today = LocalDate.now(clock.withZone(zone)),
+            languages = resolveLanguage(memo.title + "\n" + memo.content),
+        )
     }
 }

@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
+import io.wit117.thoughtweave.core.ui.component.InfoBanner
 
 /** The user-editable fields of a memo. */
 data class MemoDraft(val title: String = "", val content: String = "") {
@@ -63,6 +64,7 @@ fun MemoEditorContent(
     reserveFabSpace: Boolean = false,
     isReadOnly: Boolean = false,
     showProgress: Boolean = false,
+    notice: String? = null,
 ) {
     var showDiscardDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -105,6 +107,7 @@ fun MemoEditorContent(
                     .fillMaxSize(),
             ) {
                 if (showProgress) LinearProgressIndicator(Modifier.fillMaxWidth())
+                if (notice != null) InfoBanner(notice)
                 TextField(
                     value = draft.title,
                     onValueChange = onTitleChange,

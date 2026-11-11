@@ -127,6 +127,11 @@
     <string name="title_settings">설정</string>
     <string name="settings_ui_language">앱 언어</string>
     <string name="language_system">시스템 기본값</string>
+    <string name="settings_ai_input_language">AI 입력 언어</string>
+    <string name="settings_ai_output_language">AI 출력 언어</string>
+    <string name="language_auto">자동 감지</string>
+    <string name="language_same_as_input">입력 언어와 같게</string>
+    <string name="ai_translation_unavailable">%2$s 메모를 %1$s로 작성하는 기능은 아직 지원되지 않아 이 요약은 %2$s로 작성했습니다.</string>
 
     <string name="title_licenses">라이선스 및 고지</string>
     <string name="license_gemma_terms">Gemma 이용 약관</string>

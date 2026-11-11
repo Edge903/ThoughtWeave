@@ -49,6 +49,9 @@ fun SynthesisResultScreen(
         onBack = onBack,
         modifier = modifier,
         isReadOnly = state.phase != SynthesisPhase.READY,
+        notice = state.untranslated?.let { (writtenIn, requested) ->
+            stringResource(R.string.ai_translation_unavailable, requested.nativeName, writtenIn.nativeName)
+        },
         showProgress = state.phase == SynthesisPhase.GENERATING,
     )
 

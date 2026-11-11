@@ -2,7 +2,9 @@ package io.wit117.thoughtweave.feature.schedule
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.SavedStateHandle
+import io.wit117.thoughtweave.domain.model.AiLanguagePlan
 import io.wit117.thoughtweave.domain.model.ExtractedSchedule
+import io.wit117.thoughtweave.testLanguageResolver
 import io.wit117.thoughtweave.domain.model.Schedule
 import io.wit117.thoughtweave.domain.model.ScheduleDraft
 import io.wit117.thoughtweave.domain.model.toAllDayInstant
@@ -111,9 +113,10 @@ class ScheduleLogicTest {
     private val memos = FakeMemoRepository()
     private var extraction: () -> ExtractedSchedule = { error("Not used") }
     private val extractionRepository = object : ScheduleExtractionRepository {
-        override suspend fun extract(title: String, content: String, today: LocalDate) = extraction()
+        override suspend fun extract(title: String, content: String, today: LocalDate, languages: AiLanguagePlan) =
+            extraction()
     }
-    private val extract = ExtractScheduleUseCase(memos, extractionRepository, Clock.systemUTC(), seoul)
+    private val extract = ExtractScheduleUseCase(memos, extractionRepository, testLanguageResolver(), Clock.systemUTC(), seoul)
 
     private fun viewModel(init: ScheduleEditorInit = ScheduleEditorInit.Manual) = ScheduleEditorViewModel(
         init, repository, SaveScheduleUseCase(repository, validate), validate, extract, seoul, handle,

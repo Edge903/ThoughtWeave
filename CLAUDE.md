@@ -69,7 +69,7 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 | S03 | AI 메모 통합 | Tab. Two-column grid, multi-select, long-press → POP01. FAB needs ≥2 selected, AI ready and consent. |
 | S04 | 일정 확인 | Tab. Grouped by deadline date. Tap → POP02. FAB → POP03 MANUAL. |
 | S05 | 라이선스 및 고지 | Licenses, notices, agreement, withdraw AI consent. |
-| S06 | 설정 | From the S01 overflow, above S05. App language now; AI input/output language arrive in L2. |
+| S06 | 설정 | From the S01 overflow, above S05. App language, AI input language; AI output language only once a translation pair is verified. |
 | POP01 | 메모 미리보기 | In-screen sheet on S03; selection untouched. |
 | POP02 | 일정 상세 | Shared schedule editor, `EXISTING` mode, with delete. |
 | POP03 | 일정 추출 및 생성 | Shared schedule editor, `MANUAL` / `AI_EXTRACTED`. |
@@ -97,6 +97,13 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   On the real model this stopped it answering questions and removed markdown; an example with a dated memo made it
   drop whole memos, so keep the example undated. `withoutInventedYears` removes years absent from the sources,
   because prompting did not stop the model adding them.
+- Language profiles (`data/ai/language`): each language's date rules, prompts and example live in one
+  `LanguageProfile`, registered in `LanguageProfiles`. Written-out dates of every language are always read;
+  numeric order ("12/3") follows the input language. Prompts follow the output language.
+  `ResolveAiLanguageUseCase` picks input (setting, else script detection, else app language) and output per request.
+- Translation (output ≠ input) is offered only for pairs in `LanguageProfiles.verifiedTranslations`. en↔ko failed on
+  Gemma 3 1B (2026-11-11): it changed dates and weekdays, dropped facts and garbled titles, so the set is empty and
+  S06 hides the output setting. Re-measure when the model changes.
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 

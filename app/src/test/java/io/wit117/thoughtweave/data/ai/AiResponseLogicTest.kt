@@ -1,6 +1,10 @@
 package io.wit117.thoughtweave.data.ai
 
 import io.wit117.thoughtweave.data.ai.engine.InferenceEngine
+import io.wit117.thoughtweave.data.ai.language.EnglishProfile
+import io.wit117.thoughtweave.data.ai.language.KoreanProfile
+import io.wit117.thoughtweave.domain.model.AiLanguagePlan
+import io.wit117.thoughtweave.domain.model.AppLanguages
 import io.wit117.thoughtweave.data.ai.engine.InferenceException
 import io.wit117.thoughtweave.data.ai.engine.InferencePrompt
 import io.wit117.thoughtweave.data.ai.parse.ScheduleDates
@@ -38,6 +42,9 @@ private class ScriptedEngine(private val reply: () -> Flow<String>) : InferenceE
         return reply()
     }
 }
+
+private val ENGLISH_ONLY = AiLanguagePlan(AppLanguages.ENGLISH, AppLanguages.ENGLISH)
+private val KOREAN_ONLY = AiLanguagePlan(AppLanguages.KOREAN, AppLanguages.KOREAN)
 
 class AiResponseLogicTest {
     /** A Monday. */
@@ -129,9 +136,9 @@ class AiResponseLogicTest {
 
     @Test
     fun koreanMemosGetAKoreanPrompt() {
-        assertTrue("한국어" in summaryPrompt(listOf(memo("회의 내용"))).systemInstruction!!)
-        assertFalse("한국어" in summaryPrompt(listOf(memo("Meeting notes"))).systemInstruction!!)
-        assertTrue("한국어로" in scheduleTitlePrompt("치과", "예약"))
+        assertTrue("한국어" in summaryPrompt(listOf(memo("회의 내용")), KoreanProfile, KoreanProfile).systemInstruction!!)
+        assertFalse("한국어" in summaryPrompt(listOf(memo("Meeting notes")), EnglishProfile, EnglishProfile).systemInstruction!!)
+        assertTrue("한국어로" in scheduleTitlePrompt("치과", "예약", KoreanProfile, KoreanProfile))
     }
 
     private fun filtered(source: String, vararg chunks: String) = runBlocking {
@@ -158,7 +165,7 @@ class AiResponseLogicTest {
 
     @Test
     fun summaryPromptFramesMemosAsContentWithAQuestionExample() {
-        val prompt = summaryPrompt(listOf(memo("What should I buy?", "Gift")))
+        val prompt = summaryPrompt(listOf(memo("What should I buy?", "Gift")), EnglishProfile, EnglishProfile)
 
         assertTrue("never answer questions" in prompt.systemInstruction!!)
         assertTrue("?" in prompt.examples.single().input)
@@ -168,7 +175,7 @@ class AiResponseLogicTest {
 
     @Test
     fun titlePromptUsesOnlyTheStartOfLongMemos() {
-        val prompt = scheduleTitlePrompt("", "x".repeat(50_000))
+        val prompt = scheduleTitlePrompt("", "x".repeat(50_000), EnglishProfile, EnglishProfile)
         assertTrue(prompt.length < 2_500)
     }
 
@@ -177,7 +184,7 @@ class AiResponseLogicTest {
         val engine = ScriptedEngine { flowOf("name") }
 
         assertThrows(ScheduleExtractionException::class.java) {
-            runBlocking { ScheduleExtractionRepositoryImpl(engine).extract("장보기", "우유와 빵", today) }
+            runBlocking { ScheduleExtractionRepositoryImpl(engine).extract("장보기", "우유와 빵", today, KOREAN_ONLY) }
         }
         assertEquals(0, engine.calls)
     }
@@ -186,7 +193,7 @@ class AiResponseLogicTest {
     fun extractionUsesModelTitleAndWrittenDates() = runTest {
         val engine = ScriptedEngine { flowOf("치과 ", "예약") }
 
-        val result = ScheduleExtractionRepositoryImpl(engine).extract("", "내일 오후 3시 치과", today)
+        val result = ScheduleExtractionRepositoryImpl(engine).extract("", "내일 오후 3시 치과", today, KOREAN_ONLY)
 
         assertEquals("치과 예약", result.title)
         assertEquals(today.plusDays(1), result.deadlineDate)
@@ -197,10 +204,10 @@ class AiResponseLogicTest {
     fun engineFailuresBecomeFeatureFailures() {
         val failing = ScriptedEngine { flow { throw InferenceException("failed") } }
         assertThrows(ScheduleExtractionException::class.java) {
-            runBlocking { ScheduleExtractionRepositoryImpl(failing).extract("", "12/3", today) }
+            runBlocking { ScheduleExtractionRepositoryImpl(failing).extract("", "12/3", today, ENGLISH_ONLY) }
         }
         assertThrows(MemoSynthesisException::class.java) {
-            runBlocking { MemoSynthesisRepositoryImpl(failing).summarize(emptyList()).toList() }
+            runBlocking { MemoSynthesisRepositoryImpl(failing).summarize(emptyList(), ENGLISH_ONLY).toList() }
         }
     }
 
@@ -209,7 +216,7 @@ class AiResponseLogicTest {
         val tooLong = ScriptedEngine { flow { throw InferenceException("x", null, isInputTooLong = true) } }
 
         val error = assertThrows(MemoSynthesisException::class.java) {
-            runBlocking { MemoSynthesisRepositoryImpl(tooLong).summarize(emptyList()).toList() }
+            runBlocking { MemoSynthesisRepositoryImpl(tooLong).summarize(emptyList(), ENGLISH_ONLY).toList() }
         }
 
         assertTrue(error.isInputTooLong)
