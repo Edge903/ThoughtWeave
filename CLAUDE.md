@@ -78,6 +78,10 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 
 ## Product decisions
 - Synthesis has one mode only: summarize. No mode selector, no mode column.
+- A synthesized memo is the AI's merged text, then "원문 항목" / "Original items": every line and sentence of the
+  source memos in their original wording, de-duplicated by code (`factList`) (user decision, 2026-11-11). The 1B
+  model drops or rewords facts and cannot tell which lines describe the same thing, so the list keeps them all.
+  The S02-C date check reads only the AI part (`MemoSynthesisRepository.aiPart`), since the list repeats every date.
 - S03 selection: cleared after a successful save; kept on cancel, back or failure.
 - S01 and S03 order: pinned first, then most recently updated. No sort menu.
 - Schedule: title and deadline (`end_at`) required; `start_at` optional and ≤ deadline when set;

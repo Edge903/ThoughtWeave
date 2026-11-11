@@ -84,5 +84,6 @@ val EnglishProfile = LanguageProfile(
             "Do not include dates or times. Output only the name.",
         memoHeading = "Memo:",
         writeOnlyInThisLanguage = "The memos may be written in another language. Write only in English.",
+        sourceItemsHeading = "Original items",
     ),
 )

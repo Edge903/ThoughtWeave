@@ -81,5 +81,6 @@ val KoreanProfile = LanguageProfile(
         titleInstruction = "아래 메모에 있는 일정의 짧은 이름을 한국어로 지으세요.\n날짜와 시간은 넣지 말고 이름만 출력하세요.",
         memoHeading = "메모:",
         writeOnlyInThisLanguage = "메모가 다른 언어로 쓰여 있어도 반드시 한국어로만 작성하세요.",
+        sourceItemsHeading = "원문 항목",
     ),
 )

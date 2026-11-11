@@ -118,7 +118,9 @@ class SynthesisResultViewModel @AssistedInject constructor(
 
     private fun dateCheckFor(draft: MemoDraft): SummaryDateCheck? {
         val language = summaryLanguage ?: return null
-        return checkDates(sources, draft.title + "\n" + draft.content, language).takeIf { it.hasProblems }
+        // Only what the AI wrote: the original-items list repeats every source date.
+        val aiText = synthesisRepository.aiPart(draft.content, language)
+        return checkDates(sources, draft.title + "\n" + aiText, language).takeIf { it.hasProblems }
     }
 
     private suspend fun streamSummary(sources: List<Memo>) {

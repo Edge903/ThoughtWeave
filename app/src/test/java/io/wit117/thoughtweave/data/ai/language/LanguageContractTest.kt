@@ -76,7 +76,10 @@ class LanguageContractTest {
         val examples = LanguageProfiles.all.mapNotNull { profile -> profile.prompts?.let { profile to it } }
         for ((profile, pack) in examples) {
             val tag = profile.language.tag
-            listOf(pack.summarySystem, pack.memoLabel, pack.titleInstruction, pack.memoHeading, pack.writeOnlyInThisLanguage)
+            listOf(
+                pack.summarySystem, pack.memoLabel, pack.titleInstruction, pack.memoHeading,
+                pack.writeOnlyInThisLanguage, pack.sourceItemsHeading,
+            )
                 .forEach { assertTrue("$tag: a prompt text is blank", it.isNotBlank()) }
             // Translation pairs one language's example input with another's output, so examples must match in shape.
             val labels = pack.summaryExample.input.lines().filter { it.startsWith("${pack.memoLabel} ") }

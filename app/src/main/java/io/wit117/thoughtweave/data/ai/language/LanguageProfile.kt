@@ -38,6 +38,8 @@ class PromptPack(
     val memoHeading: String,
     /** Added to the instruction when translating: "write only in this language". */
     val writeOnlyInThisLanguage: String,
+    /** Heading of the code-built list of every item from the memos, after the AI text. */
+    val sourceItemsHeading: String,
 )
 
 /**
