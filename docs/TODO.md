@@ -17,6 +17,14 @@ Open tasks. Remove an item (or move it to CLAUDE.md as a decision) once it is do
       labels; retake S03 "before consent" (`images/S03_1.png`) from a release build (it shows "Import model (debug)").
 - [ ] **TOC.** Update the table of contents in Word (select it, F9, "Update entire table") after edits.
 
+## Language settings (planned 2026-11-11, before Phase 6)
+Decided: UI, input and output language settings on a new S06; English and Korean now, structured so a language
+is added in one place. `appcompat` returns for per-app UI language on Android 7–12. Output languages other than
+the input are offered only for pairs that pass a real-model test. One global input setting, default Auto.
+- [ ] **L2** Language profiles for AI (prompts, date rules, year filter), input/output resolution, en↔ko
+      measurement on the real model.
+- [ ] **L3** Write `docs/ADDING_A_LANGUAGE.md` and a contract test that checks every registered language.
+
 ## Phase 6 (on hold since 2026-11-11)
 - [ ] **Start Phase 6** when the hold is lifted: Galaxy S23 GPU and performance measurements, full flow tests,
       offline, themes, accessibility, Korean pass. Publish plan revision 10 first (proposed, not yet published).

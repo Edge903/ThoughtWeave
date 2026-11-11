@@ -20,12 +20,14 @@ import io.wit117.thoughtweave.data.repository.AiModelRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoRepositoryImpl
 import io.wit117.thoughtweave.data.repository.MemoSynthesisRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleExtractionRepositoryImpl
+import io.wit117.thoughtweave.data.repository.UiLanguageRepositoryImpl
 import io.wit117.thoughtweave.data.repository.ScheduleRepositoryImpl
 import io.wit117.thoughtweave.domain.repository.AgreementRepository
 import io.wit117.thoughtweave.domain.repository.AiModelRepository
 import io.wit117.thoughtweave.domain.repository.MemoRepository
 import io.wit117.thoughtweave.domain.repository.MemoSynthesisRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleExtractionRepository
+import io.wit117.thoughtweave.domain.repository.UiLanguageRepository
 import io.wit117.thoughtweave.domain.repository.ScheduleRepository
 import java.io.File
 import java.time.Clock
@@ -60,6 +62,9 @@ abstract class DataModule {
     abstract fun bindScheduleExtractionRepository(
         impl: ScheduleExtractionRepositoryImpl,
     ): ScheduleExtractionRepository
+
+    @Binds
+    abstract fun bindUiLanguageRepository(impl: UiLanguageRepositoryImpl): UiLanguageRepository
 
     @Binds
     abstract fun bindAgreementRepository(impl: AgreementRepositoryImpl): AgreementRepository

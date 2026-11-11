@@ -53,6 +53,7 @@ fun MemoListScreen(
     onCreateMemo: () -> Unit,
     onOpenMemo: (Long) -> Unit,
     onOpenLicenses: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MemoListViewModel = hiltViewModel(),
 ) {
@@ -72,6 +73,7 @@ fun MemoListScreen(
         onCreateMemo = onCreateMemo,
         onOpenMemo = onOpenMemo,
         onOpenLicenses = onOpenLicenses,
+        onOpenSettings = onOpenSettings,
         onTogglePin = viewModel::togglePin,
         onOpenSearch = viewModel::openSearch,
         onSearchQueryChange = viewModel::onSearchQueryChange,
@@ -89,6 +91,7 @@ fun MemoListContent(
     onCreateMemo: () -> Unit,
     onOpenMemo: (Long) -> Unit,
     onOpenLicenses: () -> Unit,
+    onOpenSettings: () -> Unit,
     onTogglePin: (Memo) -> Unit,
     onOpenSearch: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
@@ -116,7 +119,7 @@ fun MemoListContent(
                                 contentDescription = stringResource(R.string.action_search),
                             )
                         }
-                        OverflowMenu(onOpenLicenses = onOpenLicenses)
+                        OverflowMenu(onOpenSettings = onOpenSettings, onOpenLicenses = onOpenLicenses)
                     } else {
                         IconButton(onClick = onCloseSearch) {
                             Icon(
@@ -212,7 +215,7 @@ private fun MemoSearchField(query: String, onQueryChange: (String) -> Unit) {
 }
 
 @Composable
-private fun OverflowMenu(onOpenLicenses: () -> Unit) {
+private fun OverflowMenu(onOpenSettings: () -> Unit, onOpenLicenses: () -> Unit) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     Box {
         IconButton(onClick = { expanded = true }) {
@@ -222,6 +225,13 @@ private fun OverflowMenu(onOpenLicenses: () -> Unit) {
             )
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.title_settings)) },
+                onClick = {
+                    expanded = false
+                    onOpenSettings()
+                },
+            )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.title_licenses)) },
                 onClick = {

@@ -56,6 +56,7 @@ class MemoListContentTest {
                 onCreateMemo = {},
                 onOpenMemo = onOpen,
                 onOpenLicenses = {},
+                onOpenSettings = {},
                 onTogglePin = onPin,
                 onOpenSearch = {},
                 onSearchQueryChange = {},

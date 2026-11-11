@@ -137,6 +137,11 @@
     <string name="dialog_withdraw_message">AI features stop until you accept again. Your memos and schedules are not affected.</string>
     <string name="license_agreement">ThoughtWeave AI agreement (draft)</string>
 
+    <!-- S06 settings -->
+    <string name="title_settings">Settings</string>
+    <string name="settings_ui_language">App language</string>
+    <string name="language_system">System default</string>
+
     <!-- S05 licenses -->
     <string name="title_licenses">Licenses and notices</string>
     <string name="license_gemma_terms">Gemma Terms of Use</string>

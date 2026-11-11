@@ -13,6 +13,7 @@ import io.wit117.thoughtweave.feature.memo.editor.MemoEditorScreen
 import io.wit117.thoughtweave.feature.memo.editor.MemoEditorViewModel
 import io.wit117.thoughtweave.feature.memo.editor.MemoUnavailableScreen
 import io.wit117.thoughtweave.feature.memo.list.MemoListScreen
+import io.wit117.thoughtweave.feature.settings.SettingsScreen
 import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorInit
 import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorScreen
 import io.wit117.thoughtweave.feature.schedule.editor.ScheduleEditorViewModel
@@ -37,6 +38,7 @@ fun ThoughtWeaveNavHost(
                 onCreateMemo = { navController.navigate(MemoEditorRoute(memoId = null)) },
                 onOpenMemo = { navController.navigate(MemoEditorRoute(memoId = it)) },
                 onOpenLicenses = { navController.navigate(LicensesRoute) },
+                onOpenSettings = { navController.navigate(SettingsRoute) },
             )
         }
         composable<SynthesisRoute> {
@@ -95,6 +97,9 @@ fun ThoughtWeaveNavHost(
         }
         composable<LicensesRoute> {
             LicensesScreen(onBack = { navController.popBackStack() })
+        }
+        composable<SettingsRoute> {
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
 
         composable<ScheduleEditorRoute> { entry ->

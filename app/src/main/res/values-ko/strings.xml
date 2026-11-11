@@ -124,6 +124,10 @@
     <string name="dialog_withdraw_message">다시 동의할 때까지 AI 기능이 작동하지 않습니다. 메모와 일정은 영향을 받지 않습니다.</string>
     <string name="license_agreement">ThoughtWeave AI 이용 동의서 (초안)</string>
 
+    <string name="title_settings">설정</string>
+    <string name="settings_ui_language">앱 언어</string>
+    <string name="language_system">시스템 기본값</string>
+
     <string name="title_licenses">라이선스 및 고지</string>
     <string name="license_gemma_terms">Gemma 이용 약관</string>
     <string name="license_gemma_policy">Gemma 금지된 사용 정책</string>

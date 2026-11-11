@@ -35,6 +35,8 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   `room-runtime`. kotlinx-coroutines-android 1.11.0 is declared directly because repositories expose `Flow`.
 - Lifecycle 2.10.0 and `hilt-lifecycle-viewmodel-compose` 1.3.0 (both `minCompileSdk=35`; 2.11.0 and 1.4.0
   need 37, verified from the AARs 2026-11-08). kotlinx-coroutines-test 1.11.0 is for ViewModel unit tests.
+- `appcompat` 1.8.0 (`minCompileSdk=34`, verified 2026-11-11) is back, only for per-app language on Android 12
+  and below, which Google's backward-compatible API supports through AppCompat alone (user decision, 2026-11-11).
 - Lint "newer version available" warnings for AGP, Kotlin, Compose BOM, Navigation, Lifecycle, Hilt ViewModel Compose, LiteRT-LM and core-ktx are
   expected (pinned on purpose, see above).
 
@@ -51,6 +53,10 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Icons: Material Symbols vector drawables copied from google/material-design-icons
   (`symbols/android/<name>/materialsymbolsoutlined/<name>_24px.xml`, Apache-2.0), with
   `android:tint` removed. No icon library dependency. List the license in S05 "기타 오픈소스".
+- Languages: `AppLanguages` (`domain/model/AppLanguage.kt`) is the single list of supported languages; add new
+  ones there. Per-app UI language goes through `AppCompatDelegate.setApplicationLocales` (`MainActivity` is an
+  `AppCompatActivity` with an AppCompat window theme; `autoStoreLocales` in the manifest covers Android 12 and
+  below). `generateLocaleConfig` lists languages in Android 13+ settings; the default is in `res/resources.properties`.
 - UI strings: English in `values/`, Korean in `values-ko/`. All user-visible text goes through resources.
   Use phrase line breaking (`LineBreak.WordBreak.Phrase`) for multi-line Korean text.
 
@@ -63,6 +69,7 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 | S03 | AI 메모 통합 | Tab. Two-column grid, multi-select, long-press → POP01. FAB needs ≥2 selected, AI ready and consent. |
 | S04 | 일정 확인 | Tab. Grouped by deadline date. Tap → POP02. FAB → POP03 MANUAL. |
 | S05 | 라이선스 및 고지 | Licenses, notices, agreement, withdraw AI consent. |
+| S06 | 설정 | From the S01 overflow, above S05. App language now; AI input/output language arrive in L2. |
 | POP01 | 메모 미리보기 | In-screen sheet on S03; selection untouched. |
 | POP02 | 일정 상세 | Shared schedule editor, `EXISTING` mode, with delete. |
 | POP03 | 일정 추출 및 생성 | Shared schedule editor, `MANUAL` / `AI_EXTRACTED`. |

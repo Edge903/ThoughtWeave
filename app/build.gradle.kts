@@ -45,6 +45,10 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
     assetPacks.add(":gemma_pack")
+    androidResources {
+        // Lists the app's languages in Android 13+ system settings (default locale: res/resources.properties).
+        generateLocaleConfig = true
+    }
     buildFeatures {
         compose = true
     }
@@ -92,6 +96,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

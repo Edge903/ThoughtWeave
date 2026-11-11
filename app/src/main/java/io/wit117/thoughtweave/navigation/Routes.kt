@@ -23,6 +23,10 @@ data class MemoEditorRoute(val memoId: Long? = null)
 @Serializable
 data class SynthesisResultRoute(val sourceIds: List<Long>)
 
+/** S06 – 설정. */
+@Serializable
+data object SettingsRoute
+
 /** S05 – 라이선스 및 고지. */
 @Serializable
 data object LicensesRoute

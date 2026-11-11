@@ -1,6 +1,6 @@
 This app includes the following open source software.
 
-- AndroidX (Activity, Compose, Core, Hilt, Lifecycle, Navigation, Room): Apache License 2.0. https://developer.android.com/jetpack/androidx
+- AndroidX (Activity, AppCompat, Compose, Core, Hilt, Lifecycle, Navigation, Room): Apache License 2.0. https://developer.android.com/jetpack/androidx
 
 - Kotlin standard library: Apache License 2.0. https://github.com/JetBrains/kotlin
 

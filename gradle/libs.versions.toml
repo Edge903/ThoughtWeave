@@ -7,6 +7,7 @@ ksp = "2.3.13"
 hilt = "2.60.1"
 coreKtx = "1.18.0"
 activityCompose = "1.13.0"
+appcompat = "1.8.0"
 # Compose 1.12+ (BOM 2026.08.00+), Navigation 2.10+ and Lifecycle 2.11+ require compileSdk 37.
 # The project stays on compileSdk 36.1, so these are the newest compatible lines (verified 2026-11-04).
 composeBom = "2026.06.01"
@@ -26,6 +27,7 @@ espressoCore = "3.7.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
