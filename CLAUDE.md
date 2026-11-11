@@ -53,8 +53,9 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Icons: Material Symbols vector drawables copied from google/material-design-icons
   (`symbols/android/<name>/materialsymbolsoutlined/<name>_24px.xml`, Apache-2.0), with
   `android:tint` removed. No icon library dependency. List the license in S05 "기타 오픈소스".
-- Languages: `AppLanguages` (`domain/model/AppLanguage.kt`) is the single list of supported languages; add new
-  ones there. Per-app UI language goes through `AppCompatDelegate.setApplicationLocales` (`MainActivity` is an
+- Languages: `AppLanguages` (`domain/model/AppLanguage.kt`) is the single list of supported languages. To add one,
+  follow `docs/ADDING_A_LANGUAGE.md`; `LanguageContractTest` fails until every required piece exists, and
+  `RealModelLanguageCheck` (skipped unless the model is in `/data/local/tmp`) is the real-model measurement. Per-app UI language goes through `AppCompatDelegate.setApplicationLocales` (`MainActivity` is an
   `AppCompatActivity` with an AppCompat window theme; `autoStoreLocales` in the manifest covers Android 12 and
   below). `generateLocaleConfig` lists languages in Android 13+ settings; the default is in `res/resources.properties`.
 - UI strings: English in `values/`, Korean in `values-ko/`. All user-visible text goes through resources.

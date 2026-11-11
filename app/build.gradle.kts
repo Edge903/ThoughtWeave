@@ -60,8 +60,10 @@ android {
 
 // Release guard: a store bundle must not ship the unreviewed agreement.
 val agreementDraftMarker = "STATUS: DRAFT"
-val agreementFiles = listOf("agreement_en.txt", "agreement_ko.txt")
-    .map { layout.projectDirectory.file("src/main/assets/legal/$it").asFile }
+// Every language's agreement, so a newly added translation is covered without editing this file.
+val agreementFiles = layout.projectDirectory.dir("src/main/assets/legal").asFile
+    .listFiles { file -> file.name.startsWith("agreement_") && file.name.endsWith(".txt") }
+    .orEmpty().toList()
 val allowDraftLegal = providers.gradleProperty("allowDraftLegal").orNull == "true"
 val verifyAgreementNotDraft = tasks.register("verifyAgreementNotDraft") {
     description = "Fails while the user agreement is still marked as a draft."

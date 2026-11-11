@@ -24,7 +24,6 @@ the input are offered only for pairs that pass a real-model test. One global inp
 - [ ] **Translation with a stronger model.** en↔ko failed on Gemma 3 1B (dates changed, facts dropped), so no
       output language is offered. Re-run the translation measurement if the model changes, and add passing pairs
       to `LanguageProfiles.verifiedTranslations`.
-- [ ] **L3** Write `docs/ADDING_A_LANGUAGE.md` and a contract test that checks every registered language.
 
 ## Phase 6 (on hold since 2026-11-11)
 - [ ] **Start Phase 6** when the hold is lifted: Galaxy S23 GPU and performance measurements, full flow tests,
