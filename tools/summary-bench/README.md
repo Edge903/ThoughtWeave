@@ -24,6 +24,20 @@ The model stays outside the repo (`*.litertlm` is gitignored). Check a copy with
 .venv\Scripts\python.exe score.py results\B-tldr.json results\A-gemma.json
 ```
 
+Baseline A (Gemma, the app's synthesis path) runs on a device or emulator:
+
+```
+adb push gemma3-1b-it-int4.litertlm /data/local/tmp/
+adb shell mkdir -p /data/local/tmp/summary-bench
+adb push sets.json /data/local/tmp/summary-bench/
+gradlew :app:installDebug :app:installDebugAndroidTest
+adb shell am instrument -w -e runs 3 -e class io.wit117.thoughtweave.RealModelSummaryBench io.wit117.thoughtweave.test/androidx.test.runner.AndroidJUnitRunner
+adb pull /sdcard/Android/data/io.wit117.thoughtweave/files/summary-bench/A-gemma.json results/
+```
+
+The scorer counts kept facts only; it does not notice a wrong fact that has no checked token, so read the
+outputs too.
+
 A result file is `{"config": "...", "runs": [{"set": "ko-1", "output": "...", "seconds": 0.4}]}`. Several runs
 per set are allowed; totals average them, so run-to-run noise is visible.
 

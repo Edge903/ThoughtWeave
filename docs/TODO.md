@@ -55,8 +55,15 @@ Stop at the first failed gate and record the result in CLAUDE.md (Inference) as 
       `score.py` (facts, open questions, dates missing/added, language; see its README). Self-check scores the
       memos themselves at 35/35 with no date changes; `test_score.py` covers the edge cases. New sets mean the old
       31/35 is not comparable; step 2 sets the baseline.
-- [ ] **2. Baseline A (Gemma alone).** Re-measure with the current prompt on the rebuilt set (emulator, from the
-      same data), so A and B are scored by the same script. Expected near 31/35.
+- [x] **2. Baseline A (done 2026-11-17).** `RealModelSummaryBench` (androidTest, skipped unless the model and
+      sets are in /data/local/tmp) runs the app's own synthesis path and keeps the AI part. Emulator CPU, 3 runs
+      per set: **29/35 facts, 2/3 questions, 3 date changes**, 4–6 s per set after an 11.5 s first load
+      (`tools/summary-bench/results/A-gemma.json`). Runs were identical, so repeats show no run-to-run noise;
+      Gate 3 must be judged per set instead. Read by hand, every loss the scorer reported is real: 12.1 and
+      15만원 dropped (ko-1); "12월 14일 월요일" became "다음 주 수요일" (ko-2); "12/1부터" became "12월부터" and the
+      privacy-policy to-do was dropped (ko-3); the car/subway question became a statement (en-1). The scorer does
+      not catch wrong facts with no checked token: en-1 also turned "Tom pays for the hotel" into "Tom will cover
+      all costs for the return flight".
 - [ ] **Gate 1 – Korean.** B on the Korean memos, both modes: is the output Korean and readable? If not, stop.
 - [ ] **3. B (200M alone).** TLDR and KEYPOINTS on each set as one concatenated text; desktop latency.
       Gate 2: B keeps at least as many facts as A, with no more date changes.
