@@ -1,0 +1,41 @@
+{
+  "config": "B-tldr (200M alone, desktop CPU)",
+  "runs": [
+    {
+      "set": "ko-1",
+      "run": 1,
+      "seconds": 1.05,
+      "output": "This text lists 12 songs, including \"워크숍 장소\" and \"버스 예약\". It also mentions \"버스는 예약을 맡는다\", \"박지훈 대리가 버스 예약을 맡는다\", and \"맡는다\"."
+    },
+    {
+      "set": "ko-1",
+      "run": 2,
+      "seconds": 0.55,
+      "output": "This text lists 12 songs, including one with the title \"워크숍 장소\". The songs are in the order \"참석 인원은 18명\"."
+    },
+    {
+      "set": "ko-2",
+      "run": 1,
+      "seconds": 0.57,
+      "output": "The text asks if the text is 12/13, 14/13, or 10/13. It also asks if the text is 12/13, 14/13, or 10/13."
+    },
+    {
+      "set": "ko-2",
+      "run": 2,
+      "seconds": 0.54,
+      "output": "The text asks if the text is 12/13, 14/13, or 10/13. It also asks if the text is 12/13, 14/13, or 10/13."
+    },
+    {
+      "set": "ko-3",
+      "run": 1,
+      "seconds": 0.61,
+      "output": "The text lists the dates and locations of events, including a 12-day festival, a 12-day festival, and a 12-day festival. It also mentions a festival with a 12-day festival, a festival with a 12-day festival, and a festival with a 12-day festival."
+    },
+    {
+      "set": "ko-3",
+      "run": 2,
+      "seconds": 0.62,
+      "output": "The text lists the dates and locations of events, including a 12-day festival, a 12-day festival, and a 12-day festival. It also mentions a festival with a 12-day festival, a festival with a 12-day festival, and a festival with a 12-day festival."
+    }
+  ]
+}

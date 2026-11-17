@@ -1,13 +1,18 @@
 # Summary benchmark
 
-Desktop tooling for the Summarization 200M evaluation (`docs/TODO.md`). Not part of the app build.
+Desktop tooling for comparing summary models. Not part of the app build. First used for Summarization 200M,
+rejected 2026-11-17 (CLAUDE.md, Inference): on the Korean sets it answered in English and invented content.
+
+- `run_200m.py`: configuration B (Summarization 200M alone, both modes) via `mediapipe`.
 
 - `sets.json`: 4 three-memo sets (3 Korean, 1 English), 35 facts, 3 questions, every written date.
 - `score.py`: scores result files: facts kept, questions still open, dates missing or added, output language.
 - `test_score.py`: scorer tests, standard library only.
 
 ## Setup (Windows)
-The MSYS2 `python` on PATH cannot load Windows wheels; use the python.org build.
+The MSYS2 `python` on PATH cannot load Windows wheels; use the python.org build (uninstalled after the
+2026-11-17 run; reinstall with `winget install --id Python.Python.3.12 --exact --scope user`).
+`score.py` and `test_score.py` need only the standard library; `run_200m.py` needs the venv.
 
 ```
 %LOCALAPPDATA%\Programs\Python\Python312\python.exe -m venv .venv
@@ -31,9 +36,15 @@ adb push gemma3-1b-it-int4.litertlm /data/local/tmp/
 adb shell mkdir -p /data/local/tmp/summary-bench
 adb push sets.json /data/local/tmp/summary-bench/
 gradlew :app:installDebug :app:installDebugAndroidTest
-adb shell am instrument -w -e runs 3 -e class io.wit117.thoughtweave.RealModelSummaryBench io.wit117.thoughtweave.test/androidx.test.runner.AndroidJUnitRunner
+adb shell am instrument -w -e config A -e class io.wit117.thoughtweave.RealModelSummaryBench io.wit117.thoughtweave.test/androidx.test.runner.AndroidJUnitRunner
 adb pull /sdcard/Android/data/io.wit117.thoughtweave/files/summary-bench/A-gemma.json results/
 ```
+
+`config`: `A` the app's synthesis path; `C` Gemma lists each memo's facts, then the app's prompt merges the lists
+(the extraction prompts live in the test); `D` the code's sentence list per memo is merged by the app's prompt.
+`E-gemma.json` is a retired config: the dated summary example, since adopted by the app
+(`A-gemma-dated-example.json` is the app's path afterwards and matches it).
+`runs` defaults to 1, since Gemma's runs were identical. Results for 2026-11-17 are in `results/`.
 
 The scorer counts kept facts only; it does not notice a wrong fact that has no checked token, so read the
 outputs too.

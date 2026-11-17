@@ -73,10 +73,11 @@ val EnglishProfile = LanguageProfile(
             "give advice. Keep every date, time, number, amount, name, place, to-do and question exactly as written. " +
             "Only combine what repeats, and add nothing that is not in the memos, including years. Write plain " +
             "sentences with no headings or markdown. Output only the merged memo.",
+        // An explicit date: with "next Wednesday" here the model copied it over memos' own dates (CLAUDE.md, Inference).
         summaryExample = PromptExample(
-            input = "Memo 1:\nTeam lunch\nWhere should we go next Wednesday? Maybe the noodle place.\n\n" +
+            input = "Memo 1:\nTeam lunch\nWhere should we go on March 4 (Wed)? Maybe the noodle place.\n\n" +
                 "Memo 2:\nBudget\nKeep the lunch under 200 dollars.",
-            output = "The team lunch next Wednesday still needs a place, possibly the noodle place, " +
+            output = "The team lunch on March 4 (Wed) still needs a place, possibly the noodle place, " +
                 "and must stay under 200 dollars.",
         ),
         memoLabel = "Memo",

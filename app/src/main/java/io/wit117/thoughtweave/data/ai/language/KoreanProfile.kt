@@ -72,10 +72,11 @@ val KoreanProfile = LanguageProfile(
         summarySystem = "아래 메모들을 하나의 메모로 합치세요. 비서가 아니므로 질문에 답하거나 조언하지 마세요. " +
             "모든 날짜, 시간, 숫자, 금액, 이름, 장소, 할 일, 질문을 빠짐없이 그대로 유지하세요. 겹치는 내용만 합치고, " +
             "메모에 없는 내용이나 연도는 추가하지 마세요. 제목이나 마크다운 없이 평범한 한국어 문장으로 결과만 출력하세요.",
+        // An explicit date: with "다음 주 수요일" here the model copied it over memos' own dates (CLAUDE.md, Inference).
         summaryExample = PromptExample(
-            input = "메모 1:\n팀 점심\n다음 주 수요일에 어디로 갈까? 국수집도 괜찮을 듯.\n\n" +
+            input = "메모 1:\n팀 점심\n3월 4일(수)에 어디로 갈까? 국수집도 괜찮을 듯.\n\n" +
                 "메모 2:\n예산\n점심 비용은 20만원 이내로.",
-            output = "다음 주 수요일 팀 점심 장소는 아직 정해지지 않았고 국수집이 후보이며, 비용은 20만원 이내로 한다.",
+            output = "3월 4일(수) 팀 점심 장소는 아직 정해지지 않았고 국수집이 후보이며, 비용은 20만원 이내로 한다.",
         ),
         memoLabel = "메모",
         titleInstruction = "아래 메모에 있는 일정의 짧은 이름을 한국어로 지으세요.\n날짜와 시간은 넣지 말고 이름만 출력하세요.",

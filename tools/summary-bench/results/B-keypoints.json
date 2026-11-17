@@ -1,0 +1,41 @@
+{
+  "config": "B-keypoints (200M alone, desktop CPU)",
+  "runs": [
+    {
+      "set": "ko-1",
+      "run": 1,
+      "seconds": 1.07,
+      "output": "* The text lists 12 songs, including *버스*, *버스는*, and *버스는*.\n* *버스는* is the first song.\n* *버스는* is the second song.\n* *버스는* is the third song.\n* *버스는* is the fourth song."
+    },
+    {
+      "set": "ko-1",
+      "run": 2,
+      "seconds": 1.09,
+      "output": "* The text lists the dates of the events, including 12월 5일, and the dates of the events, including 12월 5일.\n* The text also lists the dates of the events, including 12월 5일, and the dates of the events, including 12월 5일.\n* The text also lists the dates of the events, including 12월 5일, and the dates of the events, including 12월 5일.\n* The text also lists the dates of the events, including 12월 5일, and the dates of the events, including 12월 5일."
+    },
+    {
+      "set": "ko-2",
+      "run": 1,
+      "seconds": 0.82,
+      "output": "* The text mentions a series of events occurring between 12/13 and 14/14.\n* The events include a series of events occurring between 12/13 and 14/15.\n* The events include a series of events occurring between 12/13 and 14/16.\n* The text also mentions a series of events occurring between 12/13 and 14/17.\n* The events include a series of events occurring between 12/13 and 14/18."
+    },
+    {
+      "set": "ko-2",
+      "run": 2,
+      "seconds": 0.93,
+      "output": "* The text mentions a series of events occurring between 12/13 and 14/14.\n* The events include a series of events occurring between 12/13 and 14/15.\n* The events include a series of events occurring between 12/13 and 14/16.\n* The text also mentions a series of events occurring between 12/13 and 14/17.\n* The events include a series of events occurring between 12/13 and 14/18."
+    },
+    {
+      "set": "ko-3",
+      "run": 1,
+      "seconds": 0.72,
+      "output": "* The text lists the dates and locations of events.\n* The events are listed from 12:15 PM on 12/15 PM.\n* The dates are 12:18 PM on 12/1 PM.\n* The events are listed from 12:20 PM on 12/7 PM.\n* The text asks if the dates are correct."
+    },
+    {
+      "set": "ko-3",
+      "run": 2,
+      "seconds": 0.75,
+      "output": "* The text lists the dates and locations of events.\n* The events are listed from 12:15 PM on 12/15 PM.\n* The dates are 12:18 PM on 12/1 PM.\n* The events are listed from 12:20 PM on 12/7 PM.\n* The text asks if the dates are correct."
+    }
+  ]
+}

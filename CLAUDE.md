@@ -113,6 +113,24 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Translation (output ≠ input) is offered only for pairs in `LanguageProfiles.verifiedTranslations`. en↔ko failed on
   Gemma 3 1B (2026-11-11): it changed dates and weekdays, dropped facts and garbled titles, so the set is empty and
   S06 hides the output setting. Re-measure when the model changes.
+- Summarization 200M (MediaPipe Text Summarizer, `tasks-text` 1.2.3, `summarization_quant_200m_2modes.litertlm`)
+  was evaluated as a second model and rejected (2026-11-17). On the Korean benchmark sets it answered in English
+  in every run of both modes (TLDR, KEYPOINTS), invented content ("lists 12 songs", "a 12-day festival") and
+  invented dates, keeping 2–3.5 of 27 facts; the API takes no prompt, so the language cannot be steered. Gemma
+  baseline on the same sets: 29/35 facts, 2/3 questions, 3 date changes. Benchmark: `tools/summary-bench`
+  (sets, scorer, `run_200m.py`) and `RealModelSummaryBench`; re-run it before adopting any new summary model.
+- Two-stage synthesis was measured and not adopted (2026-11-17, `RealModelSummaryBench` configs C and D). C, Gemma
+  listing each memo's facts and then merging the lists: 25/35 facts, 1/3 questions, 4 date changes, 11–26 s per
+  set against 4–6 s. Extraction dropped facts ("오전 8시 본사 앞 출발", "12/13 일요일") and garbled others ("회비 3만원씩
+  걷기" became "회비는 가족사진을 찍기로 함"), and the merge still lost or rewrote what was extracted ("12.1까지" became
+  "12일이 소요된다", "600,000 won" became "$600,000"). D, the code's sentence list as the merge input: the same Korean
+  output as the baseline (29/35); only en-1 improved (return date and who pays kept). Every configuration turned
+  ko-2's "12월 14일 월요일" into "다음 주 수요일", the phrase in the summary prompt's own example.
+- The summary examples use an explicit date, "3월 4일(수)" / "March 4 (Wed)" (2026-11-17). With "다음 주 수요일" /
+  "next Wednesday" the model copied that phrase over memos' own dates. Measured through the app's path: 30/35 facts
+  and 2 date changes, against 29/35 and 3 (`results/A-gemma-dated-example.json`); ko-2 now keeps "12월 14일(월)" and
+  "3월 4일" appears in no output. Never put a relative date in a prompt example. Other losses are unchanged
+  ("12/1부터" still becomes "12월부터"), so the S02-C date check stays.
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 

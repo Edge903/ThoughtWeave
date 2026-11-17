@@ -1,0 +1,29 @@
+{
+  "config": "A-gemma after the dated example (app synthesis path, AI part, emulator CPU)",
+  "runs": [
+    {
+      "set": "ko-1",
+      "run": 1,
+      "seconds": 8.734,
+      "output": "12월 5일(토) 워크숍은 강릉 바다호텔 세미나실에서 한다. 참석 인원은 18명이다. 버스는 오전 8시에 본사 앞에서 출발한다. 박지훈 대리가 버스 예약을 맡는다.  저녁 메뉴는 회와 고기 중 투표로 결정한다. 숙소는 2인 1실이다."
+    },
+    {
+      "set": "ko-2",
+      "run": 1,
+      "seconds": 6.07,
+      "output": "12월 14일(월) 엄마 생신 선물은 꽃다발이 될까 스카프가 될까? 예산은 10만원. 가족 식사는 12/13 일요일 저녁 6시 반 수원 한우마을로 예약 인원은 6명. 케이크는 민지가 픽업하기로 함 동생들한테 회비 3만원씩 걷기 아빠한테 가족사진 찍을지 물어보기"
+    },
+    {
+      "set": "ko-3",
+      "run": 1,
+      "seconds": 6.711,
+      "output": "앱 출시일은  12월 15일이며 마케팅 자료는 김서연 담당으로 스토어 등록 정보는  12월 8일까지 준비한다. 베타 테스트는  12월부터  12월 7일까지 50명 대상으로 진행된다. 버그 리포트는 지라에 올린다. 법률 검토는 이준호 변호사에게 요청한다. 가격은 월 4900원으로 할까?"
+    },
+    {
+      "set": "en-1",
+      "run": 1,
+      "seconds": 4.268,
+      "output": "Trip to Busan flight on Jan 9 (Sat), starting at Gimpo at 7:40 am. Hotel booked for 3 nights near Haeundae. Budget total at 600,000 won. Return flight on Jan 12 at 6 pm – Tom pays for hotel accommodation."
+    }
+  ]
+}

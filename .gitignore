@@ -22,4 +22,5 @@ local.properties
 
 # Desktop benchmark tooling (docs/TODO.md, Summarization 200M evaluation)
 /tools/summary-bench/.venv/
+/tools/summary-bench/.cache/
 __pycache__/
