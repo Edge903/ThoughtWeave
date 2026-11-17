@@ -19,3 +19,7 @@ local.properties
 *.litertlm
 *.task
 *.tflite
+
+# Desktop benchmark tooling (docs/TODO.md, Summarization 200M evaluation)
+/tools/summary-bench/.venv/
+__pycache__/

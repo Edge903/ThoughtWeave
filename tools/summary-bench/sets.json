@@ -1,0 +1,88 @@
+{
+  "about": "Summary benchmark sets (docs/TODO.md, Summarization 200M evaluation). Rebuilt 2026-11-17; the 2026-11-11 sets were not kept. A fact is kept when every group in 'all' has at least one variant in the output (case and spaces ignored). 'question': the fact must stay a question. 'dates': every month-day written in the memos, as MM-DD; weekdays match 2026/2027.",
+  "sets": [
+    {
+      "id": "ko-1",
+      "language": "ko",
+      "memos": [
+        {"title": "워크숍 장소", "content": "12월 5일(토) 워크숍은 강릉 바다호텔 세미나실에서 한다. 참석 인원은 18명."},
+        {"title": "버스 예약", "content": "버스는 오전 8시에 본사 앞에서 출발. 박지훈 대리가 버스 예약을 맡는다. 12.1까지 예약 확정해야 함."},
+        {"title": "예산", "content": "예산은 1인당 15만원. 저녁 메뉴는 회와 고기 중에 투표로 정한다. 숙소는 2인 1실."}
+      ],
+      "dates": ["12-05", "12-01"],
+      "facts": [
+        {"id": "workshop-date", "all": [["12월5일", "12.5", "12/5"]]},
+        {"id": "place", "all": [["강릉"]]},
+        {"id": "headcount", "all": [["18명"]]},
+        {"id": "departure-time", "all": [["8시", "08:00", "8:00"]]},
+        {"id": "departure-place", "all": [["본사"]]},
+        {"id": "bus-owner", "all": [["박지훈"], ["버스"]]},
+        {"id": "booking-deadline", "all": [["12월1일", "12.1", "12/1"]]},
+        {"id": "budget", "all": [["15만"]]},
+        {"id": "rooms", "all": [["2인1실"]]}
+      ]
+    },
+    {
+      "id": "ko-2",
+      "language": "ko",
+      "memos": [
+        {"title": "생신 선물", "content": "엄마 생신은 12월 14일 월요일. 선물로 꽃다발이 나을까 스카프가 나을까? 예산은 10만원."},
+        {"title": "식당", "content": "가족 식사는 12/13 일요일 저녁 6시 반. 장소는 수원 한우마을로 예약. 인원은 6명."},
+        {"title": "할 일", "content": "케이크는 민지가 픽업하기로 함. 동생들한테 회비 3만원씩 걷기. 아빠한테 가족사진 찍을지 물어보기."}
+      ],
+      "dates": ["12-14", "12-13"],
+      "facts": [
+        {"id": "birthday-date", "all": [["12월14일", "12.14", "12/14"]]},
+        {"id": "gift-question", "all": [["꽃"], ["스카프"]], "question": true},
+        {"id": "gift-budget", "all": [["10만"]]},
+        {"id": "dinner-date", "all": [["12월13일", "12.13", "12/13"]]},
+        {"id": "dinner-time", "all": [["6시반", "6시30분", "6:30", "18:30"]]},
+        {"id": "restaurant", "all": [["한우마을"]]},
+        {"id": "party-size", "all": [["6명"]]},
+        {"id": "cake", "all": [["민지"], ["케이크"]]},
+        {"id": "fee", "all": [["3만"]]}
+      ]
+    },
+    {
+      "id": "ko-3",
+      "language": "ko",
+      "memos": [
+        {"title": "출시 일정", "content": "앱 출시일은 12월 15일. 마케팅 자료는 김서연 담당. 스토어 등록 정보는 12.8까지 준비."},
+        {"title": "베타 테스트", "content": "베타 테스트는 12/1부터 12/7까지 50명 대상으로 진행. 버그 리포트는 지라에 올린다."},
+        {"title": "회의 메모", "content": "법률 검토는 이준호 변호사에게 요청. 출시 전에 개인정보 처리방침 업데이트 필요. 가격은 월 4,900원으로 할까?"}
+      ],
+      "dates": ["12-15", "12-08", "12-01", "12-07"],
+      "facts": [
+        {"id": "launch-date", "all": [["12월15일", "12.15", "12/15"]]},
+        {"id": "marketing-owner", "all": [["김서연"]]},
+        {"id": "store-deadline", "all": [["12월8일", "12.8", "12/8"]]},
+        {"id": "beta-range", "all": [["12월1일", "12.1", "12/1"], ["12월7일", "12.7", "12/7", "7일"]]},
+        {"id": "beta-size", "all": [["50명"]]},
+        {"id": "bug-tracker", "all": [["지라", "jira"]]},
+        {"id": "legal-review", "all": [["이준호"]]},
+        {"id": "privacy-policy", "all": [["개인정보"]]},
+        {"id": "price-question", "all": [["4,900", "4900"]], "question": true}
+      ]
+    },
+    {
+      "id": "en-1",
+      "language": "en",
+      "memos": [
+        {"title": "Trip to Busan", "content": "Flight to Busan on Jan 9 (Sat), 7:40 am from Gimpo. Hotel booked for 3 nights near Haeundae."},
+        {"title": "Getting around", "content": "Should we rent a car or take the subway? Bring the camera charger and 2 adapters."},
+        {"title": "Budget", "content": "Total budget 600,000 won. Return flight on 1/12 at 6 pm. Tom pays for the hotel."}
+      ],
+      "dates": ["01-09", "01-12"],
+      "facts": [
+        {"id": "flight-date", "all": [["january9", "jan9", "jan.9", "1/9", "9january", "9jan"]]},
+        {"id": "flight-time", "all": [["7:40"]]},
+        {"id": "airport", "all": [["gimpo"]]},
+        {"id": "nights", "all": [["3nights", "threenights"]]},
+        {"id": "hotel-area", "all": [["haeundae"]]},
+        {"id": "transport-question", "all": [["car"], ["subway"]], "question": true},
+        {"id": "budget", "all": [["600,000", "600000"]]},
+        {"id": "return-date", "all": [["january12", "jan12", "jan.12", "1/12", "12january", "12jan"]]}
+      ]
+    }
+  ]
+}
