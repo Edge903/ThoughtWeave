@@ -34,13 +34,11 @@ the input are offered only for pairs that pass a real-model test. One global inp
       output language is offered. Re-run the translation measurement if the model changes, and add passing pairs
       to `LanguageProfiles.verifiedTranslations`.
 
-## Voice dictation (V1 done 2026-11-18)
-- [ ] **Real-device check.** Dictate in Korean and English on the Galaxy S23. The emulator has no on-device
-      recognizer, so V1 was tested with a scripted recognizer only. Check also that recognition works without the
-      `<queries>` entry; remove it if it is not needed.
-- [ ] **V2: language download and long dictation.** S06 "Voice input" section with installed and supported speech
-      languages and a download button (API 33+, progress on 34+); segmented sessions (API 33+) so dictation
-      continues past pauses.
+## Voice dictation (V1 and V2 done 2026-11-18; V3 dropped)
+- [ ] **Real-device check.** Dictate in Korean and English on the Galaxy S23. The emulator's on-device recognizer
+      runs but hears no voice, so the flows were tested with a scripted recognizer. Check on the S23: a long dictation
+      with pauses (segmented session, no piece inserted twice), the 10 s silence end, the S06 language states and a
+      download. Check also that recognition works without the `<queries>` entry; remove it if it is not needed.
 - [ ] **Microphone in the legal texts.** Mention microphone use in the agreement at the legal review
       (bump `CURRENT_AGREEMENT_VERSION`), and in the Play Data safety form (audio processed on device, not collected).
 - [ ] **Documents.** Add the mic to S02-A/B in the requirements document and the screen design deck.

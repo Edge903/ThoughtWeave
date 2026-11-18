@@ -24,7 +24,7 @@ data class DictationUiState(
     /** False below Android 12 or without an on-device recognizer: the mic is hidden. */
     val isSupported: Boolean,
     val isListening: Boolean = false,
-    /** What has been recognized so far in this session, shown while listening. */
+    /** The piece being recognized, shown while listening; cleared once the piece is inserted. */
     val partialText: String = "",
 )
 
@@ -32,10 +32,14 @@ sealed interface DictationEffect {
     /** Recognized text, to insert at the content field's cursor. */
     data class Insert(val text: String) : DictationEffect
 
-    data class Failed(val error: SpeechError, val language: AppLanguage) : DictationEffect
+    /** [canDownload]: the phone can download speech languages, in S06. */
+    data class Failed(val error: SpeechError, val language: AppLanguage, val canDownload: Boolean) : DictationEffect
 }
 
-/** Voice dictation for S02-A/B. One session at a time; the text is inserted, never saved automatically. */
+/**
+ * Voice dictation for S02-A/B. One session at a time; it keeps listening through pauses until the user
+ * stops or stays silent, inserting each recognized piece. Nothing is saved automatically.
+ */
 @HiltViewModel
 class DictationViewModel @Inject constructor(
     private val speech: SpeechInputRepository,
@@ -66,8 +70,13 @@ class DictationViewModel @Inject constructor(
                 started.events.collect { event ->
                     when (event) {
                         is SpeechEvent.Partial -> _uiState.update { it.copy(partialText = event.text) }
-                        is SpeechEvent.Final -> effectChannel.send(DictationEffect.Insert(event.text))
-                        is SpeechEvent.Failed -> effectChannel.send(DictationEffect.Failed(event.error, language))
+                        is SpeechEvent.Recognized -> {
+                            _uiState.update { it.copy(partialText = "") }
+                            effectChannel.send(DictationEffect.Insert(event.text))
+                        }
+                        is SpeechEvent.Failed -> effectChannel.send(
+                            DictationEffect.Failed(event.error, language, speech.canManageLanguages()),
+                        )
                     }
                 }
             } finally {

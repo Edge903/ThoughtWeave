@@ -2,7 +2,7 @@
 
 Android memo + schedule app with on-device AI (Gemma 3 1B via LiteRT-LM) for memo summarization
 and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57sBJ32nqSuTDxG
-(revision 9, 2026-11-09). This file is the in-repo source of truth for conventions and decisions.
+(revision 10, 2026-11-18). This file is the in-repo source of truth for conventions and decisions.
 
 ## Working rules
 - Work phase by phase. Each phase ends with: `assembleDebug`, `assembleRelease`, `lintDebug`,
@@ -142,9 +142,22 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 
-## Voice dictation (V1, 2026-11-18)
+## Voice dictation (V1–V2, 2026-11-18)
 - Dictation only, in S02-A/B (user decision, 2026-11-18): a mic action in the top bar inserts recognized text at the
-  content field's cursor (`withDictation`). Nothing is saved automatically. Speaking a schedule (V3) is not planned.
+  content field's cursor (`withDictation`). Nothing is saved automatically. Speaking a schedule (V3) was dropped
+  (user decision, 2026-11-18).
+- A session keeps listening through pauses. Android 13+: segmented session (`EXTRA_SEGMENTED_SESSION` set to
+  `EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS`, 10 s), pieces from `onSegmentResults`, end on
+  `onEndOfSegmentedSession`. The reference says the extra "may have no effect", so a recognizer that answers with
+  `onResults` instead (and Android 12) restarts listening after each piece until the user stops or a restart hears
+  nothing. Silence after some speech ends the session without an error.
+- The editor's content field state (`contentField` in `MemoEditorContent`) is the truth for insertions: pieces can
+  arrive before recomposition, so insertions read the state, never the composed value.
+- S06 "Voice input" (`VoiceSettingsViewModel`): Android 13+ shows each language's state from `checkRecognitionSupport`
+  (installed / downloading / downloadable / unavailable; the full tag must match, so "en-GB" does not count for
+  "en-US") and requests downloads with `triggerModelDownload`; Android 14+ shows progress through
+  `ModelDownloadListener`. States are re-read on every resume. A missing language in S02-A/B points to S06 when the
+  phone can download it.
 - Android's on-device recognizer only (`SpeechRecognizer.createOnDeviceSpeechRecognizer`, API 31), never the
   network one. The mic is hidden below Android 12 or when `isOnDeviceRecognitionAvailable` is false. APIs and
   their levels verified with `javap` and `api-versions.xml` from the android-36.1 SDK (2026-11-18): on-device

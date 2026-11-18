@@ -173,5 +173,22 @@
     <string name="dictation_permission_blocked">Microphone access is turned off for this app. Allow it in Settings.</string>
     <string name="dialog_mic_permission_title">Use the microphone?</string>
     <string name="dialog_mic_permission_message">ThoughtWeave listens only while you dictate. Speech is recognized on this phone by its on-device speech recognizer, and ThoughtWeave does not record or keep the audio.</string>
+    <string name="dictation_language_downloadable">On-device voice input for %1$s is not installed on this phone. You can download it in Settings &gt; Voice input.</string>
+    <!-- S06 voice input -->
+    <string name="settings_voice_input">Voice input</string>
+    <string name="settings_voice_description">Speech is recognized on this phone by its on-device speech recognition. Languages are downloaded by the system.</string>
+    <string name="settings_voice_unsupported">This phone has no on-device speech recognition, so voice input is not available.</string>
+    <string name="settings_voice_status_unknown">The speech language status can be shown on Android 13 and later.</string>
+    <string name="settings_voice_status_failed">The speech language status could not be checked.</string>
+    <string name="voice_language_checking">Checking…</string>
+    <string name="voice_language_installed">Installed</string>
+    <string name="voice_language_downloading">Downloading</string>
+    <string name="voice_language_downloading_percent">Downloading (%1$d%%)</string>
+    <string name="voice_language_downloadable">Not installed</string>
+    <string name="voice_language_unsupported">Not available on this phone</string>
+    <string name="voice_language_requested">Download requested</string>
+    <string name="voice_language_scheduled">Download scheduled by the system, for example for Wi-Fi</string>
+    <string name="voice_language_failed">Download failed</string>
+    <string name="action_download">Download</string>
 
 </resources>

@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -120,7 +122,7 @@ fun SettingsScreen(
             )
         },
     ) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
+        Column(Modifier.padding(innerPadding).verticalScroll(rememberScrollState())) {
             SettingRow(
                 title = stringResource(R.string.settings_ui_language),
                 value = uiLanguage?.nativeName ?: systemLabel,
@@ -139,6 +141,7 @@ fun SettingsScreen(
                     onClick = { openDialog = LanguageDialog.OUTPUT },
                 )
             }
+            VoiceInputSection()
         }
     }
 

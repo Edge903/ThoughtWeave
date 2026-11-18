@@ -7,15 +7,12 @@ import io.wit117.thoughtweave.domain.model.InputLanguageSetting
 import io.wit117.thoughtweave.domain.model.LanguageSettings
 import io.wit117.thoughtweave.domain.model.SpeechError
 import io.wit117.thoughtweave.domain.model.SpeechEvent
-import io.wit117.thoughtweave.domain.repository.SpeechInputRepository
-import io.wit117.thoughtweave.domain.repository.SpeechSession
 import io.wit117.thoughtweave.testLanguageResolver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -26,26 +23,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-
-/** A session whose events the test sends by hand. */
-private class ScriptedSession : SpeechSession {
-    val channel = Channel<SpeechEvent>(Channel.UNLIMITED)
-    var stopped = false
-    override val events: Flow<SpeechEvent> = channel.consumeAsFlow()
-    override fun stop() {
-        stopped = true
-    }
-}
-
-private class FakeSpeechInput(private val supported: Boolean = true) : SpeechInputRepository {
-    val tags = mutableListOf<String>()
-    var last: ScriptedSession? = null
-    override fun isSupported() = supported
-    override fun session(languageTag: String): SpeechSession {
-        tags += languageTag
-        return ScriptedSession().also { last = it }
-    }
-}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DictationViewModelTest {
@@ -85,7 +62,7 @@ class DictationViewModelTest {
         session.channel.send(SpeechEvent.Partial("buy"))
         assertEquals("buy", viewModel.uiState.value.partialText)
 
-        session.channel.send(SpeechEvent.Final("buy milk"))
+        session.channel.send(SpeechEvent.Recognized("buy milk"))
         session.channel.close()
         assertEquals(DictationEffect.Insert("buy milk"), viewModel.effects.first())
         assertFalse(viewModel.uiState.value.isListening)
@@ -102,10 +79,44 @@ class DictationViewModelTest {
             close()
         }
         assertEquals(
-            DictationEffect.Failed(SpeechError.LANGUAGE_UNAVAILABLE, AppLanguages.KOREAN),
+            DictationEffect.Failed(SpeechError.LANGUAGE_UNAVAILABLE, AppLanguages.KOREAN, canDownload = true),
             viewModel.effects.first(),
         )
         assertFalse(viewModel.uiState.value.isListening)
+    }
+
+    @Test
+    fun everyPieceOfALongSessionIsInsertedAndThePartialTextResets() = runTest(dispatcher) {
+        val speech = FakeSpeechInput()
+        val viewModel = viewModel(speech)
+        viewModel.start()
+        speech.last!!.channel.apply {
+            send(SpeechEvent.Partial("first"))
+            send(SpeechEvent.Recognized("first part"))
+        }
+        assertEquals("", viewModel.uiState.value.partialText)
+        assertTrue(viewModel.uiState.value.isListening)
+        speech.last!!.channel.apply {
+            send(SpeechEvent.Recognized("second part"))
+            close()
+        }
+        assertEquals(
+            listOf(DictationEffect.Insert("first part"), DictationEffect.Insert("second part")),
+            viewModel.effects.take(2).toList(),
+        )
+        assertFalse(viewModel.uiState.value.isListening)
+    }
+
+    @Test
+    fun missingLanguageSaysWhetherItCanBeDownloaded() = runTest(dispatcher) {
+        val speech = FakeSpeechInput(manageable = false)
+        val viewModel = viewModel(speech)
+        viewModel.start()
+        speech.last!!.channel.apply {
+            send(SpeechEvent.Failed(SpeechError.LANGUAGE_UNAVAILABLE))
+            close()
+        }
+        assertFalse((viewModel.effects.first() as DictationEffect.Failed).canDownload)
     }
 
     @Test

@@ -82,17 +82,24 @@ fun MemoEditorContent(
     var contentField by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(draft.content, TextRange(draft.content.length)))
     }
-    // Content changed outside the field (loaded, restored or streamed): follow it, cursor at the end.
+    // contentField is the field's truth. Content changed outside the field (loaded, restored or streamed)
+    // is copied into it with the cursor at the end; edits made here already match, so this is a no-op then.
+    LaunchedEffect(draft.content) {
+        if (contentField.text != draft.content) {
+            contentField = TextFieldValue(draft.content, TextRange(draft.content.length))
+        }
+    }
+    // Until that effect runs, show the outside content rather than a stale field for one frame.
     val shownContent = if (contentField.text == draft.content) {
         contentField
     } else {
         TextFieldValue(draft.content, TextRange(draft.content.length))
     }
-    val latestContent by rememberUpdatedState(shownContent)
     val latestOnContentChange by rememberUpdatedState(onContentChange)
     LaunchedEffect(insertions) {
         insertions.collect { text ->
-            val updated = latestContent.withDictation(text)
+            // Read the state itself, not the composed value: pieces can arrive before the next recomposition.
+            val updated = contentField.withDictation(text)
             contentField = updated
             latestOnContentChange(updated.text)
         }

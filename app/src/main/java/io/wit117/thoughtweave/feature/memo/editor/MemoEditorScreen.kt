@@ -80,6 +80,7 @@ fun MemoEditorScreen(
     val busyMessage = stringResource(R.string.dictation_busy)
     val failedMessage = stringResource(R.string.dictation_failed)
     val languageMissingFormat = stringResource(R.string.dictation_language_unavailable)
+    val languageDownloadFormat = stringResource(R.string.dictation_language_downloadable)
 
     val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         when {
@@ -121,7 +122,9 @@ fun MemoEditorScreen(
                     snackbarHostState.showSnackbar(
                         when (effect.error) {
                             SpeechError.NO_SPEECH -> noSpeechMessage
-                            SpeechError.LANGUAGE_UNAVAILABLE -> languageMissingFormat.format(effect.language.nativeName)
+                            SpeechError.LANGUAGE_UNAVAILABLE ->
+                                (if (effect.canDownload) languageDownloadFormat else languageMissingFormat)
+                                    .format(effect.language.nativeName)
                             SpeechError.PERMISSION_DENIED -> micDeniedMessage
                             SpeechError.BUSY -> busyMessage
                             SpeechError.OTHER -> failedMessage
