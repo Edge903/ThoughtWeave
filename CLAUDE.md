@@ -131,6 +131,14 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   and 2 date changes, against 29/35 and 3 (`results/A-gemma-dated-example.json`); ko-2 now keeps "12월 14일(월)" and
   "3월 4일" appears in no output. Never put a relative date in a prompt example. Other losses are unchanged
   ("12/1부터" still becomes "12월부터"), so the S02-C date check stays.
+- The benchmark has 24 sets since 2026-11-18 (16 Korean, 8 English; 209 facts, 17 questions, 48 dates). Baseline,
+  app path on the emulator: 188/209 facts (ko 124/140, en 64/69), 13/17 questions, 9 date changes
+  (`results/A-gemma-24sets.json`; the first four sets reproduced exactly after a reboot). Of the 21 lost facts, 10
+  are dates or times: month dropped ("결제일 12월 26일" → "결제일이 26일"), an explicit date turned relative with no
+  example to copy ("12월 3일(목)" → "다음 주 목요일"), times dropped ("오후 3시", "밤 9시"). Nine are dropped
+  items, including a whole correcting memo (en-6, the rent rise). Not scored: wrong attributions ("카드값 147만
+  3천원" became "예산"). Compare changes with `score.py --compare`; judge them by sets better or worse, since runs are
+  deterministic.
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
 

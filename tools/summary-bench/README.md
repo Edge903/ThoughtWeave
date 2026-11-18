@@ -3,11 +3,13 @@
 Desktop tooling for comparing summary models. Not part of the app build. First used for Summarization 200M,
 rejected 2026-11-17 (CLAUDE.md, Inference): on the Korean sets it answered in English and invented content.
 
-- `run_200m.py`: configuration B (Summarization 200M alone, both modes) via `mediapipe`.
-
-- `sets.json`: 4 three-memo sets (3 Korean, 1 English), 35 facts, 3 questions, every written date.
-- `score.py`: scores result files: facts kept, questions still open, dates missing or added, output language.
+- `sets.json`: 24 sets of 2–5 memos (16 Korean, 8 English), 209 facts, 17 questions, 48 dates. ko-1..3 and
+  en-1 are the original 2026-11-17 sets; each newer set says in `covers` what it tests (no dates, a written
+  year, a time changed by a later memo, relative dates in the memo, long meeting notes, mixed English words…).
+- `score.py`: scores result files: facts kept, questions still open, dates missing or added, output language;
+  totals per language; `--compare old.json new.json` lists per-set differences.
 - `test_score.py`: scorer tests, standard library only.
+- `run_200m.py`: configuration B (Summarization 200M alone, both modes) via `mediapipe`.
 
 ## Setup (Windows)
 The MSYS2 `python` on PATH cannot load Windows wheels; use the python.org build (uninstalled after the
@@ -23,11 +25,18 @@ The model stays outside the repo (`*.litertlm` is gitignored). Check a copy with
 `8b2d4ef09236adb9ead3127325526ba1aa5a59feb7c5de2d3f5958f27479de59`.
 
 ## Use
+Run from this folder (any Python 3.10+; the scorer needs no packages):
+
 ```
-.venv\Scripts\python.exe test_score.py
-.venv\Scripts\python.exe score.py --self-check
-.venv\Scripts\python.exe score.py results\B-tldr.json results\A-gemma.json
+python test_score.py
+python score.py --self-check
+python score.py results\A-gemma-24sets.json
+python score.py --compare results\A-gemma-24sets.json results\<new>.json
 ```
+
+Current baseline: `results/A-gemma-24sets.json`, 188/209 facts. Older files cover only the first four sets.
+The emulator boots from a 2026-11-11 quick-boot snapshot and drops what was pushed, so push the model and the
+sets and install the APKs after every boot.
 
 Baseline A (Gemma, the app's synthesis path) runs on a device or emulator:
 
@@ -57,7 +66,9 @@ per set are allowed; totals average them, so run-to-run noise is visible.
   digits must not run on, so "12.1" does not match "12.15".
 - A question is kept when some sentence has its tokens and still reads as a question ("?", "-까", "-ㄹ지",
   "여부", "미정", "whether", "not decided"). An answered question counts as lost.
-- Dates are read as month-day from "12월 5일", "12.5", "12/5", "Jan 9", "9 January". Relative dates
+- A question also counts as kept when the sentence asks indirectly ("필요한지 물어보기").
+- Dates are read as month-day from "12월 5일", "12.5", "12/5", "Jan 9", "9 January", and the end of
+  "January 20-22". Relative dates
   ("12일 후") are not read, so a date rewritten that way counts as missing. This approximates the app's
   `TextDateReader`, which is Kotlin; "3.14" reads as March 14 in both.
 - Language: Korean sets need at least 60% Hangul among letters; English sets at most 5%.

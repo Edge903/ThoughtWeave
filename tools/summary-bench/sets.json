@@ -1,87 +1,2567 @@
 {
-  "about": "Summary benchmark sets (docs/TODO.md, Summarization 200M evaluation). Rebuilt 2026-11-17; the 2026-11-11 sets were not kept. A fact is kept when every group in 'all' has at least one variant in the output (case and spaces ignored). 'question': the fact must stay a question. 'dates': every month-day written in the memos, as MM-DD; weekdays match 2026/2027.",
+  "about": "Summary benchmark sets (docs/TODO.md, Summarization 200M evaluation). Rebuilt 2026-11-17 (ko-1..3, en-1; the 2026-11-11 sets were not kept), expanded 2026-11-18 (ko-4..16, en-2..8). A fact is kept when every group in 'all' has at least one variant in the output (case and spaces ignored). 'question': the fact must stay a question. 'dates': every month-day written in the memos, as MM-DD; weekdays match 2026/2027. 'covers' says what a set is there to test; the scorer ignores it.",
   "sets": [
     {
       "id": "ko-1",
       "language": "ko",
       "memos": [
-        {"title": "워크숍 장소", "content": "12월 5일(토) 워크숍은 강릉 바다호텔 세미나실에서 한다. 참석 인원은 18명."},
-        {"title": "버스 예약", "content": "버스는 오전 8시에 본사 앞에서 출발. 박지훈 대리가 버스 예약을 맡는다. 12.1까지 예약 확정해야 함."},
-        {"title": "예산", "content": "예산은 1인당 15만원. 저녁 메뉴는 회와 고기 중에 투표로 정한다. 숙소는 2인 1실."}
+        {
+          "title": "워크숍 장소",
+          "content": "12월 5일(토) 워크숍은 강릉 바다호텔 세미나실에서 한다. 참석 인원은 18명."
+        },
+        {
+          "title": "버스 예약",
+          "content": "버스는 오전 8시에 본사 앞에서 출발. 박지훈 대리가 버스 예약을 맡는다. 12.1까지 예약 확정해야 함."
+        },
+        {
+          "title": "예산",
+          "content": "예산은 1인당 15만원. 저녁 메뉴는 회와 고기 중에 투표로 정한다. 숙소는 2인 1실."
+        }
       ],
-      "dates": ["12-05", "12-01"],
+      "dates": [
+        "12-05",
+        "12-01"
+      ],
       "facts": [
-        {"id": "workshop-date", "all": [["12월5일", "12.5", "12/5"]]},
-        {"id": "place", "all": [["강릉"]]},
-        {"id": "headcount", "all": [["18명"]]},
-        {"id": "departure-time", "all": [["8시", "08:00", "8:00"]]},
-        {"id": "departure-place", "all": [["본사"]]},
-        {"id": "bus-owner", "all": [["박지훈"], ["버스"]]},
-        {"id": "booking-deadline", "all": [["12월1일", "12.1", "12/1"]]},
-        {"id": "budget", "all": [["15만"]]},
-        {"id": "rooms", "all": [["2인1실"]]}
+        {
+          "id": "workshop-date",
+          "all": [
+            [
+              "12월5일",
+              "12.5",
+              "12/5"
+            ]
+          ]
+        },
+        {
+          "id": "place",
+          "all": [
+            [
+              "강릉"
+            ]
+          ]
+        },
+        {
+          "id": "headcount",
+          "all": [
+            [
+              "18명"
+            ]
+          ]
+        },
+        {
+          "id": "departure-time",
+          "all": [
+            [
+              "8시",
+              "08:00",
+              "8:00"
+            ]
+          ]
+        },
+        {
+          "id": "departure-place",
+          "all": [
+            [
+              "본사"
+            ]
+          ]
+        },
+        {
+          "id": "bus-owner",
+          "all": [
+            [
+              "박지훈"
+            ],
+            [
+              "버스"
+            ]
+          ]
+        },
+        {
+          "id": "booking-deadline",
+          "all": [
+            [
+              "12월1일",
+              "12.1",
+              "12/1"
+            ]
+          ]
+        },
+        {
+          "id": "budget",
+          "all": [
+            [
+              "15만"
+            ]
+          ]
+        },
+        {
+          "id": "rooms",
+          "all": [
+            [
+              "2인1실"
+            ]
+          ]
+        }
       ]
     },
     {
       "id": "ko-2",
       "language": "ko",
       "memos": [
-        {"title": "생신 선물", "content": "엄마 생신은 12월 14일 월요일. 선물로 꽃다발이 나을까 스카프가 나을까? 예산은 10만원."},
-        {"title": "식당", "content": "가족 식사는 12/13 일요일 저녁 6시 반. 장소는 수원 한우마을로 예약. 인원은 6명."},
-        {"title": "할 일", "content": "케이크는 민지가 픽업하기로 함. 동생들한테 회비 3만원씩 걷기. 아빠한테 가족사진 찍을지 물어보기."}
+        {
+          "title": "생신 선물",
+          "content": "엄마 생신은 12월 14일 월요일. 선물로 꽃다발이 나을까 스카프가 나을까? 예산은 10만원."
+        },
+        {
+          "title": "식당",
+          "content": "가족 식사는 12/13 일요일 저녁 6시 반. 장소는 수원 한우마을로 예약. 인원은 6명."
+        },
+        {
+          "title": "할 일",
+          "content": "케이크는 민지가 픽업하기로 함. 동생들한테 회비 3만원씩 걷기. 아빠한테 가족사진 찍을지 물어보기."
+        }
       ],
-      "dates": ["12-14", "12-13"],
+      "dates": [
+        "12-14",
+        "12-13"
+      ],
       "facts": [
-        {"id": "birthday-date", "all": [["12월14일", "12.14", "12/14"]]},
-        {"id": "gift-question", "all": [["꽃"], ["스카프"]], "question": true},
-        {"id": "gift-budget", "all": [["10만"]]},
-        {"id": "dinner-date", "all": [["12월13일", "12.13", "12/13"]]},
-        {"id": "dinner-time", "all": [["6시반", "6시30분", "6:30", "18:30"]]},
-        {"id": "restaurant", "all": [["한우마을"]]},
-        {"id": "party-size", "all": [["6명"]]},
-        {"id": "cake", "all": [["민지"], ["케이크"]]},
-        {"id": "fee", "all": [["3만"]]}
+        {
+          "id": "birthday-date",
+          "all": [
+            [
+              "12월14일",
+              "12.14",
+              "12/14"
+            ]
+          ]
+        },
+        {
+          "id": "gift-question",
+          "all": [
+            [
+              "꽃"
+            ],
+            [
+              "스카프"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "gift-budget",
+          "all": [
+            [
+              "10만"
+            ]
+          ]
+        },
+        {
+          "id": "dinner-date",
+          "all": [
+            [
+              "12월13일",
+              "12.13",
+              "12/13"
+            ]
+          ]
+        },
+        {
+          "id": "dinner-time",
+          "all": [
+            [
+              "6시반",
+              "6시30분",
+              "6:30",
+              "18:30"
+            ]
+          ]
+        },
+        {
+          "id": "restaurant",
+          "all": [
+            [
+              "한우마을"
+            ]
+          ]
+        },
+        {
+          "id": "party-size",
+          "all": [
+            [
+              "6명"
+            ]
+          ]
+        },
+        {
+          "id": "cake",
+          "all": [
+            [
+              "민지"
+            ],
+            [
+              "케이크"
+            ]
+          ]
+        },
+        {
+          "id": "fee",
+          "all": [
+            [
+              "3만"
+            ]
+          ]
+        }
       ]
     },
     {
       "id": "ko-3",
       "language": "ko",
       "memos": [
-        {"title": "출시 일정", "content": "앱 출시일은 12월 15일. 마케팅 자료는 김서연 담당. 스토어 등록 정보는 12.8까지 준비."},
-        {"title": "베타 테스트", "content": "베타 테스트는 12/1부터 12/7까지 50명 대상으로 진행. 버그 리포트는 지라에 올린다."},
-        {"title": "회의 메모", "content": "법률 검토는 이준호 변호사에게 요청. 출시 전에 개인정보 처리방침 업데이트 필요. 가격은 월 4,900원으로 할까?"}
+        {
+          "title": "출시 일정",
+          "content": "앱 출시일은 12월 15일. 마케팅 자료는 김서연 담당. 스토어 등록 정보는 12.8까지 준비."
+        },
+        {
+          "title": "베타 테스트",
+          "content": "베타 테스트는 12/1부터 12/7까지 50명 대상으로 진행. 버그 리포트는 지라에 올린다."
+        },
+        {
+          "title": "회의 메모",
+          "content": "법률 검토는 이준호 변호사에게 요청. 출시 전에 개인정보 처리방침 업데이트 필요. 가격은 월 4,900원으로 할까?"
+        }
       ],
-      "dates": ["12-15", "12-08", "12-01", "12-07"],
+      "dates": [
+        "12-15",
+        "12-08",
+        "12-01",
+        "12-07"
+      ],
       "facts": [
-        {"id": "launch-date", "all": [["12월15일", "12.15", "12/15"]]},
-        {"id": "marketing-owner", "all": [["김서연"]]},
-        {"id": "store-deadline", "all": [["12월8일", "12.8", "12/8"]]},
-        {"id": "beta-range", "all": [["12월1일", "12.1", "12/1"], ["12월7일", "12.7", "12/7", "7일"]]},
-        {"id": "beta-size", "all": [["50명"]]},
-        {"id": "bug-tracker", "all": [["지라", "jira"]]},
-        {"id": "legal-review", "all": [["이준호"]]},
-        {"id": "privacy-policy", "all": [["개인정보"]]},
-        {"id": "price-question", "all": [["4,900", "4900"]], "question": true}
+        {
+          "id": "launch-date",
+          "all": [
+            [
+              "12월15일",
+              "12.15",
+              "12/15"
+            ]
+          ]
+        },
+        {
+          "id": "marketing-owner",
+          "all": [
+            [
+              "김서연"
+            ]
+          ]
+        },
+        {
+          "id": "store-deadline",
+          "all": [
+            [
+              "12월8일",
+              "12.8",
+              "12/8"
+            ]
+          ]
+        },
+        {
+          "id": "beta-range",
+          "all": [
+            [
+              "12월1일",
+              "12.1",
+              "12/1"
+            ],
+            [
+              "12월7일",
+              "12.7",
+              "12/7",
+              "7일"
+            ]
+          ]
+        },
+        {
+          "id": "beta-size",
+          "all": [
+            [
+              "50명"
+            ]
+          ]
+        },
+        {
+          "id": "bug-tracker",
+          "all": [
+            [
+              "지라",
+              "jira"
+            ]
+          ]
+        },
+        {
+          "id": "legal-review",
+          "all": [
+            [
+              "이준호"
+            ]
+          ]
+        },
+        {
+          "id": "privacy-policy",
+          "all": [
+            [
+              "개인정보"
+            ]
+          ]
+        },
+        {
+          "id": "price-question",
+          "all": [
+            [
+              "4,900",
+              "4900"
+            ]
+          ],
+          "question": true
+        }
       ]
     },
     {
       "id": "en-1",
       "language": "en",
       "memos": [
-        {"title": "Trip to Busan", "content": "Flight to Busan on Jan 9 (Sat), 7:40 am from Gimpo. Hotel booked for 3 nights near Haeundae."},
-        {"title": "Getting around", "content": "Should we rent a car or take the subway? Bring the camera charger and 2 adapters."},
-        {"title": "Budget", "content": "Total budget 600,000 won. Return flight on 1/12 at 6 pm. Tom pays for the hotel."}
+        {
+          "title": "Trip to Busan",
+          "content": "Flight to Busan on Jan 9 (Sat), 7:40 am from Gimpo. Hotel booked for 3 nights near Haeundae."
+        },
+        {
+          "title": "Getting around",
+          "content": "Should we rent a car or take the subway? Bring the camera charger and 2 adapters."
+        },
+        {
+          "title": "Budget",
+          "content": "Total budget 600,000 won. Return flight on 1/12 at 6 pm. Tom pays for the hotel."
+        }
       ],
-      "dates": ["01-09", "01-12"],
+      "dates": [
+        "01-09",
+        "01-12"
+      ],
       "facts": [
-        {"id": "flight-date", "all": [["january9", "jan9", "jan.9", "1/9", "9january", "9jan"]]},
-        {"id": "flight-time", "all": [["7:40"]]},
-        {"id": "airport", "all": [["gimpo"]]},
-        {"id": "nights", "all": [["3nights", "threenights"]]},
-        {"id": "hotel-area", "all": [["haeundae"]]},
-        {"id": "transport-question", "all": [["car"], ["subway"]], "question": true},
-        {"id": "budget", "all": [["600,000", "600000"]]},
-        {"id": "return-date", "all": [["january12", "jan12", "jan.12", "1/12", "12january", "12jan"]]}
+        {
+          "id": "flight-date",
+          "all": [
+            [
+              "january9",
+              "jan9",
+              "jan.9",
+              "1/9",
+              "9january",
+              "9jan"
+            ]
+          ]
+        },
+        {
+          "id": "flight-time",
+          "all": [
+            [
+              "7:40"
+            ]
+          ]
+        },
+        {
+          "id": "airport",
+          "all": [
+            [
+              "gimpo"
+            ]
+          ]
+        },
+        {
+          "id": "nights",
+          "all": [
+            [
+              "3nights",
+              "threenights"
+            ]
+          ]
+        },
+        {
+          "id": "hotel-area",
+          "all": [
+            [
+              "haeundae"
+            ]
+          ]
+        },
+        {
+          "id": "transport-question",
+          "all": [
+            [
+              "car"
+            ],
+            [
+              "subway"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "budget",
+          "all": [
+            [
+              "600,000",
+              "600000"
+            ]
+          ]
+        },
+        {
+          "id": "return-date",
+          "all": [
+            [
+              "january12",
+              "jan12",
+              "jan.12",
+              "1/12",
+              "12january",
+              "12jan"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-4",
+      "language": "ko",
+      "covers": "2 memos, the same appointment in both",
+      "memos": [
+        {
+          "title": "치과",
+          "content": "12월 9일(수) 오후 3시 치과 예약. 스케일링하고 사랑니 상담."
+        },
+        {
+          "title": "치과 메모",
+          "content": "치과는 12월 9일 오후 3시. 보험증 챙기기. 진료비 약 5만원."
+        }
+      ],
+      "dates": [
+        "12-09"
+      ],
+      "facts": [
+        {
+          "id": "date",
+          "all": [
+            [
+              "12월9일",
+              "12.9",
+              "12/9"
+            ]
+          ]
+        },
+        {
+          "id": "time",
+          "all": [
+            [
+              "3시",
+              "15:00",
+              "15시"
+            ]
+          ]
+        },
+        {
+          "id": "scaling",
+          "all": [
+            [
+              "스케일링"
+            ]
+          ]
+        },
+        {
+          "id": "wisdom-tooth",
+          "all": [
+            [
+              "사랑니"
+            ]
+          ]
+        },
+        {
+          "id": "insurance-card",
+          "all": [
+            [
+              "보험증"
+            ]
+          ]
+        },
+        {
+          "id": "cost",
+          "all": [
+            [
+              "5만"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-5",
+      "language": "ko",
+      "covers": "4 memos, numeric dates and a range, names, a question",
+      "memos": [
+        {
+          "title": "디자인 리뷰",
+          "content": "디자인 리뷰는 12/16 수요일 오전 10시 30분, 3층 회의실. 최유진이 시안 3개를 준비한다."
+        },
+        {
+          "title": "개발 일정",
+          "content": "API 개발은 12/21까지 끝내야 함. 담당은 정민호. QA는 12/22부터 12/24까지."
+        },
+        {
+          "title": "배포",
+          "content": "배포는 12월 28일(월) 오전 9시로 잠정 결정. 롤백 계획 문서 필요."
+        },
+        {
+          "title": "질문",
+          "content": "QA 인원을 2명에서 4명으로 늘릴 수 있을까?"
+        }
+      ],
+      "dates": [
+        "12-16",
+        "12-21",
+        "12-22",
+        "12-24",
+        "12-28"
+      ],
+      "facts": [
+        {
+          "id": "review-date",
+          "all": [
+            [
+              "12월16일",
+              "12.16",
+              "12/16"
+            ]
+          ]
+        },
+        {
+          "id": "review-time",
+          "all": [
+            [
+              "10시30분",
+              "10시반",
+              "10:30"
+            ]
+          ]
+        },
+        {
+          "id": "room",
+          "all": [
+            [
+              "3층"
+            ]
+          ]
+        },
+        {
+          "id": "designer",
+          "all": [
+            [
+              "최유진"
+            ]
+          ]
+        },
+        {
+          "id": "drafts",
+          "all": [
+            [
+              "시안3개",
+              "시안 세 개"
+            ]
+          ]
+        },
+        {
+          "id": "api-deadline",
+          "all": [
+            [
+              "12월21일",
+              "12.21",
+              "12/21"
+            ]
+          ]
+        },
+        {
+          "id": "api-owner",
+          "all": [
+            [
+              "정민호"
+            ]
+          ]
+        },
+        {
+          "id": "qa-start",
+          "all": [
+            [
+              "12월22일",
+              "12.22",
+              "12/22"
+            ]
+          ]
+        },
+        {
+          "id": "qa-end",
+          "all": [
+            [
+              "12월24일",
+              "12.24",
+              "12/24",
+              "24일"
+            ]
+          ]
+        },
+        {
+          "id": "deploy-date",
+          "all": [
+            [
+              "12월28일",
+              "12.28",
+              "12/28"
+            ]
+          ]
+        },
+        {
+          "id": "deploy-time",
+          "all": [
+            [
+              "9시",
+              "09:00",
+              "9:00"
+            ]
+          ]
+        },
+        {
+          "id": "rollback",
+          "all": [
+            [
+              "롤백"
+            ]
+          ]
+        },
+        {
+          "id": "qa-question",
+          "all": [
+            [
+              "2명"
+            ],
+            [
+              "4명"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "ko-6",
+      "language": "ko",
+      "covers": "3 memos, no dates, shopping and chores",
+      "memos": [
+        {
+          "title": "장보기",
+          "content": "우유 2개, 계란 한 판, 두부. 세제가 거의 떨어짐."
+        },
+        {
+          "title": "집안일",
+          "content": "화장실 전구 교체. 베란다 화분 물 주기. 분리수거는 목요일 밤."
+        },
+        {
+          "title": "생활비",
+          "content": "이번 달 관리비 18만 7천원. 인터넷 요금 자동이체 확인 필요."
+        }
+      ],
+      "dates": [],
+      "facts": [
+        {
+          "id": "milk",
+          "all": [
+            [
+              "우유"
+            ]
+          ]
+        },
+        {
+          "id": "eggs",
+          "all": [
+            [
+              "계란"
+            ]
+          ]
+        },
+        {
+          "id": "tofu",
+          "all": [
+            [
+              "두부"
+            ]
+          ]
+        },
+        {
+          "id": "detergent",
+          "all": [
+            [
+              "세제"
+            ]
+          ]
+        },
+        {
+          "id": "bulb",
+          "all": [
+            [
+              "전구"
+            ]
+          ]
+        },
+        {
+          "id": "plants",
+          "all": [
+            [
+              "화분"
+            ]
+          ]
+        },
+        {
+          "id": "recycling",
+          "all": [
+            [
+              "분리수거"
+            ],
+            [
+              "목요일"
+            ]
+          ]
+        },
+        {
+          "id": "maintenance-fee",
+          "all": [
+            [
+              "18만7천",
+              "187,000"
+            ]
+          ]
+        },
+        {
+          "id": "internet",
+          "all": [
+            [
+              "인터넷"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-7",
+      "language": "ko",
+      "covers": "5 memos, a written year, travel with many numbers",
+      "memos": [
+        {
+          "title": "제주 여행",
+          "content": "2027년 1월 15일(금)부터 1월 17일까지 제주 여행. 항공편은 김포 출발 오전 7시 10분."
+        },
+        {
+          "title": "숙소",
+          "content": "숙소는 서귀포 오션뷰 펜션, 2박에 32만원. 체크인은 오후 4시."
+        },
+        {
+          "title": "렌터카",
+          "content": "렌터카는 공항에서 픽업. 보험은 완전자차로. 하루 6만원 정도."
+        },
+        {
+          "title": "일정",
+          "content": "첫날 성산일출봉, 둘째 날 우도. 우도 배 시간은 확인 필요."
+        },
+        {
+          "title": "준비물",
+          "content": "충전기, 우산, 멀미약. 동생 생일 선물로 귤 한 박스 보내기."
+        }
+      ],
+      "dates": [
+        "01-15",
+        "01-17"
+      ],
+      "facts": [
+        {
+          "id": "trip-start",
+          "all": [
+            [
+              "1월15일",
+              "1.15",
+              "1/15"
+            ]
+          ]
+        },
+        {
+          "id": "trip-end",
+          "all": [
+            [
+              "1월17일",
+              "1.17",
+              "1/17",
+              "17일"
+            ]
+          ]
+        },
+        {
+          "id": "flight-time",
+          "all": [
+            [
+              "7시10분",
+              "7:10"
+            ]
+          ]
+        },
+        {
+          "id": "airport",
+          "all": [
+            [
+              "김포"
+            ]
+          ]
+        },
+        {
+          "id": "lodging",
+          "all": [
+            [
+              "서귀포"
+            ]
+          ]
+        },
+        {
+          "id": "lodging-price",
+          "all": [
+            [
+              "32만"
+            ]
+          ]
+        },
+        {
+          "id": "check-in",
+          "all": [
+            [
+              "4시",
+              "16:00"
+            ]
+          ]
+        },
+        {
+          "id": "car-insurance",
+          "all": [
+            [
+              "완전자차"
+            ]
+          ]
+        },
+        {
+          "id": "car-price",
+          "all": [
+            [
+              "6만"
+            ]
+          ]
+        },
+        {
+          "id": "seongsan",
+          "all": [
+            [
+              "성산일출봉"
+            ]
+          ]
+        },
+        {
+          "id": "udo",
+          "all": [
+            [
+              "우도"
+            ]
+          ]
+        },
+        {
+          "id": "ferry-check",
+          "all": [
+            [
+              "배"
+            ],
+            [
+              "확인"
+            ]
+          ]
+        },
+        {
+          "id": "motion-pills",
+          "all": [
+            [
+              "멀미약"
+            ]
+          ]
+        },
+        {
+          "id": "gift",
+          "all": [
+            [
+              "귤"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-8",
+      "language": "ko",
+      "covers": "2 memos, the second changes the time",
+      "memos": [
+        {
+          "title": "동아리 모임",
+          "content": "12월 18일(금) 저녁 7시 홍대 카페에서 동아리 모임. 회비 2만원."
+        },
+        {
+          "title": "변경",
+          "content": "동아리 모임 시간이 저녁 8시로 바뀜. 장소는 그대로. 늦으면 단톡방에 알리기."
+        }
+      ],
+      "dates": [
+        "12-18"
+      ],
+      "facts": [
+        {
+          "id": "date",
+          "all": [
+            [
+              "12월18일",
+              "12.18",
+              "12/18"
+            ]
+          ]
+        },
+        {
+          "id": "place",
+          "all": [
+            [
+              "홍대"
+            ]
+          ]
+        },
+        {
+          "id": "fee",
+          "all": [
+            [
+              "2만"
+            ]
+          ]
+        },
+        {
+          "id": "new-time",
+          "all": [
+            [
+              "8시",
+              "20:00",
+              "20시"
+            ]
+          ]
+        },
+        {
+          "id": "group-chat",
+          "all": [
+            [
+              "단톡방"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-9",
+      "language": "ko",
+      "covers": "3 memos, two open questions, one about two dates",
+      "memos": [
+        {
+          "title": "이사",
+          "content": "이사 날짜는 1월 22일(금)로 할까 1월 29일(금)로 할까? 포장이사 견적은 120만원."
+        },
+        {
+          "title": "새 집",
+          "content": "새 집 도배는 직접 할지 업체에 맡길지 고민. 입주 청소 업체 연락처 받아두기."
+        },
+        {
+          "title": "가구",
+          "content": "소파는 버리고 침대는 가져가기. 냉장고 설치 기사 일정 문의."
+        }
+      ],
+      "dates": [
+        "01-22",
+        "01-29"
+      ],
+      "facts": [
+        {
+          "id": "move-date-question",
+          "all": [
+            [
+              "1월22일",
+              "1.22",
+              "1/22"
+            ],
+            [
+              "1월29일",
+              "1.29",
+              "1/29",
+              "29일"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "moving-quote",
+          "all": [
+            [
+              "120만"
+            ]
+          ]
+        },
+        {
+          "id": "wallpaper-question",
+          "all": [
+            [
+              "도배"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "cleaning",
+          "all": [
+            [
+              "청소"
+            ]
+          ]
+        },
+        {
+          "id": "sofa",
+          "all": [
+            [
+              "소파"
+            ]
+          ]
+        },
+        {
+          "id": "bed",
+          "all": [
+            [
+              "침대"
+            ]
+          ]
+        },
+        {
+          "id": "fridge",
+          "all": [
+            [
+              "냉장고"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-10",
+      "language": "ko",
+      "covers": "4 memos, one long meeting record, many figures",
+      "memos": [
+        {
+          "title": "주간 회의록",
+          "content": "참석: 김하늘, 오세진, 박도윤. 1분기 매출 목표는 3억 2천만원. 신규 고객 12곳 확보. 마케팅 예산은 월 800만원으로 동결. 채용은 백엔드 1명, 디자이너 1명. 다음 회의는 1월 6일(수) 오후 2시."
+        },
+        {
+          "title": "액션 아이템",
+          "content": "오세진: 경쟁사 분석 1월 4일까지. 박도윤: 채용 공고 초안 작성."
+        },
+        {
+          "title": "이슈",
+          "content": "서버 비용이 지난달보다 23% 증가. 원인 파악 필요."
+        },
+        {
+          "title": "의견",
+          "content": "재택근무를 주 2회에서 주 3회로 늘리는 건 어떨까?"
+        }
+      ],
+      "dates": [
+        "01-06",
+        "01-04"
+      ],
+      "facts": [
+        {
+          "id": "kim",
+          "all": [
+            [
+              "김하늘"
+            ]
+          ]
+        },
+        {
+          "id": "oh",
+          "all": [
+            [
+              "오세진"
+            ]
+          ]
+        },
+        {
+          "id": "park",
+          "all": [
+            [
+              "박도윤"
+            ]
+          ]
+        },
+        {
+          "id": "revenue-target",
+          "all": [
+            [
+              "3억2천"
+            ]
+          ]
+        },
+        {
+          "id": "new-clients",
+          "all": [
+            [
+              "12곳"
+            ]
+          ]
+        },
+        {
+          "id": "marketing-budget",
+          "all": [
+            [
+              "800만"
+            ]
+          ]
+        },
+        {
+          "id": "hiring",
+          "all": [
+            [
+              "백엔드"
+            ],
+            [
+              "디자이너"
+            ]
+          ]
+        },
+        {
+          "id": "next-meeting",
+          "all": [
+            [
+              "1월6일",
+              "1.6",
+              "1/6"
+            ]
+          ]
+        },
+        {
+          "id": "next-meeting-time",
+          "all": [
+            [
+              "2시",
+              "14:00",
+              "14시"
+            ]
+          ]
+        },
+        {
+          "id": "competitor-analysis",
+          "all": [
+            [
+              "경쟁사"
+            ],
+            [
+              "1월4일",
+              "1.4",
+              "1/4"
+            ]
+          ]
+        },
+        {
+          "id": "job-post",
+          "all": [
+            [
+              "채용공고"
+            ]
+          ]
+        },
+        {
+          "id": "server-cost",
+          "all": [
+            [
+              "23%"
+            ]
+          ]
+        },
+        {
+          "id": "remote-question",
+          "all": [
+            [
+              "주2회"
+            ],
+            [
+              "주3회"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "ko-11",
+      "language": "ko",
+      "covers": "2 memos, month.day dates only",
+      "memos": [
+        {
+          "title": "건강검진",
+          "content": "건강검진 12.10 오전 8시. 전날 밤 9시 이후 금식."
+        },
+        {
+          "title": "병원 서류",
+          "content": "검진 결과는 12.30 이후 우편으로 옴. 회사에 검진 확인서 제출."
+        }
+      ],
+      "dates": [
+        "12-10",
+        "12-30"
+      ],
+      "facts": [
+        {
+          "id": "checkup-date",
+          "all": [
+            [
+              "12월10일",
+              "12.10",
+              "12/10"
+            ]
+          ]
+        },
+        {
+          "id": "checkup-time",
+          "all": [
+            [
+              "8시",
+              "08:00",
+              "8:00"
+            ]
+          ]
+        },
+        {
+          "id": "fasting",
+          "all": [
+            [
+              "금식"
+            ],
+            [
+              "9시",
+              "21:00",
+              "21시"
+            ]
+          ]
+        },
+        {
+          "id": "result-date",
+          "all": [
+            [
+              "12월30일",
+              "12.30",
+              "12/30"
+            ]
+          ]
+        },
+        {
+          "id": "by-mail",
+          "all": [
+            [
+              "우편"
+            ]
+          ]
+        },
+        {
+          "id": "certificate",
+          "all": [
+            [
+              "확인서"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-12",
+      "language": "ko",
+      "covers": "3 memos, English product names inside Korean, a question",
+      "memos": [
+        {
+          "title": "스터디",
+          "content": "React 스터디는 매주 화요일 밤 9시 Zoom. 다음 발표자는 이서준."
+        },
+        {
+          "title": "자료",
+          "content": "발표 자료는 Notion에 12/7까지 업로드. 주제는 상태 관리."
+        },
+        {
+          "title": "스터디 질문",
+          "content": "다음 기수 모집을 1월에 할까 2월에 할까?"
+        }
+      ],
+      "dates": [
+        "12-07"
+      ],
+      "facts": [
+        {
+          "id": "react",
+          "all": [
+            [
+              "react",
+              "리액트"
+            ]
+          ]
+        },
+        {
+          "id": "weekly",
+          "all": [
+            [
+              "화요일"
+            ],
+            [
+              "9시",
+              "21:00",
+              "21시"
+            ]
+          ]
+        },
+        {
+          "id": "zoom",
+          "all": [
+            [
+              "zoom",
+              "줌"
+            ]
+          ]
+        },
+        {
+          "id": "presenter",
+          "all": [
+            [
+              "이서준"
+            ]
+          ]
+        },
+        {
+          "id": "notion",
+          "all": [
+            [
+              "notion",
+              "노션"
+            ]
+          ]
+        },
+        {
+          "id": "upload-date",
+          "all": [
+            [
+              "12월7일",
+              "12.7",
+              "12/7"
+            ]
+          ]
+        },
+        {
+          "id": "topic",
+          "all": [
+            [
+              "상태관리"
+            ]
+          ]
+        },
+        {
+          "id": "cohort-question",
+          "all": [
+            [
+              "1월"
+            ],
+            [
+              "2월"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "ko-13",
+      "language": "ko",
+      "covers": "5 short memos, a year.month.day date, a question",
+      "memos": [
+        {
+          "title": "결혼식",
+          "content": "사촌 결혼식 2027.2.12 (금) 낮 12시 30분."
+        },
+        {
+          "title": "장소",
+          "content": "웨딩홀은 강남역 3번 출구 근처 그랜드홀."
+        },
+        {
+          "title": "축의금",
+          "content": "축의금은 10만원. 부모님과 같이 갈지 따로 갈지?"
+        },
+        {
+          "title": "복장",
+          "content": "정장 드라이클리닝 맡기기."
+        },
+        {
+          "title": "교통",
+          "content": "주차 지원 2시간. 지하철이 나을 듯."
+        }
+      ],
+      "dates": [
+        "02-12"
+      ],
+      "facts": [
+        {
+          "id": "date",
+          "all": [
+            [
+              "2월12일",
+              "2.12",
+              "2/12"
+            ]
+          ]
+        },
+        {
+          "id": "time",
+          "all": [
+            [
+              "12시30분",
+              "12시반",
+              "12:30"
+            ]
+          ]
+        },
+        {
+          "id": "station",
+          "all": [
+            [
+              "강남역"
+            ]
+          ]
+        },
+        {
+          "id": "exit",
+          "all": [
+            [
+              "3번출구"
+            ]
+          ]
+        },
+        {
+          "id": "gift-money",
+          "all": [
+            [
+              "10만"
+            ]
+          ]
+        },
+        {
+          "id": "together-question",
+          "all": [
+            [
+              "부모님"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "dry-cleaning",
+          "all": [
+            [
+              "드라이클리닝"
+            ]
+          ]
+        },
+        {
+          "id": "parking",
+          "all": [
+            [
+              "주차"
+            ],
+            [
+              "2시간"
+            ]
+          ]
+        },
+        {
+          "id": "subway",
+          "all": [
+            [
+              "지하철"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-14",
+      "language": "ko",
+      "covers": "3 memos, relative dates written in the memo, a long number",
+      "memos": [
+        {
+          "title": "택배",
+          "content": "반품 택배는 내일 오전에 회수. 송장번호 6123 4455 9087."
+        },
+        {
+          "title": "환불",
+          "content": "환불은 12월 3일(목) 신청함. 영업일 기준 3~5일 소요."
+        },
+        {
+          "title": "교환",
+          "content": "교환 신청 마감은 다음 주 금요일. 사이즈 M에서 L로."
+        }
+      ],
+      "dates": [
+        "12-03"
+      ],
+      "facts": [
+        {
+          "id": "pickup",
+          "all": [
+            [
+              "내일"
+            ]
+          ]
+        },
+        {
+          "id": "tracking-number",
+          "all": [
+            [
+              "612344559087"
+            ]
+          ]
+        },
+        {
+          "id": "refund-date",
+          "all": [
+            [
+              "12월3일",
+              "12.3",
+              "12/3"
+            ]
+          ]
+        },
+        {
+          "id": "refund-days",
+          "all": [
+            [
+              "3~5일",
+              "3-5일",
+              "3~5영업일",
+              "3-5영업일"
+            ]
+          ]
+        },
+        {
+          "id": "exchange-deadline",
+          "all": [
+            [
+              "다음주금요일"
+            ]
+          ]
+        },
+        {
+          "id": "size",
+          "all": [
+            [
+              "사이즈"
+            ],
+            [
+              "l"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-15",
+      "language": "ko",
+      "covers": "4 memos, money-heavy, a question about an amount",
+      "memos": [
+        {
+          "title": "카드값",
+          "content": "12월 카드값 147만 3천원, 결제일 12월 26일."
+        },
+        {
+          "title": "적금",
+          "content": "적금 만기 1월 20일. 만기 금액 600만원은 예금으로 옮길까?"
+        },
+        {
+          "title": "보험",
+          "content": "자동차 보험 갱신 12/31까지. 작년 보험료 82만원."
+        },
+        {
+          "title": "가계부",
+          "content": "식비가 예산보다 15만원 초과."
+        }
+      ],
+      "dates": [
+        "12-26",
+        "01-20",
+        "12-31"
+      ],
+      "facts": [
+        {
+          "id": "card-bill",
+          "all": [
+            [
+              "147만3천"
+            ]
+          ]
+        },
+        {
+          "id": "card-due",
+          "all": [
+            [
+              "12월26일",
+              "12.26",
+              "12/26"
+            ]
+          ]
+        },
+        {
+          "id": "maturity",
+          "all": [
+            [
+              "1월20일",
+              "1.20",
+              "1/20"
+            ]
+          ]
+        },
+        {
+          "id": "deposit-question",
+          "all": [
+            [
+              "600만"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "insurance-deadline",
+          "all": [
+            [
+              "12월31일",
+              "12.31",
+              "12/31"
+            ]
+          ]
+        },
+        {
+          "id": "premium",
+          "all": [
+            [
+              "82만"
+            ]
+          ]
+        },
+        {
+          "id": "food-overspend",
+          "all": [
+            [
+              "15만"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ko-16",
+      "language": "ko",
+      "covers": "3 memos, school notice, a question ending a to-do",
+      "memos": [
+        {
+          "title": "학교 공지",
+          "content": "겨울방학은 12월 31일(목)부터, 개학은 2월 3일(수). 방학 중 돌봄교실 신청은 12월 11일까지 학교 앱에서."
+        },
+        {
+          "title": "학원",
+          "content": "영어학원 방학 특강 월수금 오후 1시~3시. 수강료 25만원."
+        },
+        {
+          "title": "할 일",
+          "content": "방학 숙제 목록 출력하기. 독서록 공책 2권 사기. 돌봄교실 도시락 필요한지 담임 선생님께 물어보기?"
+        }
+      ],
+      "dates": [
+        "12-31",
+        "02-03",
+        "12-11"
+      ],
+      "facts": [
+        {
+          "id": "vacation-start",
+          "all": [
+            [
+              "12월31일",
+              "12.31",
+              "12/31"
+            ]
+          ]
+        },
+        {
+          "id": "school-start",
+          "all": [
+            [
+              "2월3일",
+              "2.3",
+              "2/3"
+            ]
+          ]
+        },
+        {
+          "id": "care-deadline",
+          "all": [
+            [
+              "12월11일",
+              "12.11",
+              "12/11"
+            ]
+          ]
+        },
+        {
+          "id": "school-app",
+          "all": [
+            [
+              "앱"
+            ]
+          ]
+        },
+        {
+          "id": "special-class",
+          "all": [
+            [
+              "특강"
+            ],
+            [
+              "월수금"
+            ]
+          ]
+        },
+        {
+          "id": "class-time",
+          "all": [
+            [
+              "1시",
+              "13:00",
+              "13시"
+            ],
+            [
+              "3시",
+              "15:00",
+              "15시"
+            ]
+          ]
+        },
+        {
+          "id": "tuition",
+          "all": [
+            [
+              "25만"
+            ]
+          ]
+        },
+        {
+          "id": "homework",
+          "all": [
+            [
+              "숙제"
+            ]
+          ]
+        },
+        {
+          "id": "notebooks",
+          "all": [
+            [
+              "2권"
+            ]
+          ]
+        },
+        {
+          "id": "lunchbox-question",
+          "all": [
+            [
+              "도시락"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "en-2",
+      "language": "en",
+      "covers": "2 memos, the same appointment in both",
+      "memos": [
+        {
+          "title": "Vet",
+          "content": "Vet appointment for Luna on Friday, Dec 4 at 10:15 am. Bring her vaccination card."
+        },
+        {
+          "title": "Vet reminder",
+          "content": "Luna's vet visit is Dec 4, 10:15. No food after midnight."
+        }
+      ],
+      "dates": [
+        "12-04"
+      ],
+      "facts": [
+        {
+          "id": "pet",
+          "all": [
+            [
+              "luna"
+            ]
+          ]
+        },
+        {
+          "id": "date",
+          "all": [
+            [
+              "dec4",
+              "december4",
+              "12/4",
+              "4december",
+              "4dec"
+            ]
+          ]
+        },
+        {
+          "id": "time",
+          "all": [
+            [
+              "10:15"
+            ]
+          ]
+        },
+        {
+          "id": "vaccination-card",
+          "all": [
+            [
+              "vaccination"
+            ]
+          ]
+        },
+        {
+          "id": "fasting",
+          "all": [
+            [
+              "midnight"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "en-3",
+      "language": "en",
+      "covers": "4 memos, numeric dates and a range, owners, a question",
+      "memos": [
+        {
+          "title": "Sprint",
+          "content": "Sprint 14 runs from 1/4 to 1/15. Goal: ship offline mode."
+        },
+        {
+          "title": "Owners",
+          "content": "Priya owns sync, Marcus owns the settings screen. Code freeze on Jan 13."
+        },
+        {
+          "title": "Risks",
+          "content": "The database migration may take 3 days. Should we split it into two releases?"
+        },
+        {
+          "title": "Demo",
+          "content": "Demo to the client on January 15 at 4 pm in room 5B."
+        }
+      ],
+      "dates": [
+        "01-04",
+        "01-15",
+        "01-13"
+      ],
+      "facts": [
+        {
+          "id": "sprint",
+          "all": [
+            [
+              "sprint14"
+            ]
+          ]
+        },
+        {
+          "id": "sprint-start",
+          "all": [
+            [
+              "1/4",
+              "jan4",
+              "january4"
+            ]
+          ]
+        },
+        {
+          "id": "sprint-end",
+          "all": [
+            [
+              "1/15",
+              "jan15",
+              "january15"
+            ]
+          ]
+        },
+        {
+          "id": "goal",
+          "all": [
+            [
+              "offline"
+            ]
+          ]
+        },
+        {
+          "id": "priya",
+          "all": [
+            [
+              "priya"
+            ],
+            [
+              "sync"
+            ]
+          ]
+        },
+        {
+          "id": "marcus",
+          "all": [
+            [
+              "marcus"
+            ],
+            [
+              "settings"
+            ]
+          ]
+        },
+        {
+          "id": "code-freeze",
+          "all": [
+            [
+              "freeze"
+            ],
+            [
+              "jan13",
+              "january13",
+              "1/13"
+            ]
+          ]
+        },
+        {
+          "id": "migration",
+          "all": [
+            [
+              "3days",
+              "threedays"
+            ]
+          ]
+        },
+        {
+          "id": "split-question",
+          "all": [
+            [
+              "tworeleases",
+              "2releases",
+              "split"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "demo-time",
+          "all": [
+            [
+              "4pm",
+              "16:00",
+              "4p.m"
+            ]
+          ]
+        },
+        {
+          "id": "room",
+          "all": [
+            [
+              "5b"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "en-4",
+      "language": "en",
+      "covers": "3 memos, no dates, shopping and garden, a question",
+      "memos": [
+        {
+          "title": "Groceries",
+          "content": "Oat milk, 6 eggs, spinach, and coffee beans."
+        },
+        {
+          "title": "Hardware store",
+          "content": "Buy a 13 mm wrench and wood glue. Return the broken drill."
+        },
+        {
+          "title": "Garden",
+          "content": "Plant tulip bulbs before the ground freezes. Is it too late for garlic?"
+        }
+      ],
+      "dates": [],
+      "facts": [
+        {
+          "id": "oat-milk",
+          "all": [
+            [
+              "oat"
+            ]
+          ]
+        },
+        {
+          "id": "eggs",
+          "all": [
+            [
+              "6eggs",
+              "sixeggs"
+            ]
+          ]
+        },
+        {
+          "id": "spinach",
+          "all": [
+            [
+              "spinach"
+            ]
+          ]
+        },
+        {
+          "id": "coffee",
+          "all": [
+            [
+              "coffee"
+            ]
+          ]
+        },
+        {
+          "id": "wrench",
+          "all": [
+            [
+              "wrench"
+            ],
+            [
+              "13"
+            ]
+          ]
+        },
+        {
+          "id": "glue",
+          "all": [
+            [
+              "glue"
+            ]
+          ]
+        },
+        {
+          "id": "drill",
+          "all": [
+            [
+              "drill"
+            ]
+          ]
+        },
+        {
+          "id": "tulips",
+          "all": [
+            [
+              "tulip"
+            ]
+          ]
+        },
+        {
+          "id": "garlic-question",
+          "all": [
+            [
+              "garlic"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "en-5",
+      "language": "en",
+      "covers": "5 memos, long, many dates and figures, a question",
+      "memos": [
+        {
+          "title": "Conference",
+          "content": "DevConf in Berlin, January 20 to January 22. My talk is on Jan 21 at 11:30."
+        },
+        {
+          "title": "Flights",
+          "content": "Outbound LH 713 on 1/19 at 6:05 am. Return on 1/23."
+        },
+        {
+          "title": "Hotel",
+          "content": "Hotel near Alexanderplatz, 4 nights, 520 euros total, booked under Kim."
+        },
+        {
+          "title": "Slides",
+          "content": "Finish slides by Jan 15 and send them to Anna for review."
+        },
+        {
+          "title": "Expenses",
+          "content": "Keep all receipts. Per diem is 60 euros a day. Can I claim the airport train?"
+        }
+      ],
+      "dates": [
+        "01-20",
+        "01-22",
+        "01-21",
+        "01-19",
+        "01-23",
+        "01-15"
+      ],
+      "facts": [
+        {
+          "id": "city",
+          "all": [
+            [
+              "berlin"
+            ]
+          ]
+        },
+        {
+          "id": "conference-start",
+          "all": [
+            [
+              "jan20",
+              "january20",
+              "1/20"
+            ]
+          ]
+        },
+        {
+          "id": "conference-end",
+          "all": [
+            [
+              "jan22",
+              "january22",
+              "1/22",
+              "22"
+            ]
+          ]
+        },
+        {
+          "id": "talk-date",
+          "all": [
+            [
+              "jan21",
+              "january21",
+              "1/21"
+            ]
+          ]
+        },
+        {
+          "id": "talk-time",
+          "all": [
+            [
+              "11:30"
+            ]
+          ]
+        },
+        {
+          "id": "flight",
+          "all": [
+            [
+              "lh713"
+            ]
+          ]
+        },
+        {
+          "id": "flight-date",
+          "all": [
+            [
+              "1/19",
+              "jan19",
+              "january19"
+            ]
+          ]
+        },
+        {
+          "id": "flight-time",
+          "all": [
+            [
+              "6:05"
+            ]
+          ]
+        },
+        {
+          "id": "return-date",
+          "all": [
+            [
+              "1/23",
+              "jan23",
+              "january23"
+            ]
+          ]
+        },
+        {
+          "id": "hotel-area",
+          "all": [
+            [
+              "alexanderplatz"
+            ]
+          ]
+        },
+        {
+          "id": "nights",
+          "all": [
+            [
+              "4nights",
+              "fournights"
+            ]
+          ]
+        },
+        {
+          "id": "hotel-price",
+          "all": [
+            [
+              "520"
+            ]
+          ]
+        },
+        {
+          "id": "slides-deadline",
+          "all": [
+            [
+              "slides"
+            ],
+            [
+              "jan15",
+              "january15",
+              "1/15"
+            ]
+          ]
+        },
+        {
+          "id": "reviewer",
+          "all": [
+            [
+              "anna"
+            ]
+          ]
+        },
+        {
+          "id": "per-diem",
+          "all": [
+            [
+              "60euros",
+              "€60",
+              "60eur"
+            ]
+          ]
+        },
+        {
+          "id": "train-question",
+          "all": [
+            [
+              "train"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "en-6",
+      "language": "en",
+      "covers": "2 memos, the second changes the amount",
+      "memos": [
+        {
+          "title": "Rent",
+          "content": "Rent of 1,450 dollars is due on Dec 1. Landlord: Mr. Ortiz."
+        },
+        {
+          "title": "Rent update",
+          "content": "Mr. Ortiz says the rent goes up to 1,520 dollars from February."
+        }
+      ],
+      "dates": [
+        "12-01"
+      ],
+      "facts": [
+        {
+          "id": "old-rent",
+          "all": [
+            [
+              "1,450",
+              "1450"
+            ]
+          ]
+        },
+        {
+          "id": "due-date",
+          "all": [
+            [
+              "dec1",
+              "december1",
+              "12/1"
+            ]
+          ]
+        },
+        {
+          "id": "landlord",
+          "all": [
+            [
+              "ortiz"
+            ]
+          ]
+        },
+        {
+          "id": "new-rent",
+          "all": [
+            [
+              "1,520",
+              "1520"
+            ]
+          ]
+        },
+        {
+          "id": "from-february",
+          "all": [
+            [
+              "february",
+              "feb"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "en-7",
+      "language": "en",
+      "covers": "3 memos, two open questions, a day written as '23rd'",
+      "memos": [
+        {
+          "title": "Holidays",
+          "content": "Christmas dinner at Grandma's on Dec 24 at 6 pm. Should we bring dessert or wine?"
+        },
+        {
+          "title": "Gifts",
+          "content": "Gift budget is 40 dollars per person. Secret Santa names drawn on Dec 10."
+        },
+        {
+          "title": "Travel",
+          "content": "Drive up on the 23rd or take the train on the morning of Dec 24?"
+        }
+      ],
+      "dates": [
+        "12-24",
+        "12-10"
+      ],
+      "facts": [
+        {
+          "id": "dinner-date",
+          "all": [
+            [
+              "dec24",
+              "december24",
+              "12/24"
+            ]
+          ]
+        },
+        {
+          "id": "dinner-time",
+          "all": [
+            [
+              "6pm",
+              "18:00",
+              "6p.m",
+              "sixpm"
+            ]
+          ]
+        },
+        {
+          "id": "grandma",
+          "all": [
+            [
+              "grandma"
+            ]
+          ]
+        },
+        {
+          "id": "bring-question",
+          "all": [
+            [
+              "dessert"
+            ],
+            [
+              "wine"
+            ]
+          ],
+          "question": true
+        },
+        {
+          "id": "gift-budget",
+          "all": [
+            [
+              "40"
+            ]
+          ]
+        },
+        {
+          "id": "secret-santa",
+          "all": [
+            [
+              "secretsanta"
+            ],
+            [
+              "dec10",
+              "december10",
+              "12/10"
+            ]
+          ]
+        },
+        {
+          "id": "travel-question",
+          "all": [
+            [
+              "23rd",
+              "23"
+            ],
+            [
+              "train"
+            ]
+          ],
+          "question": true
+        }
+      ]
+    },
+    {
+      "id": "en-8",
+      "language": "en",
+      "covers": "4 memos, a time window, a phone number, a 'whether' question",
+      "memos": [
+        {
+          "title": "Plumber",
+          "content": "Plumber Dave comes Monday, Dec 7 between 8 and 10 am. Call 555-0142 if late."
+        },
+        {
+          "title": "Kitchen",
+          "content": "Kitchen sink leaks under the cabinet. Turn off the valve at night."
+        },
+        {
+          "title": "Quote",
+          "content": "Quote was 280 dollars plus parts."
+        },
+        {
+          "title": "Landlord",
+          "content": "Ask the landlord whether they will cover the repair."
+        }
+      ],
+      "dates": [
+        "12-07"
+      ],
+      "facts": [
+        {
+          "id": "plumber",
+          "all": [
+            [
+              "dave"
+            ]
+          ]
+        },
+        {
+          "id": "date",
+          "all": [
+            [
+              "dec7",
+              "december7",
+              "12/7"
+            ]
+          ]
+        },
+        {
+          "id": "time-window",
+          "all": [
+            [
+              "8and10",
+              "8-10",
+              "8to10",
+              "8–10",
+              "8:00",
+              "8am"
+            ]
+          ]
+        },
+        {
+          "id": "phone",
+          "all": [
+            [
+              "555-0142"
+            ]
+          ]
+        },
+        {
+          "id": "sink",
+          "all": [
+            [
+              "sink"
+            ]
+          ]
+        },
+        {
+          "id": "valve",
+          "all": [
+            [
+              "valve"
+            ]
+          ]
+        },
+        {
+          "id": "quote",
+          "all": [
+            [
+              "280"
+            ]
+          ]
+        },
+        {
+          "id": "landlord-question",
+          "all": [
+            [
+              "landlord"
+            ],
+            [
+              "cover",
+              "pay"
+            ]
+          ],
+          "question": true
+        }
       ]
     }
   ]
