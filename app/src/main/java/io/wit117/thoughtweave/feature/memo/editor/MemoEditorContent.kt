@@ -25,8 +25,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,17 +36,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import io.wit117.thoughtweave.R
 import io.wit117.thoughtweave.core.ui.component.ConfirmDialog
 import io.wit117.thoughtweave.core.ui.component.InfoBanner
+import io.wit117.thoughtweave.feature.dictation.withDictation
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 /** The user-editable fields of a memo. */
 data class MemoDraft(val title: String = "", val content: String = "") {
     val hasContent: Boolean get() = title.isNotBlank() || content.isNotBlank()
 }
 
-/** Stateless editor shared by S02-A, S02-B and S02-C, including the unsaved-changes guard. */
+/**
+ * Editor shared by S02-A, S02-B and S02-C, including the unsaved-changes guard. The draft is hoisted;
+ * only the content field's cursor is kept here, so [insertions] (dictated text) land at the cursor.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemoEditorContent(
@@ -65,8 +75,28 @@ fun MemoEditorContent(
     isReadOnly: Boolean = false,
     showProgress: Boolean = false,
     notices: List<String> = emptyList(),
+    insertions: Flow<String> = emptyFlow(),
 ) {
     var showDiscardDialog by rememberSaveable { mutableStateOf(false) }
+
+    var contentField by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(draft.content, TextRange(draft.content.length)))
+    }
+    // Content changed outside the field (loaded, restored or streamed): follow it, cursor at the end.
+    val shownContent = if (contentField.text == draft.content) {
+        contentField
+    } else {
+        TextFieldValue(draft.content, TextRange(draft.content.length))
+    }
+    val latestContent by rememberUpdatedState(shownContent)
+    val latestOnContentChange by rememberUpdatedState(onContentChange)
+    LaunchedEffect(insertions) {
+        insertions.collect { text ->
+            val updated = latestContent.withDictation(text)
+            contentField = updated
+            latestOnContentChange(updated.text)
+        }
+    }
 
     BackHandler(enabled = isDirty) { showDiscardDialog = true }
 
@@ -120,8 +150,11 @@ fun MemoEditorContent(
                 )
                 HorizontalDivider()
                 TextField(
-                    value = draft.content,
-                    onValueChange = onContentChange,
+                    value = shownContent,
+                    onValueChange = {
+                        contentField = it
+                        if (it.text != draft.content) onContentChange(it.text)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)

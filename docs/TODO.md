@@ -34,6 +34,17 @@ the input are offered only for pairs that pass a real-model test. One global inp
       output language is offered. Re-run the translation measurement if the model changes, and add passing pairs
       to `LanguageProfiles.verifiedTranslations`.
 
+## Voice dictation (V1 done 2026-11-18)
+- [ ] **Real-device check.** Dictate in Korean and English on the Galaxy S23. The emulator has no on-device
+      recognizer, so V1 was tested with a scripted recognizer only. Check also that recognition works without the
+      `<queries>` entry; remove it if it is not needed.
+- [ ] **V2: language download and long dictation.** S06 "Voice input" section with installed and supported speech
+      languages and a download button (API 33+, progress on 34+); segmented sessions (API 33+) so dictation
+      continues past pauses.
+- [ ] **Microphone in the legal texts.** Mention microphone use in the agreement at the legal review
+      (bump `CURRENT_AGREEMENT_VERSION`), and in the Play Data safety form (audio processed on device, not collected).
+- [ ] **Documents.** Add the mic to S02-A/B in the requirements document and the screen design deck.
+
 ## Phase 6 (on hold since 2026-11-11)
 - [ ] **Start Phase 6** when the hold is lifted: Galaxy S23 GPU and performance measurements, full flow tests,
       offline, themes, accessibility, Korean pass. Publish plan revision 10 first (proposed, not yet published).

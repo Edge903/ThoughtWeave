@@ -65,7 +65,7 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
 | ID | Name | Notes |
 |---|---|---|
 | S01 | 메모 목록 | Tab. FAB → S02-A. Star icon left of each card toggles pin. Overflow → S05. Search. |
-| S02-A/B | 메모 작성 / 조회·수정 | Shared memo editor. Delete only in S02-B. S02-B FAB → POP03 AI mode (save first if dirty). |
+| S02-A/B | 메모 작성 / 조회·수정 | Shared memo editor. Delete only in S02-B. S02-B FAB → POP03 AI mode (save first if dirty). Mic in the top bar for dictation. |
 | S02-C | AI 합성 결과 편집 | Shared memo editor. Saves a new memo plus source references (sources never shown). |
 | S03 | AI 메모 통합 | Tab. Two-column grid, multi-select, long-press → POP01. FAB needs ≥2 selected, AI ready and consent. |
 | S04 | 일정 확인 | Tab. Grouped by deadline date. Tap → POP02. FAB → POP03 MANUAL. |
@@ -141,6 +141,22 @@ and schedule extraction. Full architecture: https://claude.ai/artifact/ERQc39x57
   deterministic.
 - Gemma 3 1B answered Korean memos in English when told to use "the same language", so Korean memos get a Korean
   prompt. Its context is 4,096 tokens; over-long input fails with a "too long" error, reported to the user.
+
+## Voice dictation (V1, 2026-11-18)
+- Dictation only, in S02-A/B (user decision, 2026-11-18): a mic action in the top bar inserts recognized text at the
+  content field's cursor (`withDictation`). Nothing is saved automatically. Speaking a schedule (V3) is not planned.
+- Android's on-device recognizer only (`SpeechRecognizer.createOnDeviceSpeechRecognizer`, API 31), never the
+  network one. The mic is hidden below Android 12 or when `isOnDeviceRecognitionAvailable` is false. APIs and
+  their levels verified with `javap` and `api-versions.xml` from the android-36.1 SDK (2026-11-18): on-device
+  recognizer API 31; `checkRecognitionSupport` / `RecognitionSupport` / `triggerModelDownload(Intent)` 33;
+  `ModelDownloadListener` 34; `EXTRA_SEGMENTED_SESSION` and `EXTRA_ENABLE_FORMATTING` 33.
+- Only `PlatformSpeechInputRepository` (`data/speech`) imports `android.speech`. The UI sees `SpeechInputRepository`
+  through `DictationViewModel`. Instrumented tests script it through the debug-only `SpeechInputTestOverride`.
+- The recognition language is the AI input language when one is set, else the app language
+  (`ResolveAiLanguageUseCase("")`), as `AppLanguage.speechTag` ("ko-KR", "en-US").
+- `RECORD_AUDIO` is requested on the first mic tap, after an in-app explanation. There is no separate consent and
+  still no `INTERNET` permission. The manifest declares `<queries>` for `android.speech.RecognitionService`.
+- No new dependency. Icons `ic_mic` and `ic_stop` are Material Symbols, like the others.
 
 ## Consent (POP04)
 - `AiAvailability` (`AiAvailabilityUseCase`) gates AI actions. S03: FAB stays disabled until READY; its banner

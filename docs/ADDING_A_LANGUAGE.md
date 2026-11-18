@@ -17,11 +17,12 @@ In the examples below the new language is Japanese, tag `ja`. Use the BCP 47 lan
 
 1. **Register it.** Add it to `AppLanguages` in `domain/model/AppLanguage.kt`:
    ```kotlin
-   val JAPANESE = AppLanguage("ja", "日本語")   // the name in its own language
+   val JAPANESE = AppLanguage("ja", "日本語", speechTag = "ja-JP")   // the name in its own language
    val all = listOf(ENGLISH, KOREAN, JAPANESE)
    ```
    The S06 language picker and Android 13+ system settings (`generateLocaleConfig`) pick it up from here and from
-   the resource folder in step 2.
+   the resource folder in step 2. `speechTag` is the locale given to the on-device speech recognizer for dictation;
+   it needs a region (`LanguageContractTest` checks this). Try dictation in the new language on a real phone.
 2. **Translate the strings.** Create `res/values-ja/strings.xml` with every string in `res/values/strings.xml`,
    except those marked `translatable="false"`. Lint (`MissingTranslation`) and the contract test both check this.
    Use phrase line breaking for languages that need it, as for Korean (see `CLAUDE.md`).

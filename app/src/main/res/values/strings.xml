@@ -159,4 +159,19 @@
     <string name="license_load_failed_title">This document could not be opened</string>
     <string name="license_load_failed_message">Close the app and open it again.</string>
 
+    <!-- Voice dictation (S02-A/B) -->
+    <string name="action_dictate">Dictate</string>
+    <string name="action_stop_dictation">Stop dictation</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_app_settings">Settings</string>
+    <string name="dictation_listening">Listening…</string>
+    <string name="dictation_no_speech">No speech was recognized. Try again.</string>
+    <string name="dictation_busy">Voice input is in use. Try again in a moment.</string>
+    <string name="dictation_failed">Voice input stopped because of an error.</string>
+    <string name="dictation_language_unavailable">On-device voice input for %1$s is not installed on this phone. Install it in the system speech recognition settings.</string>
+    <string name="dictation_permission_denied">Voice input needs access to the microphone.</string>
+    <string name="dictation_permission_blocked">Microphone access is turned off for this app. Allow it in Settings.</string>
+    <string name="dialog_mic_permission_title">Use the microphone?</string>
+    <string name="dialog_mic_permission_message">ThoughtWeave listens only while you dictate. Speech is recognized on this phone by its on-device speech recognizer, and ThoughtWeave does not record or keep the audio.</string>
+
 </resources>

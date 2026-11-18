@@ -59,6 +59,17 @@ class LanguageContractTest {
         assertEquals("duplicate profiles", tags.size, tags.toSet().size)
     }
 
+    /** The on-device recognizer expects a language with a region, such as "ko-KR". */
+    @Test
+    fun everyLanguageHasASpeechLocale() {
+        for (language in AppLanguages.all) {
+            val speech = java.util.Locale.forLanguageTag(language.speechTag)
+            val app = java.util.Locale.forLanguageTag(language.tag)
+            assertEquals("${language.tag}: speechTag must be the same language", app.language, speech.language)
+            assertTrue("${language.tag}: speechTag needs a region, like \"ko-KR\"", speech.country.isNotEmpty())
+        }
+    }
+
     @Test
     fun everyInputLanguageReadsItsDateSamples() {
         for (profile in LanguageProfiles.all.filter { it.dateRules != null }) {

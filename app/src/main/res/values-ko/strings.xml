@@ -144,4 +144,19 @@
     <string name="license_load_failed_title">문서를 열 수 없습니다</string>
     <string name="license_load_failed_message">앱을 닫은 후 다시 열어 주세요.</string>
 
+    <!-- Voice dictation (S02-A/B) -->
+    <string name="action_dictate">음성 입력</string>
+    <string name="action_stop_dictation">음성 입력 중지</string>
+    <string name="action_continue">계속</string>
+    <string name="action_app_settings">설정</string>
+    <string name="dictation_listening">듣는 중…</string>
+    <string name="dictation_no_speech">인식된 음성이 없습니다. 다시 시도해 주세요.</string>
+    <string name="dictation_busy">음성 입력을 사용 중입니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="dictation_failed">오류로 음성 입력이 중지되었습니다.</string>
+    <string name="dictation_language_unavailable">이 휴대전화에 %1$s 기기 내 음성 인식이 설치되어 있지 않습니다. 시스템 음성 인식 설정에서 설치해 주세요.</string>
+    <string name="dictation_permission_denied">음성 입력을 사용하려면 마이크 권한이 필요합니다.</string>
+    <string name="dictation_permission_blocked">이 앱의 마이크 권한이 꺼져 있습니다. 설정에서 허용해 주세요.</string>
+    <string name="dialog_mic_permission_title">마이크를 사용할까요?</string>
+    <string name="dialog_mic_permission_message">ThoughtWeave는 음성 입력 중에만 소리를 듣습니다. 음성은 이 휴대전화의 기기 내 음성 인식으로 처리되며, ThoughtWeave는 소리를 녹음하거나 보관하지 않습니다.</string>
+
 </resources>
