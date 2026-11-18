@@ -18,6 +18,10 @@ Open tasks. Remove an item (or move it to CLAUDE.md as a decision) once it is do
 - [ ] **Microphone in the legal texts.** Mention microphone use in the agreement at the legal review
       (bump `CURRENT_AGREEMENT_VERSION`), and in the Play Data safety form (audio processed on device, not collected).
 
+## UI (added 2026-11-18)
+- [ ] **UI rework.** Rework the screens' look and layout (scope to be decided with the user before starting).
+- [ ] **Dark mode.** Support the system dark theme on every screen, including the S05 legal texts and dialogs.
+
 ## Phase 6 (on hold since 2026-11-11)
 - [ ] **Start Phase 6** when the hold is lifted: Galaxy S23 GPU and performance measurements, full flow tests,
       offline, themes, accessibility, Korean pass.
