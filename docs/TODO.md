@@ -10,6 +10,13 @@ Open tasks. Remove an item (or move it to CLAUDE.md as a decision) once it is do
 - [ ] **PER-04 / PER-05 targets.** Measure AI summary (2–3 memos) and schedule extraction times on the Galaxy S23
       (GPU) and replace the "OO초" placeholders.
 
+## Exhibition panel (`docs/05_캡스톤디자인_전시회_판넬_ThoughtWeave.pptx`)
+Built from `docs/05_캡스톤디자인_전시회_판넬.pptx` (2026-11-18). Screens are Korean emulator captures of sample
+memos and schedules seeded into the database; diagrams are PowerPoint shapes.
+- [ ] **AI times.** Add the Galaxy S23 summary and extraction times (PER-04/05) once measured.
+- [ ] **Keep in sync.** Retake the S01–S04 captures after the UI rework or dark mode, and update the test count
+      (224 on 2026-11-18) and the benchmark figure (188/209 facts) if they change.
+
 ## Voice dictation (V1 and V2 done 2026-11-18; V3 dropped)
 - [ ] **Real-device check.** Dictate in Korean and English on the Galaxy S23. The emulator's on-device recognizer
       runs but hears no voice, so the flows were tested with a scripted recognizer. Check on the S23: a long dictation
